@@ -37,6 +37,7 @@ const config: Config = {
           8: "#FFE3BF", //brown-shade
           9: "#FAEFD3", //brown-shade scoll-bar tracking line
         }
+        
       },
     },
   },

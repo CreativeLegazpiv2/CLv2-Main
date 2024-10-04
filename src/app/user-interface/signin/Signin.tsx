@@ -9,7 +9,7 @@ export const Signin = () => {
   return (
     <div className="w-full min-h-dvh lg:py-[20dvh] py-[15dvh] bg-[url('/images/signup/background.jpg')] bg-cover bg-no-repeat relative">
       {/* Full height overlay covering the entire div */}
-      <div className="absolute inset-0 w-full h-full bg-black/20"></div>
+      <div className="absolute inset-0 w-full h-full bg-black/30"></div>
 
       {/* Content */}
       <div className="relative w-full h-full xl:max-w-[55%] sm:max-w-[70%] max-w-[95%] mx-auto flex flex-col gap-10 justify-center items-center">
