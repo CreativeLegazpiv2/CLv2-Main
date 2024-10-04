@@ -1,9 +1,11 @@
-import { StillHaveQue } from "./StillHaveQue";
+import { StillHaveQue } from "@/app/(pages)/faqs/faqs-component/StillHaveQue";
 
-export default function FAQPage() {
+
+export default function FaQsPage() {
     return (
-        <div className="w-full h-fit text-primary-2">
+        <main className="w-full h-fit">
             <StillHaveQue />
-        </div>
+
+        </main>
     );
 }

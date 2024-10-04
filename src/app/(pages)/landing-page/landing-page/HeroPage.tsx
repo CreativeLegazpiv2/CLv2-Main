@@ -1,6 +1,7 @@
 
+import { CreativeDirectory } from "@/components/reusable-component/CreativeDirectory";
 import { Logo } from "@/components/reusable-component/Logo";
-import { CreativeDirectory } from "../../../components/reusable-component/CreativeDirectory";
+
 
 interface PofconHeroPageProps {
   setShowPofconModal: React.Dispatch<React.SetStateAction<boolean>>;

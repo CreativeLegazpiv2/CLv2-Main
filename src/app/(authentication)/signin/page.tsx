@@ -1,5 +1,5 @@
 
-import { Signin } from "@/app/user-interface/signin/Signin";
+import { Signin } from "@/app/(authentication)/signin/signin-component/Signin";
 import { Infinite } from "@/components/reusable-component/Infinite";
 import { Subscribe } from "@/components/reusable-component/Subscribe";
 import { Transcribed } from "@/components/reusable-component/Transcribed";

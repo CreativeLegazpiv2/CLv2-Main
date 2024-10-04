@@ -1,4 +1,4 @@
-import { UserProfile } from "@/app/user-interface/profile/UserProfile";
+import { UserProfile } from "@/app/(user)/profile/profile/UserProfile";
 import { Infinite } from "@/components/reusable-component/Infinite";
 import { Subscribe } from "@/components/reusable-component/Subscribe";
 

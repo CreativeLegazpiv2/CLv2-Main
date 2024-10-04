@@ -1,14 +1,15 @@
 "use client";
 
-import { GallerySection } from "@/app/user-interface/landing-page/GallerySection";
-import { HeroPage } from "@/app/user-interface/landing-page/HeroPage";
-import { Malikhain } from "@/app/user-interface/landing-page/Malikhain";
+
 import { Events } from "@/components/reusable-component/LandingEventsPage";
 import { Infinite } from "@/components/reusable-component/Infinite";
 import { Subscribe } from "@/components/reusable-component/Subscribe";
 import { Transcribed } from "@/components/reusable-component/Transcribed";
 import { useState } from "react";
 import { PofconModal } from "@/components/reusable-component/PofconModal";
+import { HeroPage } from "./landing-page/HeroPage";
+import { GallerySection } from "./landing-page/GallerySection";
+import { Malikhain } from "./landing-page/Malikhain";
 
 
 export default function LandingPage() {

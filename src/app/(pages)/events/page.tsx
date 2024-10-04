@@ -1,6 +1,6 @@
-import { CalendarEvent } from "@/app/user-interface/events/CalendarEvent";
-import { EventHeroPage } from "@/app/user-interface/events/EventHeroPage";
-import { UpcomingEvents } from "@/app/user-interface/events/UpcomingEvents";
+import { CalendarEvent } from "@/app/(pages)/events/events/CalendarEvent";
+import { EventHeroPage } from "@/app/(pages)/events/events/EventHeroPage";
+import { UpcomingEvents } from "@/app/(pages)/events/events/UpcomingEvents";
 
 
 export default function EventsPage() {

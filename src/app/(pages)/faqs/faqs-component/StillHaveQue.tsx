@@ -1,6 +1,6 @@
 export const StillHaveQue = () => {
     return (
-        <div className="w-full h-full max-h-[30dvh] border border-black py-[15dvh]">
+        <div className="w-full h-fit border border-black py-[15dvh]">
             <div className="w-full h-full  max-w-[90%] mx-auto border border-black bg-primary-2/90 rounded-xl">
                 <div className="w-full h-full flex justify-between items-center p-[15%]">
                     <div className="border border-black w-full h-fit flex flex-col gap-1.5 text-secondary-1">
