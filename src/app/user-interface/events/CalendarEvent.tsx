@@ -63,25 +63,24 @@ export const CalendarEvent: React.FC = () => {
           return (
             <div
               key={index}
-              className={`event-item text-sm mt-2 ${bgColor} p-1 rounded`}
+              className={`event-item text-sm mt-2 ${bgColor} p-2 rounded`}
             >
-              <div className="w-full flex flex-row gap-2 justify-center items-center">
-                <div className="w-24 h-16 aspect-square">
+              <div className="w-full flex flex-col gap-2 justify-center items-center">
+                <div className="w-full flex justify-center items-center gap-2 h-16 aspect-square">
                   <img
                     className="w-full h-full object-cover"
                     src={event.coverPhoto}
                     alt={event.title} // Add alt text for accessibility
                   />
+                  <p className={`text-xs font-semibold ${textColor}`}>
+                    {event.strTime} to {event.endTime}
+                  </p>
                 </div>
 
-                <div className={`w-fit flex flex-col ${textColor}`}>
-                  <p className="text-xs font-semibold">
-                    {event.strTime} - {event.endTime}
-                  </p>
-                  <p className={`text-xs ${event.title.length > 10 ? "" : ""}`}>
+                  <p className={`text-sm font-medium ${textColor} ${event.title.length > 10 ? "" : ""}`}>
                     {event.title}
                   </p>
-                </div>
+ 
               </div>
             </div>
           );
@@ -127,7 +126,7 @@ export const CalendarEvent: React.FC = () => {
   };
 
   return (
-    <div className="w-full md:p-6 bg-shade-2 my-[10dvh] border border-black">
+    <div className="w-full max-w-[90%] mx-auto md:p-6 bg-shade-2 my-[10dvh] border border-black">
       <h1 className="text-5xl font-semibold pl-4 title pb-8">Events Calendar</h1>
       <div className="w-full flex flex-col p-4 rounded-lg">
         <div className="w-full flex flex-row justify-between items-center pb-12">

@@ -86,7 +86,7 @@ export const GallerySection: React.FC = () => {
             <motion.div
               key={src}
               onClick={() => setImageCount([index, index > activeImageIndex ? 1 : -1])}
-              className={`cursor-pointer ${index === activeImageIndex ? 'border-2 border-white' : ''}`}
+              className={`cursor-pointer rounded-lg ${index === activeImageIndex ? 'border-2 border-white' : ''}`}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -103,7 +103,7 @@ export const GallerySection: React.FC = () => {
       </div>
 
       <motion.button
-        className="max-w-60 w-full py-3 bg-white text-gray-800 rounded-full font-semibold shadow-md"
+        className="max-w-60 w-full py-3 bg-white text-primary-2 rounded-full font-semibold shadow-md"
         whileHover={{ scale: 1.05, boxShadow: "0px 5px 15px rgba(0,0,0,0.1)" }}
         whileTap={{ scale: 0.95 }}
       >
