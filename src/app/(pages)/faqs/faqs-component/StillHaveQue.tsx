@@ -1,11 +1,11 @@
 export const StillHaveQue = () => {
     return (
         <div className="w-full h-fit border border-black py-[15dvh]">
-            <div className="w-full h-full  max-w-[90%] mx-auto border border-black bg-primary-2/90 rounded-xl">
-                <div className="w-full h-full flex justify-between items-center p-[15%]">
-                    <div className="border border-black w-full h-fit flex flex-col gap-1.5 text-secondary-1">
-                        <h1 className="font-bold text-4xl">Still have questions?</h1>
-                        <p className="font-normal">
+            <div className="w-full h-full max-w-[90%] mx-auto border border-black bg-primary-2/90 rounded-3xl">
+                <div className="w-full h-full flex lg:flex-row flex-col gap-8 justify-between items-center px-[10%] lg:py-[12dvh] py-[5dvh]">
+                    <div className="border border-black w-full h-fit flex flex-col lg:gap-2 gap-3 justify-center lg:items-start items-center text-secondary-1">
+                        <h1 className="font-bold text-4xl lg:text-left text-center">Still have questions?</h1>
+                        <p className="font-normal w-full text-lg max-w-md lg:text-left text-center">
                             Join over +5000 creatives across Bicol Region and
                             share your work with others!
                         </p>
