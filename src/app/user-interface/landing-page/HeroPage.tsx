@@ -1,6 +1,6 @@
 
 import { Logo } from "@/components/reusable-component/Logo";
-import { CreativeDirectory } from "./CreativeDirectory";
+import { CreativeDirectory } from "../../../components/reusable-component/CreativeDirectory";
 
 export const HeroPage = () => {
   return (
@@ -9,7 +9,7 @@ export const HeroPage = () => {
         <h1 className="font-extrabold lg:text-6xl text-5xl text-left">Welcome to </h1>
         <Logo width={"auto"} height={"auto"} color="text-primary-2" justifyContent="justify-center" itemPosition="items-center" />
       </div>
-      <CreativeDirectory />
+      <CreativeDirectory textColor="text-secondary-1" />
     </div>
   );
 };

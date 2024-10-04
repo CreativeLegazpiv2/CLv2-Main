@@ -9,10 +9,10 @@ export const Signin = () => {
   return (
     <div className="w-full min-h-dvh lg:py-[20dvh] py-[15dvh] bg-[url('/images/signup/background.jpg')] bg-cover bg-no-repeat relative">
       {/* Full height overlay covering the entire div */}
-      <div className="absolute inset-0 w-full h-full bg-black/50"></div>
+      <div className="absolute inset-0 w-full h-full bg-black/20"></div>
 
       {/* Content */}
-      <div className="relative w-full h-full xl:max-w-[55%] sm:max-w-[70%] max-w-[90%] mx-auto flex flex-col gap-10 justify-center items-center">
+      <div className="relative w-full h-full xl:max-w-[55%] sm:max-w-[70%] max-w-[95%] mx-auto flex flex-col gap-10 justify-center items-center">
         <h1 className="font-bold lg:text-6xl md:text-5xl text-4xl text-white drop-shadow-xl lg:block hidden">
           BE ONE OF US
         </h1>
@@ -27,14 +27,14 @@ const AccountCreation = () => {
     <div className="w-full h-full relative">
       {/* Main content */}
       <div className="w-full h-full flex bg-secondary-1 rounded-2xl z-50 relative">
-        <div className="w-full h-full p-10 lg:block hidden">
+        <div className="w-full h-full sm:p-10 p-6 lg:block hidden">
           <img
             className="w-fit h-full rounded-xl"
             src="images/signup/study.png"
             alt=""
           />
         </div>
-        <div className="w-full h-full flex flex-col gap-12 justify-center items-center p-10">
+        <div className="w-full h-full flex flex-col gap-12 justify-center items-center sm:p-10 p-6">
           <div className="w-64 h-fit">
             <Logo color="text-secondary-2" width={"auto"} height={"auto"} />
           </div>
@@ -45,8 +45,8 @@ const AccountCreation = () => {
       </div>
 
       {/* Background divs (behind the main content) */}
-      <div className="w-full absolute -bottom-10 z-10 max-w-[90%] left-0 right-0  mx-auto h-32 rounded-2xl bg-shade-6"></div>
-      <div className="w-full absolute -bottom-20 z-0 max-w-[80%] left-0 right-0  mx-auto h-32 rounded-2xl bg-shade-7"></div>
+      <div className="w-full absolute lg:-bottom-10 -bottom-6 z-10 max-w-[90%] left-0 right-0  mx-auto h-32 rounded-2xl bg-shade-6"></div>
+      <div className="w-full absolute lg:-bottom-20 -bottom-12 z-0 max-w-[80%] left-0 right-0  mx-auto h-32 rounded-2xl bg-shade-7"></div>
     </div>
   );
 };

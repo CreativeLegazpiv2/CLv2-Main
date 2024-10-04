@@ -13,8 +13,8 @@ interface SubscribeProps {
 
 export const Subscribe = () => {
   return (
-    <div className="w-full md:h-[35dvh] h-fit md:pb-0 pb-12 bg-primary-2 text-secondary-1">
-      <div className="w-full h-full flex md:flex-row flex-col-reverse justify-between items-center max-w-[80%] mx-auto">
+    <div className="w-full md:h-[35dvh] h-fit md:py-0 py-12 bg-primary-2 text-secondary-1">
+      <div className="w-full h-full flex md:flex-row flex-col-reverse gap-4 justify-between items-center md:justify-between md:max-w-[80%] max-w-[90%] mx-auto">
         <SubscribeInsigts />
         <div className="w-full h-full flex md:justify-end justify-center items-center py-10">
           <Logo

@@ -12,8 +12,8 @@ export const Transcribed = (
    }
   : TranscribedProps = {}) => {
   return (
-    <div className={`w-full md:h-[35dvh] h-fit md:py-0 py-12 ${bgColor} ${textColor}`}>
-      <div className="w-full h-full flex md:flex-row flex-col md:justify-between justify-evenly  items-center max-w-[80%] mx-auto">
+    <div className={`w-full md:h-[35dvh] h-fit ${bgColor} ${textColor}`}>
+      <div className="w-full h-full flex md:flex-row md:py-0 py-12 flex-col md:justify-between justify-center  items-center md:max-w-[80%] max-w-[90%] mx-auto">
         <div className="md:w-full md:h-full h-fit flex flex-col gap-4 text-lg justify-center items-start uppercase font-semibold">
           <div className="w-fit flex flex-col gap-0.5 justify-center items-center">
             <p className="">with over</p>
