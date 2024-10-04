@@ -5,6 +5,7 @@ import { Events } from "@/components/reusable-component/LandingEventsPage";
 import { Subscribe } from "@/components/reusable-component/Subscribe";
 import { Transcribed } from "@/components/reusable-component/Transcribed";
 import { PofconHeroPage } from "../../user-interface/landing-page/PofconHeroPage";
+import { PofconModal } from "@/components/reusable-component/PofconModal";
 
 export default function PofconLandingPage() {
   return (
@@ -16,6 +17,7 @@ export default function PofconLandingPage() {
       <Transcribed />
       <Infinite />
       <Subscribe />
+      <PofconModal />
     </main>
   );
 }
