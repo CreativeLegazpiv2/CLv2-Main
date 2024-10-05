@@ -1,6 +1,6 @@
 export const StillHaveQue = () => {
     return (
-        <div className="w-full h-fit py-[15dvh]">
+        <div className="w-full h-fit">
             <div className="w-full h-full max-w-[80%] mx-auto bg-quaternary-1 rounded-3xl">
                 <div className="w-full h-full flex lg:flex-row flex-col gap-8 justify-between items-center px-[8%] lg:py-[12dvh] py-[5dvh]">
                     <div className="w-full h-fit flex flex-col lg:gap-2 gap-3 justify-center lg:items-start items-center text-secondary-1">

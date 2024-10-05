@@ -8,7 +8,7 @@ import { FaqsArray } from "./FaqsArray";
 export const GeneralFaqs = () => {
     return (
         <div className="w-full h-auto">
-            <div className="w-full h-full flex md:flex-row flex-col xl:max-w-[75%] lg:max-w-[85%] mx-auto text-primary-2">
+            <div className="w-full h-full flex md:flex-row flex-col xl:max-w-[75%] lg:max-w-[80%] md:max-w-[90%] mx-auto text-primary-2">
                 <LeftSideGen />
                 <RightSideGen />
             </div>
@@ -19,9 +19,9 @@ export const GeneralFaqs = () => {
 const LeftSideGen = () => {
     return (
         <div
-            className="w-full xl:max-w-xl flex flex-col gap-4 sticky p-8 md:pt-0 pt-[12dvh] md:top-[12dvh] top-0  z-50 self-start bg-secondary-1"
+            className="w-full xl:max-w-xl lg:max-w-md flex flex-col gap-4 sticky p-8 md:pt-0 pt-[12dvh] md:top-[12dvh] top-0  z-50 self-start bg-secondary-1"
         >
-            <h1 className="lg:text-5xl text-4xl font-extrabold uppercase tracking-tight">General FAQs</h1>
+            <h1 className="xl:text-5xl text-4xl font-extrabold uppercase tracking-tight">General FAQs</h1>
             <p className="font-medium text-lg">
                 Need help? Worry no more, everything you need to know about Creative Legazpi and how it works. Can&apos;t find the answer? Talk to our team!
             </p>
@@ -47,7 +47,7 @@ const AccordionItem = ({ item }: { item: { question: string; answer: string } })
     return (
         <div className="w-full flex flex-col gap-4">
             <hr className="w-full border-[-1px] border-primary-2" />
-            <div className="w-full flex flex-col gap-2 pl-4">
+            <div className="w-full flex flex-col gap-2 md:pl-4">
                 <div className="w-full flex flex-row gap-20 justify-between items-start">
                     <h1 className="text-lg font-bold">{item.question}</h1>
                     <motion.div

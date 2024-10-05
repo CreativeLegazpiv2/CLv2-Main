@@ -1,7 +1,9 @@
 
+import { Infinite } from "@/components/reusable-component/Infinite";
 import { GeneralFaqs } from "./faqs-component/GeneralFaqs";
 import { StillHaveQue } from "./faqs-component/StillHaveQue";
 import { Support } from "./faqs-component/Support";
+import { Subscribe } from "@/components/reusable-component/Subscribe";
 
 
 export default function FaQsPage() {
@@ -10,7 +12,10 @@ export default function FaQsPage() {
             <Support />
             <GeneralFaqs />
             <StillHaveQue />
-
+            <div>
+                <Infinite />
+                <Subscribe />
+            </div>
         </main>
     );
 }
