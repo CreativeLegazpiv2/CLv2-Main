@@ -1,3 +1,4 @@
+import { q } from "framer-motion/client";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -15,8 +16,8 @@ const config: Config = {
           3: "#fa8811" //orange
         },
         secondary:{
-          1: "#FFFFFF",
-          2: "#000000",
+          1: "#FFFFFF", //white for text
+          2: "#000000", //black for text
         },
         tertiary: {
           1: "#B6E3CE", //green-shade
@@ -25,6 +26,9 @@ const config: Config = {
           4: "#FA897B", //red-shade
           5: "#CCA5CE", //violet-shade
           6: "#54136C", //violet color
+        },
+        quaternary: {
+          1: "#695C5C", //brown-90%
         },
         shade: {
           1: "#F19D55", //orange-shade
