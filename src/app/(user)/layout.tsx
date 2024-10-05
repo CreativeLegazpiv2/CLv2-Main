@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
           paddingLeftCustom="pl-0"
           roundedCustom="rounded-bl-none"
           bgBlur="backdrop-blur-lg"
-          bgOpacity="bg-opacity-0"
+          bgOpacity="bg-opacity-20"
         />
         {children}
         <Footer />

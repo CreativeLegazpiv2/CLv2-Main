@@ -43,6 +43,10 @@ const config: Config = {
         }
         
       },
+       textStroke: {
+        'outline-2': '2px black',  // This means 2px black outline
+        'outline-4': '4px black',  // 4px black outline for a stronger effect
+      },
     },
   },
   plugins: [],
