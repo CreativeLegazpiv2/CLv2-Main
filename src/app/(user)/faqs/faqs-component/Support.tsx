@@ -17,7 +17,7 @@ export const Support = () => {
 
 const LeftSide = () => {
     return (
-        <div className="w-full h-full flex flex-col lg:gap-2 gap-4 lg:justify-start justify-center lg:items-start items-center border border-black">
+        <div className="w-full h-full flex flex-col lg:gap-2 gap-4 lg:justify-start justify-center lg:items-start items-center">
             <h2 className="font-semibold xl:text-5xl text-4xl uppercase pb-2">support</h2>
             <h1 className="font-extrabold xl:text-5xl text-4xl uppercase leading-snug w-full xl:max-w-2xl max-w-lg lg:text-left text-center">TOP QUESTIONS ABOUT CREATIVE LEGAZPI </h1>
             <p className="font-semibold w-full max-w-sm text-xl lg:text-left text-center">Need to clear something? Here are frequently asked questions.</p>
@@ -29,7 +29,7 @@ const LeftSide = () => {
 
 const RightSide = () => {
     return (
-        <div className="w-full lg:flex hidden max-w-md h-fit border border-black absolute -bottom-4 -right-20">
+        <div className="w-full lg:flex hidden max-w-md h-fit absolute -bottom-4 -right-20">
             <div className="w-full h-full">
                 <img className="w-full max-w-md" src={"images/landing-page/laptop.png"} alt="" />
             </div>
