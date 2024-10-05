@@ -6,7 +6,7 @@ import { Support } from "./faqs-component/Support";
 
 export default function FaQsPage() {
     return (
-        <main className="w-full h-fit flex flex-col gap-[15dvh]">
+        <main className="w-full h-fit flex flex-col gap-[20dvh]">
             <Support />
             <GeneralFaqs />
             <StillHaveQue />

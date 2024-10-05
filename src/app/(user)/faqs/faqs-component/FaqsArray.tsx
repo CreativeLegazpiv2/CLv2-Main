@@ -1,3 +1,9 @@
+interface FaqsArrayProps {
+    id: number;
+    question: string;
+    answer: string;
+}
+
 export const FaqsArray = [
     {
         id: 1,
@@ -15,44 +21,44 @@ export const FaqsArray = [
         answer: "Creative Legazpi is an initiative promoting the creative industries in Legazpi City, supporting local artists, artisans, and entrepreneurs through various programs and events.",
     },
     {
-        id: 4,
+        id: 4, 
         question: "How can I participate in Creative Legazpi events?",
-        answer: "",
+        answer: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam maxime praesentium blanditiis quis nemo, ipsa beatae autem reiciendis! Delectus eveniet natus ratione pariatur amet tenetur id nisi omnis aperiam quibusdam.",
     },
     {
         id: 5,
         question: "Is there a fee to participate in Creative Legazpi events?",
-        answer: "",
+        answer: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam maxime praesentium blanditiis quis nemo, ipsa beatae autem reiciendis! Delectus eveniet natus ratione pariatur amet tenetur id nisi omnis aperiam quibusdam.",
     },
     {
         id: 6,
         question: "How do I stay updated on upcoming Creative Legazpi activities?",
-        answer: "",
+        answer: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam maxime praesentium blanditiis quis nemo, ipsa beatae autem reiciendis! Delectus eveniet natus ratione pariatur amet tenetur id nisi omnis aperiam quibusdam.",
     },
     {
         id: 7,
         question: "How do I contact Creative Legazpi for more information?",
-        answer: "",
+        answer: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam maxime praesentium blanditiis quis nemo, ipsa beatae autem reiciendis! Delectus eveniet natus ratione pariatur amet tenetur id nisi omnis aperiam quibusdam.",
     },
     {
         id: 8,
         question: "Why can’t I access the gallery?",
-        answer: "",
+        answer: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam maxime praesentium blanditiis quis nemo, ipsa beatae autem reiciendis! Delectus eveniet natus ratione pariatur amet tenetur id nisi omnis aperiam quibusdam.",
     },
     {
         id: 9,
         question: "Do I have to sign up to publish my works?",
-        answer: "",
+        answer: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam maxime praesentium blanditiis quis nemo, ipsa beatae autem reiciendis! Delectus eveniet natus ratione pariatur amet tenetur id nisi omnis aperiam quibusdam.",
     },
     {
         id: 10,
         question: "Is Creative Legazpi an e-commerce site?",
-        answer: "",
+        answer: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam maxime praesentium blanditiis quis nemo, ipsa beatae autem reiciendis! Delectus eveniet natus ratione pariatur amet tenetur id nisi omnis aperiam quibusdam.",
     },
     {
         id: 11,
         question: "Do I need a patent for this?",
-        answer: "",
+        answer: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam maxime praesentium blanditiis quis nemo, ipsa beatae autem reiciendis! Delectus eveniet natus ratione pariatur amet tenetur id nisi omnis aperiam quibusdam.",
     },
 
    
