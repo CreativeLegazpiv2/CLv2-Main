@@ -12,7 +12,7 @@ export default function FaQsPage() {
             <Support />
             <GeneralFaqs />
             <StillHaveQue />
-            <div>
+            <div className="w-full flex flex-col">
                 <Infinite />
                 <Subscribe />
             </div>

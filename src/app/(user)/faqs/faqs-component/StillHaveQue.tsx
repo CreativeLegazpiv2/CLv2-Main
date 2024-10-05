@@ -22,7 +22,7 @@ export const StillHaveQue = () => {
 
 const QueButton = () => {
     return (
-        <div className="flex gap-8 justify-center items-center text-primary-2">
+        <div className="flex gap-8 lg:justify-end justify-center items-center text-primary-2">
             <button className="capitalize w-32 rounded-full py-2 font-semibold bg-shade-1 ">learn more</button>
             <button className="capitalize w-32 rounded-full py-2 font-semibold bg-secondary-1 ">get started</button>
         </div>

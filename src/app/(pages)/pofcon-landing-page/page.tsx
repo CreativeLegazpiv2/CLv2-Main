@@ -2,7 +2,7 @@
 
 
 import { Infinite } from "@/components/reusable-component/Infinite";
-import { Events } from "@/components/reusable-component/LandingEventsPage";
+import { Events } from "@/app/(pages)/landing-page/landing-page/LandingEventsPage";
 import { Subscribe } from "@/components/reusable-component/Subscribe";
 import { Transcribed } from "@/components/reusable-component/Transcribed";
 import { PofconModal } from "@/components/reusable-component/PofconModal";

@@ -1,7 +1,7 @@
 "use client";
 
 
-import { Events } from "@/components/reusable-component/LandingEventsPage";
+import { Events } from "@/app/(pages)/landing-page/landing-page/LandingEventsPage";
 import { Infinite } from "@/components/reusable-component/Infinite";
 import { Subscribe } from "@/components/reusable-component/Subscribe";
 import { Transcribed } from "@/components/reusable-component/Transcribed";

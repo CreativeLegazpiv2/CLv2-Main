@@ -10,12 +10,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary:{
+        primary: {
           1: "#FFD094", //khaki
           2: "#403737", //brown
           3: "#fa8811" //orange
         },
-        secondary:{
+        secondary: {
           1: "#FFFFFF", //white for text
           2: "#000000", //black for text
         },
@@ -29,6 +29,7 @@ const config: Config = {
         },
         quaternary: {
           1: "#695C5C", //brown-90%
+          2: "#E0E0E0", //gray shade
         },
         shade: {
           1: "#F19D55", //orange-shade
@@ -40,13 +41,18 @@ const config: Config = {
           7: "#BEACAC", //brown-shade
           8: "#FFE3BF", //brown-shade
           9: "#FAEFD3", //brown-shade scoll-bar tracking line
-        }
-        
+        },
+
+        newColor: {
+          //ADD NEW COLOR HERE do not insert new color for the color above is already used, 
+          //changing the number will create error or change other component design change
+        },
+
       },
-       textStroke: {
-        'outline-2': '2px black',  // This means 2px black outline
-        'outline-4': '4px black',  // 4px black outline for a stronger effect
-      },
+      boxShadow:{
+        "customShadow": '5px 5px 5px 0px rgba(0, 0, 0, 0.3)'
+      }
+
     },
   },
   plugins: [],
