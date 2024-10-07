@@ -8,65 +8,74 @@ interface CardProps {
 export const CreativeArray = [
     {
        id: 1,
-       title: 'Creative Artwork 1',
-       src: '/images/creative-directory1.png',
-       right: '',
-       left: ''
+       title: 'Creative services',
+       src: '/images/creative-directory/1.png',
+       right: 'right-5',
+       left: '',
+       translate: ''
     },
     {
        id: 2,
-       title: 'Creative Artwork 2',
-       src: '/images/creative-directory2.png',
+       title: 'DIGITAL INTERACTIVE MEDIA',
+       src: '/images/creative-directory/2.png',
        right: '',
-       left: ''
+       left: '-left-5',
+       translate: ''
     },
     {
        id: 3,
-       title: 'Creative Artwork 3',
-       src: '/images/creative-directory3.png',
-       right: '',
-       left: ''
+       title: 'AUDIOVISUAL MEDIA',
+       src: '/images/creative-directory/3.png',
+       right: '-right-0',
+       left: '',
+       translate: ''
     },
     {
        id: 4,
-       title: 'Creative Artwork 4',
-       src: '/images/creative-directory4.png',
-       right: '',
-       left: ''
+       title: 'DESIGN',
+       src: '/images/creative-directory/4.png',
+       right: '-right-0',
+       left: '',
+       translate: ''
     },
     {
        id: 5,
-       title: 'Creative Artwork 5',
-       src: '/images/creative-directory5.png',
-       right: '',
-       left: ''
+       title: 'PUBLISHING AND PRINTING MEDIA',
+       src: '/images/creative-directory/5.png',
+       right: '-right-0',
+       left: '',
+       translate: ''
     },
     {
        id: 6,
-       title: 'Creative Artwork 6',
-       src: '/images/creative-directory6.png',
+       title: 'PERFORMING ARTS',
+       src: '/images/creative-directory/6.png',
        right: '',
-       left: ''
+       left: 'left-1/2',
+       translate: '-translate-x-[50%]'
     },
     {
        id: 7,
-       title: 'Creative Artwork 7',
-       src: '/images/creative-directory7.png',
-       right: '',
-       left: ''
+       title: 'VISUAL ARTS',
+       src: '/images/creative-directory/7.png',
+       right: '-right-0',
+       left: 'left-1/2',
+       translate: '-translate-x-[50%]'
     },
     {
        id: 8,
-       title: 'Creative Artwork 8',
-       src: '/images/creative-directory8.png',
+       title: 'TRADITIONAL AND CULTURAL EXPRESSIONS',
+       src: '/images/creative-directory/8.png',
        right: '',
-       left: ''
+       left: 'left-1/2',
+       translate: '-translate-x-[50%]'
     },
     {
        id: 9,
-       title: 'Creative Artwork 9',
-       src: '/images/creative-directory9.png',
+       title: 'CULTURAL SITES',
+       src: '/images/creative-directory/9.png',
        right: '',
-       left: ''
+       left: 'left-1/2',
+       translate: '-translate-x-[50%]'
     },
 ];

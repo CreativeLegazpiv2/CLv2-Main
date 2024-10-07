@@ -33,11 +33,11 @@ export const PofconModal: React.FC<PofconModalProps> = ({ setShowPofconModal }) 
         >
             <div className="w-full h-full flex justify-center items-center">
                 <div
-                    className="w-full h-full max-h-[70%] md:max-w-[55%] max-w-[90%] mx-auto bg-secondary-1 p-3 rounded-2xl relative overflow-hidden"
+                    className="w-full h-full lg:max-h-[70%] max-h-[40%] lg:max-w-[55%] max-w-[90%] mx-auto bg-secondary-1 p-3 rounded-2xl relative overflow-hidden"
                     onClick={(e) => e.stopPropagation()} // Prevent close on inner click
                 >
                     <div className="w-full h-full flex flex-col overflow-hidden rounded-lg relative px-4 lg:py-0 py-12">
-                        <div className="h-4/5 w-full flex xl:justify-end justify-center xl:items-end items-center">
+                        <div className="lg:h-4/5 h-fit w-full flex xl:justify-end justify-center xl:items-end items-center">
                             <div className="h-full w-full max-w-72 pr-4">
                                 <Logo color="text-primary-2" width="auto" height="auto" />
                             </div>
