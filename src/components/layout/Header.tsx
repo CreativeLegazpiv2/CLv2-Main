@@ -141,6 +141,6 @@ export const Header = ({
 const headerMenu = [
   { name: "Directory", link: "/" },
   { name: "Gallery", link: "/about" },
-  { name: "FAQ", link: "/contact" },
+  { name: "FAQ", link: "/faqs" },
   { name: "Log In", link: "/signin" },
 ];

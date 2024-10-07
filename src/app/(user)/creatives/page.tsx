@@ -7,8 +7,8 @@ import { CreativeUsers } from "./creative-components/CreativeUsers";
 
 export default function CreativeDirectoryPage() {
     return (
-        <main className="w-full h-fit">
-            <div className="py-[10dvh] flex flex-col w-full gap-2">
+        <main className="w-full h-fit text-primary-2">
+            <div className="py-[10dvh] flex flex-col w-full">
                 <CreativeHeroPage />
                 <CreativeCarousel />
             </div>
