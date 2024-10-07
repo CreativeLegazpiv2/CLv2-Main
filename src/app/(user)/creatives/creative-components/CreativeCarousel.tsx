@@ -50,9 +50,9 @@ export const CreativeCarousel = () => {
     };
 
     return (
-        <div className="w-full h-[45dvh] relative">
+        <div className="w-full md:h-[45dvh] h-[25dvh] relative">
             <div className="w-full md:max-w-[90%] h-full flex justify-center items-center  overflow-hidden mx-auto">
-                <div className="w-full md:h-[22dvh] h-[25dvh]">
+                <div className="w-full lg:h-[11rem] h-[10rem]"> 
                     <motion.div
                         className="flex h-full md:px-2 md:gap-1"
                         initial={false}
@@ -83,18 +83,18 @@ export const CreativeCarousel = () => {
                             </div>
                         ))}
                     </motion.div>
-                </div>
+                </div>  
             </div>
             <button
                 onClick={prev}
-                className="absolute md:left-5 left-2 top-1/2 z-50 transform -translate-y-1/2 text-primary-2 lg:p-2 p-0.5 border border-gray-400 bg-white rounded-full shadow-md"
+                className="absolute md:block hidden md:left-3 left-2 top-1/2 z-50 transform -translate-y-1/2 text-primary-2 lg:p-2 p-0.5 border border-gray-400 bg-white rounded-full shadow-md"
                 disabled={currentPage === 0}
             >
                 <Icon icon="ep:arrow-left" width="24" height="24" />
             </button>
             <button
                 onClick={next}
-                className="absolute md:right-5 right-2 top-1/2 z-50 transform -translate-y-1/2 text-primary-2 lg:p-2 p-0.5 border border-gray-400 bg-white rounded-full shadow-md"
+                className="absolute md:block hidden md:right-3 right-2 top-1/2 z-50 transform -translate-y-1/2 text-primary-2 lg:p-2 p-0.5 border border-gray-400 bg-white rounded-full shadow-md"
                 disabled={currentPage === totalPages - 1}
             >
                 <Icon icon="ep:arrow-right" width="24" height="24" />
