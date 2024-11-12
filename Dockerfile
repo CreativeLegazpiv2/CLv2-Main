@@ -20,7 +20,6 @@ RUN \
 
 # Rebuild the source code only when needed
 FROM base AS builder
-WORKDIR /app
 
 # Set build arguments
 ARG NEXT_PUBLIC_SUPABASE_URL
@@ -34,6 +33,7 @@ ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
 ENV JWT_SECRET=$JWT_SECRET
 ENV NODE_ENV=$NODE_ENV
 
+WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
