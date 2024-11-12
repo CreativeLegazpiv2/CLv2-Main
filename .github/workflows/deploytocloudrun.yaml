@@ -7,6 +7,7 @@ env:
   REPOSITORY: ${{ vars.GAR_REPOSITORY }}
   SERVICE: ${{ vars.CLOUD_RUN_SERVICE }}
   REGION: ${{ vars.GCP_REGION }}
+  CONTAINER_PORT: ${{ vars.CONTAINER_PORT }}
   GCP_CREDENTIALS_JSON: ${{ secrets.GCP_CREDENTIALS_JSON }}
 jobs:
   deploy:
@@ -51,5 +52,6 @@ jobs:
           service: ${{ env.SERVICE }}
           region: ${{ env.REGION }}
           image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:${{ github.sha }}
+          port: ${{ env.CONTAINER_PORT }}
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}
