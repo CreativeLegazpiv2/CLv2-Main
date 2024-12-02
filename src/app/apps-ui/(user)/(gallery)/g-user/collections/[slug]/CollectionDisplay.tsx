@@ -46,6 +46,81 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
     image_path: string;
   } | null>(null);
 
+
+  const [commentInput, setCommentInput] = useState("");
+
+  const [comments, setComments] = useState<any[]>([]);
+
+useEffect(() => {
+  fetchComments();
+}, [selectedImage]);
+
+const fetchComments = async () => {
+  if (!selectedImage) return;
+
+  try {
+    const response = await fetch(`/api/collections/comment`, {
+      method: "GET",
+      headers: {
+        x_galleryid: selectedImage.generatedId,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setComments(data.comments);
+    } else {
+      const data = await response.json();
+      toast.error(`Failed to fetch comments: ${data.error}`, { position: "bottom-right" });
+    }
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    toast.error("Failed to fetch comments.", { position: "bottom-right" });
+  }
+};
+
+
+const handleCommentSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!commentInput.trim()) return;
+
+  const token = getSession();
+  if (!token) return;
+
+  try {
+    const { payload } = await jwtVerify(
+      token,
+      new TextEncoder().encode(JWT_SECRET)
+    );
+    const userId = payload.id as string;
+
+    const response = await fetch("/api/collections/comment", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        x_galleryid: selectedImage?.generatedId || "",
+        x_userid: userId,
+        x_comment: commentInput,
+      },
+    });
+
+    if (response.ok) {
+      toast.success("Comment added successfully!", { position: "bottom-right" });
+      setCommentInput("");
+      fetchComments(); // Fetch updated comments after submission
+    } else {
+      const data = await response.json();
+      toast.error(`Failed to add comment: ${data.error}`, { position: "bottom-right" });
+    }
+  } catch (error) {
+    console.error("Error submitting comment:", error);
+    toast.error("Failed to add comment.", { position: "bottom-right" });
+  }
+};
+
+
+
+
   const handleImageClick = (image: typeof selectedImage) => {
     setSelectedImage(image);
   };
@@ -341,6 +416,32 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
             </motion.div>
           )}
         </AnimatePresence>
+
+    {/* Comment Section */}
+    <div className="mt-8">
+      <h2 className="text-2xl font-semibold text-gray-900 mb-4">Comments</h2>
+      {comments.map((comment, index) => (
+        <div key={index} className="bg-gray-100 p-4 rounded-lg mb-2">
+          <p className="text-gray-600">{comment.comment}</p>
+          <p className="text-sm text-gray-500">By: {comment.userid}</p>
+        </div>
+      ))}
+    </div>
+
+        
+{/* Comment */}
+<form onSubmit={handleCommentSubmit} className="mt-8">
+  <input
+    type="text"
+    value={commentInput}
+    onChange={(e) => setCommentInput(e.target.value)}
+    className="border p-2 rounded w-full"
+    placeholder="Add a comment..."
+  />
+  <button type="submit" className="mt-2 bg-blue-500 text-white p-2 rounded">
+    Submit
+  </button>
+</form>
       </div>
       <ToastContainer />
     </div>
@@ -348,3 +449,4 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
 };
 
 export default CollectionDisplay;
+  
