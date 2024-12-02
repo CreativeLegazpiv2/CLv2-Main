@@ -66,7 +66,7 @@ export const Header = ({
 
       if (session) {
         setMenuItems([
-          { name: "Home", link: "/apps-ui/pofcon-landing-page" },
+          { name: "Home", link: "/apps-ui/home" },
           { name: "Directory", link: "/apps-ui/creative-dashboard" },
           { name: "Gallery", link: "/apps-ui/g-user" },
           { name: "FAQ", link: "/apps-ui/faqs" },
@@ -75,7 +75,7 @@ export const Header = ({
         ]);
       } else {
         setMenuItems([
-          { name: "Home", link: "/apps-ui/pofcon-landing-page" },
+          { name: "Home", link: "/apps-ui/home" },
           { name: "Directory", link: "/apps-ui/creative-dashboard" },
           { name: "Gallery", link: "/apps-ui/g-visitor" },
           { name: "FAQ", link: "/apps-ui/faqs" },
