@@ -9,6 +9,7 @@ import { Transcribed } from "@/components/reusable-component/Transcribed";
 import { Infinite } from "@/components/reusable-component/Infinite";
 import { Subscribe } from "@/components/reusable-component/Subscribe";
 import { PofconModal } from "@/components/reusable-component/PofconModal";
+import { motion } from "framer-motion";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PofconHeroPage } from "./(pages)/landing-page/landing-page/PofconHeroPage";

@@ -15,7 +15,7 @@ interface CollectionItem {
   slug: string;
 }
 
-export default function FeaturedCollections() {
+export const FeaturedCollections = () => {
   const [featuredItems, setFeaturedItems] = useState<CollectionItem[]>([]); // Array of CollectionItem
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null); // Allow both string and null types
@@ -41,14 +41,6 @@ export default function FeaturedCollections() {
 
     fetchCollection();
   }, []);
-
-  if (loading) {
-    return <p>Loading featured collections...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
 
   return (
     <section className="bg-white py-20 px-4 sm:px-6 lg:px-8">

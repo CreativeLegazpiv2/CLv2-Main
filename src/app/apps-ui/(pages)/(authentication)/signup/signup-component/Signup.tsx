@@ -269,7 +269,7 @@ export const MultiStepForm = () => {
 
 
 export const Input: React.FC<InputProps> = ({ name, value, onChange, placeholder, icon, type = "text" }) => (
-  <div className="w-full lg:max-w-sm relative">
+  <div className="w-full relative">
     <input
       className="w-full h-10 border-b-2 p-4 pl-12 [&:-webkit-autofill]:transition-[background-color_5000s_ease-in-out_0s] bg-transparent placeholder:text-primary-2 font-normal border-secondary-2 outline-none ring-0"
       type={type}
@@ -289,7 +289,7 @@ export const Input: React.FC<InputProps> = ({ name, value, onChange, placeholder
 );
 
 export const TextArea: React.FC<InputProps> = ({ name, value, onChange, placeholder, icon }) => (
-  <div className="w-full lg:max-w-sm relative">
+  <div className="w-full relative">
     <textarea
       className="w-full h-16 border-b-2 p-4 pl-12 bg-transparent [&:-webkit-autofill]:transition-[background-color_5000s_ease-in-out_0s] placeholder:text-primary-2 border-secondary-2 outline-none ring-0 resize-none"
       name={name}
@@ -309,7 +309,7 @@ export const TextArea: React.FC<InputProps> = ({ name, value, onChange, placehol
 
 
 export const Select: React.FC<SelectProps> = ({ name, value, onChange, placeholder, icon, options }) => (
-  <div className="relative w-full lg:max-w-sm">
+  <div className="relative w-full">
     <select
       name={name}
       value={value}

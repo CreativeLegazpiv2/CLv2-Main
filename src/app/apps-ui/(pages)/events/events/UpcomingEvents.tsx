@@ -75,7 +75,9 @@ export const UpcomingEvents = () => {
       console.error("Error fetching events:", error);
     }
   };
+
   const [showPofconModal, setShowPofconModal] = useState(false); // Modal state
+  const [selectedEvent, setSelectedEvent] = useState<AdminEvent | null>(null); // State to store the selected event
 
   useEffect(() => {
     const handleResize = () => {
@@ -132,9 +134,17 @@ export const UpcomingEvents = () => {
         setList={setList}
         events={events}
         setShowPofconModal={setShowPofconModal}
+        setSelectedEvent={setSelectedEvent} // Pass the setter for selected event
       />
-      {showPofconModal && (
-        <RegisterModal setShowPofconModal={setShowPofconModal} />
+      {showPofconModal && selectedEvent !== null && (
+        <RegisterModal
+          setShowPofconModal={setShowPofconModal}
+          eventId={selectedEvent.id}
+          eventTitle={selectedEvent.title}
+          eventLocation={selectedEvent.location}
+          eventStartTime={selectedEvent.start_time}
+          eventEndTime={selectedEvent.end_time}
+        />
       )}
     </div>
   );
@@ -146,7 +156,15 @@ const EventGrid: React.FC<{
   setList: React.Dispatch<React.SetStateAction<boolean>>;
   setShowPofconModal: React.Dispatch<React.SetStateAction<boolean>>;
   events: AdminEvent[];
-}> = ({ currentDate, list, setList, events, setShowPofconModal }) => {
+  setSelectedEvent: React.Dispatch<React.SetStateAction<AdminEvent | null>>; // Setter for selected event
+}> = ({
+  currentDate,
+  list,
+  setList,
+  events,
+  setShowPofconModal,
+  setSelectedEvent,
+}) => {
   const filteredEvents = events.filter((event) => {
     const eventDate = new Date(event.date);
     return (
@@ -192,6 +210,7 @@ const EventGrid: React.FC<{
                   groupIndex={groupIndex}
                   list={list}
                   setShowPofconModal={setShowPofconModal}
+                  setSelectedEvent={setSelectedEvent} // Pass setter for event
                 />
               ))}
             </div>
@@ -216,7 +235,8 @@ const EventCard: React.FC<{
   groupIndex: number;
   list: boolean;
   setShowPofconModal: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ event, groupIndex, list, setShowPofconModal }) => {
+  setSelectedEvent: React.Dispatch<React.SetStateAction<AdminEvent | null>>; // Setter for event
+}> = ({ event, groupIndex, list, setShowPofconModal, setSelectedEvent }) => {
   const colorClasses = getColorClasses(groupIndex);
 
   return (
@@ -278,6 +298,7 @@ const EventCard: React.FC<{
         colorClasses={colorClasses}
         list={list}
         setShowPofconModal={setShowPofconModal}
+        setSelectedEvent={() => setSelectedEvent(event)} // Pass the event to setSelectedEvent
       />
     </motion.div>
   );
@@ -287,10 +308,12 @@ const EventRegisterButton = ({
   colorClasses,
   list,
   setShowPofconModal,
+  setSelectedEvent,
 }: {
   colorClasses: any;
   list: boolean;
   setShowPofconModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedEvent: () => void;
 }) => {
   return (
     <motion.button
@@ -301,12 +324,16 @@ const EventRegisterButton = ({
       `}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      onClick={() => setShowPofconModal(true)}
+      onClick={() => {
+        setSelectedEvent(); // Set the selected event
+        setShowPofconModal(true);
+      }}
     >
       Register for free
     </motion.button>
   );
 };
+
 
 const ListButton: React.FC<ButtonProp> = ({ list, setList }) => {
   return (

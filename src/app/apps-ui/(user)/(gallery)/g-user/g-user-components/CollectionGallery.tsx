@@ -17,7 +17,7 @@ interface Collection {
   slug: string;
 }
 
-export default function CollectionsCarousel() {
+export const CollectionsCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true); // Add loading state
@@ -60,10 +60,6 @@ export default function CollectionsCarousel() {
   const prevSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + collections.length) % collections.length);
   };
-
-  if (loading) { // Check loading state
-    return <div className="text-center">Loading collections...</div>;
-  }
 
   if (collections.length === 0) {
     return (
