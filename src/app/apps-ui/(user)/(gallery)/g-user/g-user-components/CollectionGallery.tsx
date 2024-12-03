@@ -71,7 +71,7 @@ export const CollectionsCarousel = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <Link href="/g-user/publish">
+          <Link href="/apps-ui/g-user/publish">
             <motion.button
               whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.1)" }}
               whileTap={{ scale: 0.95 }}

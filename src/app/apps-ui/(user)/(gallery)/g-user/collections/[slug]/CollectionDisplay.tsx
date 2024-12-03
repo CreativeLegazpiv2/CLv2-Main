@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { deleteCollectionItem } from "@/services/Collections/deleteCollection";
-import { getFname, getSession } from "@/services/authservice";
+import { getSession } from "@/services/authservice";
 import { jwtVerify } from "jose";
 import { useRouter } from "next/navigation";
 import useAuthRedirect from "@/services/hoc/auth";
@@ -31,11 +31,17 @@ interface CollectionProps {
   };
 }
 
+interface UserDetails {
+  first_name: string;
+  profile_pic: string;
+  // Add other user details properties here if needed
+}
+
 interface Subcomment {
   comment: string;
-  Fname: string;
   userid: string;
   created_at: string;
+  userDetails?: UserDetails; // Add userDetails property
 }
 
 const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
@@ -60,6 +66,8 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
   const [showReplyInput, setShowReplyInput] = useState<{ [key: string]: boolean }>({});
   const [showMoreReplies, setShowMoreReplies] = useState<{ [key: string]: boolean }>({});
 
+  const [chat, setChat] = useState(false);
+
   useEffect(() => {
     fetchComments();
   }, [selectedImage]);
@@ -78,7 +86,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
       if (response.ok) {
         const data = await response.json();
         const commentsWithSubcomments = await Promise.all(data.comments.map(async (comment: any) => {
-          const subcommentsResponse = await fetch(`/api/collections/comment/subcomment`, {
+          const subcommentsResponse = await fetch(`/api/collections/subcomment`, {
             method: "GET",
             headers: {
               x_galleryid: selectedImage.generatedId,
@@ -93,7 +101,18 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
             return { ...comment, subcomments: [] };
           }
         }));
-        setComments(commentsWithSubcomments);
+  
+        // Extract first_name from userDetails for main comments
+        const commentsWithUserDetails = commentsWithSubcomments.map((comment: any) => {
+          const userDetail = comment.userDetails || {};
+          return {
+            ...comment,
+            first_name: userDetail.first_name || "Unknown",
+            profile_pic: userDetail.profile_pic || "",
+          };
+        });
+  
+        setComments(commentsWithUserDetails);
       } else {
         const data = await response.json();
         toast.error(`Failed to fetch comments: ${data.error}`, { position: "bottom-right" });
@@ -122,24 +141,22 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
         new TextEncoder().encode(JWT_SECRET)
       );
       const userId = payload.id as string;
-      const Fname = getFname() as string;
-      const response = await fetch("/api/collections/comment/subcomment", {
+      const response = await fetch("/api/collections/subcomment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          x_galleryid: selectedImage?.generatedId || "",
+          x_galleryid: commentId,
           x_userid: userId,
           x_comment: replyInput[commentId],
           x_commentid: commentId, // Include the comment ID here
-          Fname: Fname,
         },
       });
   
       if (response.ok) {
+        fetchComments();
         toast.success("Reply added successfully!", { position: "bottom-right" });
         const newSubcomment = {
           comment: replyInput[commentId],
-          Fname: Fname,
           userid: userId,
           created_at: new Date().toISOString(),
         };
@@ -176,7 +193,6 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
         new TextEncoder().encode(JWT_SECRET)
       );
       const userId = payload.id as string;
-      const Fname = getFname() as string;
       const response = await fetch("/api/collections/comment", {
         method: "POST",
         headers: {
@@ -184,7 +200,6 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
           x_galleryid: selectedImage?.generatedId || "",
           x_userid: userId,
           x_comment: commentInput,
-          Fname: Fname,
         },
       });
 
@@ -440,6 +455,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                       onClick={() => {
                         setSelectedImage(image);
                         setInterestModalOpen(true);
+                        setChat(false);
                       }}
                     >
                       Interested?
@@ -450,6 +466,26 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
             </motion.div>
           ))}
         </div>
+
+                 {/* temp buttom */}
+          <motion.button
+                      initial={{ backgroundColor: "#FFD094", color: "#403737" }}
+                      whileHover={{
+                        scale: 1.1,
+                        backgroundColor: "#403737",
+                        color: "white",
+                      }}
+                      whileTap={{ scale: 0.9 }}
+                      transition={{ duration: 0.3, delay: 0.2 }}
+                      className="w-32 py-2 rounded-full"
+                      onClick={() => {
+                        setInterestModalOpen(true);
+                        setChat(true);
+                      }}
+                    >
+                      Chat?
+                    </motion.button>
+
 
         {/* Collection Details */}
 
@@ -511,6 +547,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                 desc={selectedImage.desc}
                 year={selectedImage.year}
                 onCancel={() => setInterestModalOpen(false)}
+                chat={chat}
               />
             </motion.div>
           )}
@@ -537,53 +574,57 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
           )}
         </AnimatePresence>
 
+
         {/* Comment Section */}
         <div className="mt-8">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">Comments</h2>
           {comments.map((comment, index) => {
-            const subcommentsForComment: Subcomment[] = comment.subcomments || [];
-            const shouldShowMoreButton = subcommentsForComment.length > 2;
-            const displayedSubcomments = showMoreReplies[comment.id]
-              ? subcommentsForComment
-              : subcommentsForComment.slice(0, 2);
-            const additionalRepliesCount = subcommentsForComment.length - 2;
+  const subcommentsForComment: Subcomment[] = comment.subcomments || [];
+  const shouldShowMoreButton = subcommentsForComment.length > 2;
+  const displayedSubcomments = showMoreReplies[comment.id]
+    ? subcommentsForComment
+    : subcommentsForComment.slice(0, 2);
+  const additionalRepliesCount = subcommentsForComment.length - 2;
 
-            return (
-              <div key={index} className="bg-gray-100 p-4 rounded-lg mb-2">
-                <p className="text-gray-600">{comment.comment}</p>
-                <p className="text-sm text-gray-500">By: {comment.Fname}</p>
-                <button onClick={() => handleReplyClick(comment.id)}>Reply</button>
-                {showReplyInput[comment.id] && (
-                  <form onSubmit={(e) => handleReplySubmit(e, comment.id)} className="mt-2">
-                    <input
-                      type="text"
-                      value={replyInput[comment.id] || ""}
-                      onChange={(e) => setReplyInput({ ...replyInput, [comment.id]: e.target.value })}
-                      className="border p-2 rounded w-full"
-                      placeholder="Add a reply..."
-                    />
-                    <button type="submit" className="mt-2 bg-blue-500 text-white p-2 rounded">
-                      Submit Reply
-                    </button>
-                  </form>
-                )}
-                {displayedSubcomments.map((subcomment: Subcomment, subIndex: number) => (
-                  <div key={subIndex} className="bg-gray-200 p-2 rounded-lg ml-4 mt-2">
-                    <p className="text-gray-600">{subcomment.comment}</p>
-                    <p className="text-sm text-gray-500">By: {subcomment.Fname}</p>
-                  </div>
-                ))}
-                {shouldShowMoreButton && (
-                  <button
-                    onClick={() => setShowMoreReplies({ ...showMoreReplies, [comment.id]: !showMoreReplies[comment.id] })}
-                    className="mt-2 text-blue-500"
-                  >
-                    {showMoreReplies[comment.id] ? "View Less" : `View More ${additionalRepliesCount} Comments`}
-                  </button>
-                )}
-              </div>
-            );
-          })}
+  return (
+    <div key={index} className="bg-gray-100 p-4 rounded-lg mb-2">
+      <Image src={comment.profile_pic || "/images/creative-directory/boy.png"} alt={`Comment ${index + 1}`} width={100} height={100} />
+      <p className="text-gray-600">{comment.comment}</p>
+      <p className="text-sm text-gray-500">By: {comment.first_name}</p> 
+      <button onClick={() => handleReplyClick(comment.id)}>Reply</button>
+      {showReplyInput[comment.id] && (
+        <form onSubmit={(e) => handleReplySubmit(e, comment.id)} className="mt-2">
+          <input
+            type="text"
+            value={replyInput[comment.id] || ""}
+            onChange={(e) => setReplyInput({ ...replyInput, [comment.id]: e.target.value })}
+            className="border p-2 rounded w-full"
+            placeholder="Add a reply..."
+          />
+          <button type="submit" className="mt-2 bg-blue-500 text-white p-2 rounded">
+            Submit Reply
+          </button>
+        </form>
+      )}
+      {/* subcomment */}
+      {displayedSubcomments.map((subcomment: Subcomment, subIndex: number) => (
+        <div key={subIndex} className="bg-gray-200 p-2 rounded-lg ml-4 mt-2">
+          <Image src={subcomment.userDetails?.profile_pic || "/images/creative-directory/boy.png" } alt={`Subcomment ${subIndex + 1}`} width={100} height={100} />
+          <p className="text-gray-600">{subcomment.comment}</p>
+          <p className="text-sm text-gray-500">By: {subcomment.userDetails?.first_name}</p>
+        </div>
+      ))}
+      {shouldShowMoreButton && (
+        <button
+          onClick={() => setShowMoreReplies({ ...showMoreReplies, [comment.id]: !showMoreReplies[comment.id] })}
+          className="mt-2 text-blue-500"
+        >
+          {showMoreReplies[comment.id] ? "View Less" : `View More ${additionalRepliesCount} Comments`}
+        </button>
+      )}
+    </div>
+  );
+})}
         </div>
 
         {/* Comment */}
