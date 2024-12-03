@@ -228,6 +228,11 @@ export const logoutUser = () => {
     localStorage.removeItem("Fname");
   }
 };
-
+export const getFname = () => {
+  if (typeof window !== "undefined") {
+      return localStorage.getItem("Fname");
+  }
+  return null; 
+};
 
 

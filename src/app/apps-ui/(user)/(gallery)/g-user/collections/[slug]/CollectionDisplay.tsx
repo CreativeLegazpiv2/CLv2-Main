@@ -1,17 +1,17 @@
-// collectionDisplay
 "use client"; // This tells Next.js that this component is a client-side component
 
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { deleteCollectionItem } from "@/services/Collections/deleteCollection";
-import { getSession } from "@/services/authservice";
+import { getFname, getSession } from "@/services/authservice";
 import { jwtVerify } from "jose";
 import { useRouter } from "next/navigation";
 import useAuthRedirect from "@/services/hoc/auth";
 import DeleteCollection from "./(collectionModal)/DeleteCollection";
 import { toast, ToastContainer } from "react-toastify";
 import { EditCollection } from "./(collectionModal)/EditCollection";
+import { Interested } from "./(collectionModal)/Interested";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
@@ -31,6 +31,13 @@ interface CollectionProps {
   };
 }
 
+interface Subcomment {
+  comment: string;
+  Fname: string;
+  userid: string;
+  created_at: string;
+}
+
 const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
   const router = useRouter();
   const [images, setImages] = useState(collection.images);
@@ -40,11 +47,160 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
   );
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [isInterestModalOpen, setInterestModalOpen] = useState(false);
 
   const [imageToDelete, setImageToDelete] = useState<{
     generatedId: string;
     image_path: string;
   } | null>(null);
+
+  const [commentInput, setCommentInput] = useState("");
+  const [comments, setComments] = useState<any[]>([]);
+  const [replyInput, setReplyInput] = useState<{ [key: string]: string }>({});
+  const [showReplyInput, setShowReplyInput] = useState<{ [key: string]: boolean }>({});
+  const [showMoreReplies, setShowMoreReplies] = useState<{ [key: string]: boolean }>({});
+
+  useEffect(() => {
+    fetchComments();
+  }, [selectedImage]);
+
+  const fetchComments = async () => {
+    if (!selectedImage) return;
+  
+    try {
+      const response = await fetch(`/api/collections/comment`, {
+        method: "GET",
+        headers: {
+          x_galleryid: selectedImage.generatedId,
+        },
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        const commentsWithSubcomments = await Promise.all(data.comments.map(async (comment: any) => {
+          const subcommentsResponse = await fetch(`/api/collections/comment/subcomment`, {
+            method: "GET",
+            headers: {
+              x_galleryid: selectedImage.generatedId,
+              x_commentid: comment.id,
+            },
+          });
+  
+          if (subcommentsResponse.ok) {
+            const subcommentsData = await subcommentsResponse.json();
+            return { ...comment, subcomments: subcommentsData.comments };
+          } else {
+            return { ...comment, subcomments: [] };
+          }
+        }));
+        setComments(commentsWithSubcomments);
+      } else {
+        const data = await response.json();
+        toast.error(`Failed to fetch comments: ${data.error}`, { position: "bottom-right" });
+      }
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      toast.error("Failed to fetch comments.", { position: "bottom-right" });
+    }
+  };
+
+  const handleReplyClick = (commentId: string) => {
+    setShowReplyInput({ ...showReplyInput, [commentId]: !showReplyInput[commentId] });
+    setReplyInput({ ...replyInput, [commentId]: "" });
+  };
+
+  const handleReplySubmit = async (e: React.FormEvent, commentId: string) => {
+    e.preventDefault();
+    if (!replyInput[commentId]?.trim()) return;
+  
+    const token = getSession();
+    if (!token) return;
+  
+    try {
+      const { payload } = await jwtVerify(
+        token,
+        new TextEncoder().encode(JWT_SECRET)
+      );
+      const userId = payload.id as string;
+      const Fname = getFname() as string;
+      const response = await fetch("/api/collections/comment/subcomment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          x_galleryid: selectedImage?.generatedId || "",
+          x_userid: userId,
+          x_comment: replyInput[commentId],
+          x_commentid: commentId, // Include the comment ID here
+          Fname: Fname,
+        },
+      });
+  
+      if (response.ok) {
+        toast.success("Reply added successfully!", { position: "bottom-right" });
+        const newSubcomment = {
+          comment: replyInput[commentId],
+          Fname: Fname,
+          userid: userId,
+          created_at: new Date().toISOString(),
+        };
+        setComments((prevComments) =>
+          prevComments.map((comment) =>
+            comment.id === commentId
+              ? { ...comment, subcomments: [...comment.subcomments, newSubcomment] }
+              : comment
+          )
+        );
+        setReplyInput({ ...replyInput, [commentId]: "" });
+        setShowReplyInput({ ...showReplyInput, [commentId]: false });
+        setShowMoreReplies({ ...showMoreReplies, [commentId]: true }); // Show all replies for this comment
+      } else {
+        const data = await response.json();
+        toast.error(`Failed to add reply: ${data.error}`, { position: "bottom-right" });
+      }
+    } catch (error) {
+      console.error("Error submitting reply:", error);
+      toast.error("Failed to add reply.", { position: "bottom-right" });
+    }
+  };
+
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!commentInput.trim()) return;
+
+    const token = getSession();
+    if (!token) return;
+
+    try {
+      const { payload } = await jwtVerify(
+        token,
+        new TextEncoder().encode(JWT_SECRET)
+      );
+      const userId = payload.id as string;
+      const Fname = getFname() as string;
+      const response = await fetch("/api/collections/comment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          x_galleryid: selectedImage?.generatedId || "",
+          x_userid: userId,
+          x_comment: commentInput,
+          Fname: Fname,
+        },
+      });
+
+      if (response.ok) {
+        toast.success("Comment added successfully!", { position: "bottom-right" });
+        setCommentInput("");
+        fetchComments(); // Fetch updated comments after submission
+      } else {
+        const data = await response.json();
+        toast.error(`Failed to add comment: ${data.error}`, { position: "bottom-right" });
+      }
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+      toast.error("Failed to add comment.", { position: "bottom-right" });
+    }
+  };
 
   const handleImageClick = (image: typeof selectedImage) => {
     setSelectedImage(image);
@@ -128,10 +284,8 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
   }) => {
     if (!selectedImage) return;
 
-
     const token = getSession();
     if (!token) return;
-
 
     try {
       const { payload } = await jwtVerify(
@@ -140,11 +294,9 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
       );
       const userId = payload.id as string;
 
-
       toast.success("Collection updated successfully!", {
         position: "bottom-right",
       });
-
 
       // Ensure image_path is not null, provide a fallback value if needed
       const updatedImages = images.map((img) =>
@@ -158,14 +310,12 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
       );
       setImages(updatedImages);
 
-
       // Update the selected image with new values
       setSelectedImage({
         ...selectedImage,
         ...updatedData,
         image_path: updatedData.image_path || "/images/default.jpg", // Fallback value
       });
-
 
       // Close the modal after editing
       setEditModalOpen(false);
@@ -272,6 +422,30 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                     </motion.button>
                   </>
                 )}
+
+
+                {/* Interested? for buyers and other artists */}
+                {image.childid != getID && (
+                  <>
+               <motion.button
+                      initial={{ backgroundColor: "#FFD094", color: "#403737" }}
+                      whileHover={{
+                        scale: 1.1,
+                        backgroundColor: "#403737",
+                        color: "white",
+                      }}
+                      whileTap={{ scale: 0.9 }}
+                      transition={{ duration: 0.3, delay: 0.2 }}
+                      className="w-32 py-2 rounded-full"
+                      onClick={() => {
+                        setSelectedImage(image);
+                        setInterestModalOpen(true);
+                      }}
+                    >
+                      Interested?
+                    </motion.button>
+                      </>
+                    )}
               </motion.div>
             </motion.div>
           ))}
@@ -318,8 +492,29 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
           )}
         </AnimatePresence>
         <AnimatePresence>
-          {/* Edit Modal */}
-          {isEditModalOpen && selectedImage && (
+          {/* interest Modal */}
+          {isInterestModalOpen && selectedImage && (
+            <motion.div
+              className="fixed top-0 left-0 w-full h-full bg-black/50 z-[1000] flex justify-center items-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setDeleteModalOpen(false)}
+            >
+              <Interested
+                childid = {selectedImage.childid}
+                created_at={selectedImage.created_at}
+                artist={selectedImage.artist}
+                image={selectedImage.image_path}
+                title={selectedImage.title}
+                desc={selectedImage.desc}
+                year={selectedImage.year}
+                onCancel={() => setInterestModalOpen(false)}
+              />
+            </motion.div>
+          )}
+                   {isEditModalOpen && selectedImage && (
             <motion.div
               className="fixed top-0 left-0 w-full h-full bg-black/50 z-[1000] flex justify-center items-center"
               initial={{ opacity: 0 }}
@@ -341,6 +536,69 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Comment Section */}
+        <div className="mt-8">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Comments</h2>
+          {comments.map((comment, index) => {
+            const subcommentsForComment: Subcomment[] = comment.subcomments || [];
+            const shouldShowMoreButton = subcommentsForComment.length > 2;
+            const displayedSubcomments = showMoreReplies[comment.id]
+              ? subcommentsForComment
+              : subcommentsForComment.slice(0, 2);
+            const additionalRepliesCount = subcommentsForComment.length - 2;
+
+            return (
+              <div key={index} className="bg-gray-100 p-4 rounded-lg mb-2">
+                <p className="text-gray-600">{comment.comment}</p>
+                <p className="text-sm text-gray-500">By: {comment.Fname}</p>
+                <button onClick={() => handleReplyClick(comment.id)}>Reply</button>
+                {showReplyInput[comment.id] && (
+                  <form onSubmit={(e) => handleReplySubmit(e, comment.id)} className="mt-2">
+                    <input
+                      type="text"
+                      value={replyInput[comment.id] || ""}
+                      onChange={(e) => setReplyInput({ ...replyInput, [comment.id]: e.target.value })}
+                      className="border p-2 rounded w-full"
+                      placeholder="Add a reply..."
+                    />
+                    <button type="submit" className="mt-2 bg-blue-500 text-white p-2 rounded">
+                      Submit Reply
+                    </button>
+                  </form>
+                )}
+                {displayedSubcomments.map((subcomment: Subcomment, subIndex: number) => (
+                  <div key={subIndex} className="bg-gray-200 p-2 rounded-lg ml-4 mt-2">
+                    <p className="text-gray-600">{subcomment.comment}</p>
+                    <p className="text-sm text-gray-500">By: {subcomment.Fname}</p>
+                  </div>
+                ))}
+                {shouldShowMoreButton && (
+                  <button
+                    onClick={() => setShowMoreReplies({ ...showMoreReplies, [comment.id]: !showMoreReplies[comment.id] })}
+                    className="mt-2 text-blue-500"
+                  >
+                    {showMoreReplies[comment.id] ? "View Less" : `View More ${additionalRepliesCount} Comments`}
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Comment */}
+        <form onSubmit={handleCommentSubmit} className="mt-8">
+          <input
+            type="text"
+            value={commentInput}
+            onChange={(e) => setCommentInput(e.target.value)}
+            className="border p-2 rounded w-full"
+            placeholder="Add a comment..."
+          />
+          <button type="submit" className="mt-2 bg-blue-500 text-white p-2 rounded">
+            Submit
+          </button>
+        </form>
       </div>
       <ToastContainer />
     </div>

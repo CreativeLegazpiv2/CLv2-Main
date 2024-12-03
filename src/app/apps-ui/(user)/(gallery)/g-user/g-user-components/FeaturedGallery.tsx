@@ -95,17 +95,6 @@ export const FeaturedCollections = () => {
             </motion.div>
           ))}
         </div>
-        <div className="mt-12 text-center">
-          <Link href="/apps-ui/g-user/collections">
-            <motion.button
-              whileHover={{ scale: 1.05, backgroundColor: "#4a5568" }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-gray-700 text-white px-10 py-4 rounded-full text-lg font-medium transition duration-300 ease-in-out transform hover:shadow-xl"
-            >
-              BROWSE ALL COLLECTIONS
-            </motion.button>
-          </Link>
-        </div>
       </div>
     </section>
   );
