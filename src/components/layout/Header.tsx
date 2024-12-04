@@ -15,6 +15,11 @@ interface MenuItemProps {
 }
 
 interface HeaderProps {
+  // ... existing props
+  onOpenSidebar?: () => void;
+}
+
+interface HeaderProps {
   backgroundColor?: string;
   textColor?: string;
   buttonName?: string;
@@ -50,6 +55,7 @@ export const Header = ({
   paddingLeftCustom = "pl-14",
   roundedCustom = "rounded-bl-3xl",
   linkName = "/apps-ui/signin",
+  onOpenSidebar
 }: HeaderProps) => {
   const headerRef = useRef<HTMLDivElement | null>(null);
   const gsapAnimationRef = useRef<gsap.core.Timeline | null>(null);
@@ -58,6 +64,8 @@ export const Header = ({
   const [menuItems, setMenuItems] = useState<MenuItemProps[]>([]);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
+
+  const handleOpenSideBar = () => {};
 
   const checkAuth = async () => {
     try {
@@ -232,7 +240,10 @@ export const Header = ({
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.8, duration: 0.8 }}
             >
-              <Icon icon="eva:menu-fill" width="35" height="35" />
+              <button onClick={onOpenSidebar}>
+                <Icon icon="eva:menu-fill" width="35" height="35" />
+              </button>
+            
             </motion.div>
           </div>
         </motion.div>
