@@ -74,7 +74,7 @@ export const Interested = ({
   const [sessions, setSessions] = useState<Session[]>([]);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [selectedId, setselectedId] = useState<string | null>(null);
-
+  const [gettokenId, settokenId] = useState<string | null>(null);
 
 
   useEffect(() => {
@@ -99,9 +99,17 @@ export const Interested = ({
   }, []);
 
   useEffect(() => {
+    const token = getSession();
     fetchSessionData();
   }, []);
 
+  const getSessionToken = async () => {
+    const token = getSession();
+    if (!token) return;
+    const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
+      const userIdFromToken = payload.id as string;
+      settokenId(userIdFromToken);
+  }
 
   const fetchSessionData = async () => {
     const token = getSession();
@@ -221,8 +229,6 @@ export const Interested = ({
   }else{
 
     try {
-      
-      const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
       const getses = selectedSessionId as string;
 
       const response = await fetch('/api/chat/all-msg-session', {
@@ -438,7 +444,7 @@ export const Interested = ({
               {/* Messaging */}
               <div className="h-[400px] overflow-y-auto mb-4">
                 {messages.map((msg) => (
-                  <div key={msg.id + 1} className={`mb-2 p-2 rounded-lg ${msg.sender === formData.childid ? 'bg-blue-100' : 'bg-gray-100'}`}>
+                  <div key={msg.id + 1} className={`mb-2 p-2 rounded-lg ${msg.sender === gettokenId ? 'bg-indigo-200' : 'bg-gray-100'}`}>
                     <p>{msg.message}</p>
                     <p className="text-xs text-gray-500">{new Date(msg.created_at).toLocaleString()}</p>
                     {/* Show auto image_path here */}
