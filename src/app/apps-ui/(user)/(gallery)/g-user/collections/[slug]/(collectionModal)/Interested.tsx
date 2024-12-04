@@ -44,6 +44,13 @@ interface Session {
   a: string;  // Sender A
   b: string;  // Sender B
   // Add other session fields as needed
+  userDetails: userDetails;
+}
+interface userDetails {
+  detailsid: number;
+  first_name: string;
+  creative_field?: string;
+  role?: string,
 }
 
 export const Interested = ({
@@ -75,7 +82,7 @@ export const Interested = ({
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [selectedId, setselectedId] = useState<string | null>(null);
   const [gettokenId, settokenId] = useState<string | null>(null);
-
+  const [userDetails, setUserDetails] = useState<userDetails[]>([]);
 
   useEffect(() => {
     const subscription = supabase
@@ -132,10 +139,11 @@ export const Interested = ({
       }
 
       const data = await response.json();
-      console.log('Fetched sessions:', data.sessions); // Log sessions data to inspect it
+      console.log('Fetched sessions:', data); // Log the full combined data to inspect it
 
-      if (data.sessions) {
-        setSessions(data.sessions); // Update state with sessions
+      if (data && data.length > 0) {
+        // Update state with the combined session data
+        setSessions(data); // The data should already include user details
       } else {
         console.error("No sessions found.");
       }
@@ -143,6 +151,7 @@ export const Interested = ({
       console.error('Error fetching session data:', error);
     }
   };
+
 
 
   useEffect(() => {
@@ -414,6 +423,7 @@ export const Interested = ({
 
             <div className="space-y-4">
               <div>
+
                 {/* recent messages */}
                 {sessions.length > 0 ? (
                   <ul>
@@ -421,17 +431,26 @@ export const Interested = ({
                       <li
                         key={session.id}
                         onClick={() => handleClick(session.id, session.a, session.b)}
-                        className={`${selectedSessionId === session.id ? 'bg-gray-300' : ''
-                          }`}
+                        className={`${selectedSessionId === session.id ? 'bg-gray-300' : ''}`}
                       >
-                        Session {session.id} between {session.a} and {session.b}
-                      </li>
+                        {/* Display the session ID and user details */}
+                        {/* <div>Session {session.id}</div>
+                        <div>
+                          Between {session.a} and {session.b}
+                        </div> */}
 
+                        {/* User details */}
+                        <div>
+                          <strong>{session.userDetails.first_name}</strong> -
+                          {session.userDetails.creative_field}, {session.userDetails.role}
+                        </div>
+                      </li>
                     ))}
                   </ul>
                 ) : (
                   <p>No active sessions found.</p>
                 )}
+
 
               </div>
             </div>
@@ -455,21 +474,25 @@ export const Interested = ({
                   </div>
                 ))}
               </div>
-              <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}>
-                <input
-                  type="text"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Type your message here"
-                  className="w-full p-2 border border-gray-300 rounded-lg mb-2"
-                />
-                <button
-                  type="submit"
-                  className="bg-blue-500 text-white p-2 rounded-lg"
-                >
-                  Send
-                </button>
-              </form>
+
+              {selectedSessionId && (
+                <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}>
+                  <input
+                    type="text"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Type your message here"
+                    className="w-full p-2 border border-gray-300 rounded-lg mb-2"
+                  />
+                  <button
+                    type="submit"
+                    className="bg-blue-500 text-white p-2 rounded-lg"
+                  >
+                    Send
+                  </button>
+                </form>
+              )}
+
             </div>
           </div>
         </div>

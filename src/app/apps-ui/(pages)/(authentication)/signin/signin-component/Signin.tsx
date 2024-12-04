@@ -141,7 +141,15 @@ export const Form = () => {
         whileHover={{ scale: 1.05, color: "#0070f3" }}
         whileTap={{ scale: 0.95 }}>
         <Link href={"/apps-ui/signup"} className="uppercase font-medium cursor-pointer">
-          Apply now!
+          New Artist?
+        </Link>
+        </motion.div>
+        
+        <motion.div
+        whileHover={{ scale: 1.05, color: "#0070f3" }}
+        whileTap={{ scale: 0.95 }}>
+        <Link href={"/apps-ui/signupBuyer"} className="uppercase font-medium cursor-pointer">
+          Buyer?
         </Link>
         </motion.div>
       </div>

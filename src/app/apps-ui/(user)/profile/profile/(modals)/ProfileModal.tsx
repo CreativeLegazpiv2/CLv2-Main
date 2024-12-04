@@ -310,22 +310,27 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                           </div>
                           {/* bottom form*/}
                           <div className="w-full flex md:flex-row flex-col justify-center items-center gap-4 text-base h-fit">
-                            <div className="w-full flex flex-col gap-1">
-                              <label
-                                className="ml-4 capitalize"
-                                htmlFor="creative_field"
-                              >
-                                Creative field
-                              </label>
-                              <input
-                                type="creative_field"
-                                name="creative_field"
-                                value={formData.creative_field}
-                                onChange={handleInputChange}
-                                className="w-full md:py-2.5 py-4 border rounded-xl px-4 outline-none"
-                                placeholder="Creative Field"
-                              />
-                            </div>
+                            {formData.role != 'buyer' && (
+                              <>
+                                <div className="w-full flex flex-col gap-1">
+                                  <label
+                                    className="ml-4 capitalize"
+                                    htmlFor="creative_field"
+                                  >
+                                    Creative field
+                                  </label>
+                                  <input
+                                    type="creative_field"
+                                    name="creative_field"
+                                    value={formData.creative_field}
+                                    onChange={handleInputChange}
+                                    className="w-full md:py-2.5 py-4 border rounded-xl px-4 outline-none"
+                                    placeholder="Creative Field"
+                                  />
+                                </div>
+                              </>
+                            )}
+
                             <div className="w-full flex flex-col gap-1">
                               <label
                                 className="ml-4 capitalize"
