@@ -1,4 +1,5 @@
 import { getSession } from "@/services/authservice";
+import { supabase } from "@/services/supabaseClient";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { motion } from "framer-motion";
 import { jwtVerify } from "jose";
@@ -74,9 +75,33 @@ export const Interested = ({
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [selectedId, setselectedId] = useState<string | null>(null);
 
+
+
+  useEffect(() => {
+    const subscription = supabase
+      .channel("getMsg")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "allmessage",
+        },
+        (payload: any) => {
+          setMessages((prev) => [...prev, payload.new]);
+        }
+      )
+      .subscribe();
+  
+    return () => {
+      supabase.removeChannel(subscription);
+    };
+  }, []);
+
   useEffect(() => {
     fetchSessionData();
   }, []);
+
 
   const fetchSessionData = async () => {
     const token = getSession();
