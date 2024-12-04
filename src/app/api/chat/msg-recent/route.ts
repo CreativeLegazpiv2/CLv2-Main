@@ -10,25 +10,44 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'sender_a is required' }, { status: 400 });
     }
 
-    // Query the msgSession table for sessions where sender_a exists in either column a or b
     const { data: sessions, error: sessionsError } = await supabase
       .from('msgSession')
-      .select('id, a, b')  // Select id, a, and b fields explicitly
-      .or(`a.eq.${sender_a},b.eq.${sender_a}`); // Check if sender_a is in either column a or b  
+      .select('id, a, b')
+      .or(`a.eq.${sender_a},b.eq.${sender_a}`);
 
     if (sessionsError) {
       throw new Error(sessionsError.message);
     }
 
-    // If no sessions are found, return a 404 error
     if (!sessions || sessions.length === 0) {
       return NextResponse.json({ error: 'No sessions found for the provided sender_a' }, { status: 404 });
     }
 
-    // Return only the sessions (no messages)
-    return NextResponse.json({ sessions }, { status: 200 });
+    const userDetailsPromises = sessions.map(async (session) => {
+      const otherUserId = session.a == sender_a ? session.b : session.a;
 
+      const { data: userDetails, error: userDetailsError } = await supabase
+        .from('userDetails')
+        .select('first_name, creative_field, role')
+        .eq('detailsid', otherUserId);
+
+      if (userDetailsError) {
+        throw new Error(userDetailsError.message);
+      }
+
+      return userDetails[0];
+    });
+
+    const userDetails = await Promise.all(userDetailsPromises);
+
+    const combinedData = sessions.map((session, index) => ({
+      ...session,
+      userDetails: userDetails[index],
+    }));
+
+    return NextResponse.json(combinedData);
   } catch (error: any) {
+    console.error('Error in GET request:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -17,6 +17,7 @@ interface UserDetail {
     facebook: string;
     twitter: string;
     portfolioLink: string;
+    role:string;
 }
 
 const withAuth = (WrappedComponent: React.ComponentType<{ userDetail: UserDetail | null; editUserDetails: (updatedData: Partial<UserDetail>) => Promise<void>; }>) => {
