@@ -56,7 +56,7 @@ export async function GET(req: Request) {
       .from('gallery_subcomments')
       .select('*')
       .eq('commentid', commentid)
-      .order('created_at', { ascending: true }); // Order by created_at (latest first)
+      .order('created_at', { ascending: false }); // Order by created_at (latest first)
 
     // Handle error if fetching subcomments fails
     if (subcommentsError) {

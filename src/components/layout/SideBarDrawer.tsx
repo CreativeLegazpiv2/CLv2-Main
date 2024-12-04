@@ -236,6 +236,9 @@ const MenuItem = ({ name, link }: MenuItemProps) => {
     >
       <div
         className={`
+          ${isActive
+            ? "bg-gradient-to-br from-primary-1 to-primary-3"
+            : "bg-gradient-to-br from-primary-3 to-primary-1"}
             p-3 
             rounded-xl 
             bg-gradient-to-br 

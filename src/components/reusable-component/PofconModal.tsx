@@ -31,9 +31,9 @@ export const PofconModal: React.FC<PofconModalProps> = ({ setShowPofconModal }) 
             onClick={handleClose} // Handle modal click to close
             onAnimationComplete={handleAnimationComplete} // Handle animation completion
         >
-            <div className="w-full h-full flex justify-center items-center">
+            <div className="w-full h-full flex justify-evenly items-center">
                 <div
-                    className="w-full h-full lg:max-h-[70%] max-h-[40%] lg:max-w-[55%] max-w-[90%] mx-auto bg-secondary-1 p-3 rounded-2xl relative overflow-hidden"
+                    className="w-full h-full lg:max-h-[70%] max-h-[50%] lg:max-w-[55%] max-w-[90%] mx-auto bg-secondary-1 p-3 rounded-2xl relative overflow-hidden"
                     onClick={(e) => e.stopPropagation()} // Prevent close on inner click
                 >
                     <div className="w-full h-full flex flex-col overflow-hidden rounded-lg relative px-4 lg:py-0 py-12">

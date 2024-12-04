@@ -56,7 +56,7 @@ export async function GET(req: Request) {
       .from('gallery_comments')
       .select('*')
       .eq('galleryid', galleryid)
-      .order('created_at', { ascending: true }); // Order by created_at (latest first)
+      .order('created_at', { ascending: false }); // Order by created_at (latest first)
 
     // Handle error if fetching comments fails
     if (commentsError) {
