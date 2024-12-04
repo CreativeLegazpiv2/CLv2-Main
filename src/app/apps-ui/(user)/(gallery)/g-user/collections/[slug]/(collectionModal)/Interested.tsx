@@ -99,7 +99,7 @@ export const Interested = ({
   }, []);
 
   useEffect(() => {
-    const token = getSession();
+    getSessionToken();
     fetchSessionData();
   }, []);
 
@@ -443,8 +443,8 @@ export const Interested = ({
               {/* Messaging */}
               <div className="h-[400px] overflow-y-auto mb-4">
                 {messages.map((msg) => (
-                  <div key={msg.id + 1} className={`mb-2 p-2 rounded-lg ${msg.sender === gettokenId ? 'bg-indigo-200' : 'bg-gray-100'}`}>
-                    <p>{msg.message}</p>
+                  <div key={msg.id + 1} className={`mb-2 p-2 rounded-lg ${msg.sender == gettokenId ? 'bg-[skyblue]' : 'bg-gray-100'}`}>
+                    <p className={`mb-2 p-2 rounded-lg ${msg.sender == gettokenId ? 'bg-[skyblue]' : 'bg-gray-100'}`}>{msg.message}</p>
                     <p className="text-xs text-gray-500">{new Date(msg.created_at).toLocaleString()}</p>
                     {/* Show auto image_path here */}
                     {msg.image_path && (
