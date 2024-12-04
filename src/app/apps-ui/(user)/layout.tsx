@@ -25,6 +25,9 @@ export default function DashboardLayout({ children }: LayoutProps) {
         <ButtonChat />
       </div>
       <Footer />
+      <div className="w-full h-[90dvh] fixed bottom-0 left-0 z-[600] bg-black bg-opacity-50">
+        <div className="w-full max-w-md h-full bg-primary-1"></div>
+      </div>
     </div>
 
   );

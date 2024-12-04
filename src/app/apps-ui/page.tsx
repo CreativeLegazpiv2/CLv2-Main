@@ -39,9 +39,7 @@ export default function Loader({ setContentLoaded }: HomeProps) {
 
   return (
     <main
-      className={`overflow-x-hidden ${
-        !contentFullyLoaded ? "no-scroll" : ""
-      }`}
+      className={`overflow-x-hidden ${!contentFullyLoaded ? "no-scroll" : ""}`}
     >
       <section ref={heroRef} className="hero">
         <div className="hero-imgs">
@@ -66,7 +64,7 @@ export default function Loader({ setContentLoaded }: HomeProps) {
           </div>
         )}
       </div>
-      
+
       <div className="pt-[15dvh]">
         <Events />
       </div>
@@ -76,10 +74,12 @@ export default function Loader({ setContentLoaded }: HomeProps) {
       <Infinite />
       <Subscribe />
       <Footer />
+      
 
       {showPofconModal && (
         <PofconModal setShowPofconModal={setShowPofconModal} />
       )}
+      
     </main>
   );
 }
