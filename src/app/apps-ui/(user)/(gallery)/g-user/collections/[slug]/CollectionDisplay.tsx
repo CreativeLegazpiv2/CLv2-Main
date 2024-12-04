@@ -578,7 +578,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                     onClick={() => setShowMoreReplies({ ...showMoreReplies, [comment.id]: !showMoreReplies[comment.id] })}
                     className="mt-2 text-blue-500"
                   >
-                    {showMoreReplies[comment.id] ? "View Less" : `View More ${additionalRepliesCount} Comments`}
+                    {showMoreReplies[comment.id] ? "View Less..." : `View ${additionalRepliesCount} more comments`}
                   </button>
                 )}
               </div>
