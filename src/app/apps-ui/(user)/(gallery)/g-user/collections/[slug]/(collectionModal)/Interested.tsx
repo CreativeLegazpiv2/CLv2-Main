@@ -26,6 +26,7 @@ interface EditCollectionProps {
   year: number;
   artist: string;
   onCancel: () => void;
+  chat: boolean; 
 }
 
 interface Message {
@@ -37,6 +38,13 @@ interface Message {
   image_path: string;
 }
 
+interface Session {
+  id: string; // ID of the session
+  a: string;  // Sender A
+  b: string;  // Sender B
+  // Add other session fields as needed
+}
+
 export const Interested = ({
   childid,
   created_at,
@@ -46,6 +54,7 @@ export const Interested = ({
   year,
   artist,
   onCancel,
+  chat
 }: EditCollectionProps) => {
   const [previewImage, setPreviewImage] = useState<string | null>(image);
   const [formData, setFormData] = useState<FormData>({
@@ -60,6 +69,48 @@ export const Interested = ({
 
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
+  const [autoSendTriggered, setAutoSendTriggered] = useState<boolean>(false); // Flag to track auto-send
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+  const [selectedId, setselectedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchSessionData();
+  }, []);
+
+  const fetchSessionData = async () => {
+    const token = getSession();
+    if (!token) return;
+
+    try {
+      const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
+      const userIdFromToken = payload.id as string;
+
+      const response = await fetch('/api/chat/msg-recent', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'sender_a': userIdFromToken,  // Pass sender_a in headers
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch sessions');
+      }
+
+      const data = await response.json();
+      console.log('Fetched sessions:', data.sessions); // Log sessions data to inspect it
+
+      if (data.sessions) {
+        setSessions(data.sessions); // Update state with sessions
+      } else {
+        console.error("No sessions found.");
+      }
+    } catch (error) {
+      console.error('Error fetching session data:', error);
+    }
+  };
+
 
   useEffect(() => {
     setPreviewImage(image);
@@ -72,7 +123,7 @@ export const Interested = ({
   useEffect(() => {
     const checkAndAutoSend = async () => {
       const token = getSession();
-      if (!token) return;
+      if (!token || autoSendTriggered || chat) return; // Return if already triggered or chat is true
   
       try {
         const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
@@ -95,12 +146,13 @@ export const Interested = ({
         const sessions = data.sessions;
   
         // Check if previewImage exists in the messages and sessionid matches id
-        const imageExists = sessions.some((session: any) => 
-          session.messages.some((msg: any) => msg.image_path === previewImage && msg.sessionid === session.session.id)
+        const imageExists = sessions.some((session: any) =>
+          session.messages.some((msg: any) => msg.image_path === previewImage)
         );
-  
         if (!imageExists) {
           await autoSend();
+          setAutoSendTriggered(true); // Set the flag to true after auto-send
+          fetchSessionData();
         }
       } catch (error: any) {
         console.error('Error checking and auto-sending message:', error.message);
@@ -108,35 +160,67 @@ export const Interested = ({
     };
   
     checkAndAutoSend();
-  }, []);
+  }, [autoSendTriggered, chat, formData.childid, previewImage]); // Add dependencies
 
   const fetchMessages = async () => {
     const token = getSession();
     if (!token) return;
-  
+    if(!chat){
     try {
-      const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
-      const userIdFromToken = payload.id as string;
-      const childid = formData.childid as string;
+      
+        const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
+        const userIdFromToken = payload.id as string;
+        const childid = formData.childid as string;
   
-      const response = await fetch('/api/chat/msg-session', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'sender_a': userIdFromToken, // Use the user ID from the token
-          'sender_b': childid, // Use the child ID from formData
-        },
-      });
+        const response = await fetch('/api/chat/msg-session', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'sender_a': userIdFromToken, // Use the user ID from the token
+            'sender_b': childid, // Use the child ID from formData
+          },
+        });
   
-      if (!response.ok) {
-        throw new Error('Failed to fetch messages');
-      }
+        if (!response.ok) {
+          throw new Error('Failed to fetch messages');
+        }
   
-      const data = await response.json();
-      setMessages(data.sessions.flatMap((session: any) => session.messages));
+        const data = await response.json();
+        setMessages(data.sessions.flatMap((session: any) => session.messages));
+      
+
     } catch (error: any) {
       console.error('Error fetching messages:', error.message);
     }
+
+  }else{
+
+    try {
+      
+      const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
+      const getses = selectedSessionId as string;
+
+      const response = await fetch('/api/chat/all-msg-session', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'sender_a': getses, // Use the user ID from the token
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch messages');
+      }
+
+      const data = await response.json();
+      setMessages(data.message);
+    
+
+  } catch (error: any) {
+    console.error('Error fetching messages:', error.message);
+  }
+  }
+
   };
 
   const autoSend = async () => {
@@ -155,7 +239,7 @@ export const Interested = ({
           sender_a: userIdFromToken, // Use the user ID from the token
           sender_b: formData.childid, // Use the child ID from formData
           image_path: previewImage,
-          message: "Hello, I'm interested in this item!", // Default message
+          message: `Hello, I'm interested in this item!. Entitled: ${formData.title}`, // Default message
         }),
       });
 
@@ -176,34 +260,98 @@ export const Interested = ({
     const token = getSession();
     if (!token) return;
 
-    try {
-      const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
-      const userIdFromToken = payload.id as string;
-      const response = await fetch('/api/chat/msg-session', {
-        method: 'POST',
+    if(!chat){
+      try {
+        const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
+        const userIdFromToken = payload.id as string;
+        const response = await fetch('/api/chat/msg-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sender_a: userIdFromToken, // Use the user ID from the token
+            sender_b: formData.childid, // Use the child ID from formData
+            message,
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to send message');
+        }
+  
+        const data = await response.json();
+        console.log('Message sent successfully', data);
+        setMessage(''); // Clear the message input
+        fetchMessages(); // Fetch messages again to update the chat
+      } catch (error: any) {
+        console.error('Error sending message:', error.message);
+      }
+    }else{
+      try {
+        const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
+        const userIdFromToken = payload.id as string;
+        const response = await fetch('/api/chat/msg-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sender_a: userIdFromToken, // Use the user ID from the token
+            sender_b: selectedId, // Use the child ID from formData
+            message,
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to send message');
+        }
+  
+        const data = await response.json();
+        console.log('Message sent successfully', data);
+        setMessage(''); // Clear the message input
+        fetchMessages(); // Fetch messages again to update the chat
+      } catch (error: any) {
+        console.error('Error sending message:', error.message);
+      }
+    }
+ 
+  };
+
+
+
+  const handleClick = async (id: string, getA: string, getB: string) => {
+    const token = getSession();
+    if (!token) return;
+    const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
+    const userIdFromToken = payload.id as string;
+    if(getA == userIdFromToken){
+      setselectedId(getB);
+    }else{
+      setselectedId(getA);
+    }
+    setSelectedSessionId(id); // Update the state with the clicked session ID
+    try {     
+      const response = await fetch('/api/chat/all-msg-session', {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'sender_a': id, // Use the user ID from the token
         },
-        body: JSON.stringify({
-          sender_a: userIdFromToken, // Use the user ID from the token
-          sender_b: formData.childid, // Use the child ID from formData
-          message,
-        }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send message');
+        throw new Error('Failed to fetch messages');
       }
 
       const data = await response.json();
-      console.log('Message sent successfully', data);
-      setMessage(''); // Clear the message input
-      fetchMessages(); // Fetch messages again to update the chat
-    } catch (error: any) {
-      console.error('Error sending message:', error.message);
-    }
-  };
+      setMessages(data.message);
+    
 
+  } catch (error: any) {
+    console.error('Error fetching messages:', error.message);
+  }
+  };
   return (
     <motion.div
       onClick={(e) => e.stopPropagation()}
@@ -231,26 +379,30 @@ export const Interested = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Left Column */}
           <div>
-            <h3 className="text-xl font-bold mb-4">UPLOAD</h3>
+            <h3 className="text-xl font-bold mb-4">Recent Messages</h3>
 
             <div className="space-y-4">
               <div>
-                {previewImage ? (
-                  <div className="bg-white rounded-lg shadow-md overflow-hidden w-[300px] h-[400]">
-                    <div className='overflow-hidden w-[300px] relative'>
-                      <Image src={previewImage} alt="Preview" width={300} height={200} className="object-cover" />
-                      <div className='absolute top-0 left-0 right-0 bottom-0 flex flex-col justify-end p-2 bg-gradient-to-t from-black to-transparent'>
-                        <h3 className="text-lg font-bold text-white">{formData.title || "Title"}</h3>
-                        <p className="text-gray-200">by {formData.artist}</p>
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <p className="mt-2 text-gray-800 break-words">{formData.desc || "desc"}</p>
-                    </div>
-                  </div>
+                {/* recent messages */}
+                {sessions.length > 0 ? (
+                  <ul>
+                    {sessions.map((session) => (
+                      <li
+                      key={session.id}
+                      onClick={() => handleClick(session.id, session.a, session.b)}
+                      className={`${
+                        selectedSessionId === session.id ? 'bg-gray-300' : ''
+                      }`}
+                    >
+                      Session {session.id} between {session.a} and {session.b}
+                    </li>
+                    
+                    ))}
+                  </ul>
                 ) : (
-                  <p className="text-gray-500">No Image</p>
+                  <p>No active sessions found.</p>
                 )}
+
               </div>
             </div>
           </div>
@@ -260,18 +412,18 @@ export const Interested = ({
             <div className="mb-4">
               {/* Messaging */}
               <div className="h-[400px] overflow-y-auto mb-4">
-              {messages.map((msg) => (
-  <div key={msg.id} className={`mb-2 p-2 rounded-lg ${msg.sender === formData.childid ? 'bg-blue-100' : 'bg-gray-100'}`}>
-    <p>{msg.message}</p>
-    <p className="text-xs text-gray-500">{new Date(msg.created_at).toLocaleString()}</p>
-    {/* Show auto image_path here */}
-    {msg.image_path && (
-      <div className="mt-2">
-        <Image src={msg.image_path} alt="Message Image" width={300} height={200} className="object-cover rounded-lg" />
-      </div>
-    )}
-  </div>
-))}
+                {messages.map((msg) => (
+                  <div key={msg.id + 1} className={`mb-2 p-2 rounded-lg ${msg.sender === formData.childid ? 'bg-blue-100' : 'bg-gray-100'}`}>
+                    <p>{msg.message}</p>
+                    <p className="text-xs text-gray-500">{new Date(msg.created_at).toLocaleString()}</p>
+                    {/* Show auto image_path here */}
+                    {msg.image_path && (
+                      <div className="mt-2">
+                        <Image src={msg.image_path} alt="Message Image" width={300} height={200} className="object-cover rounded-lg" />
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
               <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}>
                 <input

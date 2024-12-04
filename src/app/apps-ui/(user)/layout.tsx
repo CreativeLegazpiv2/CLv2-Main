@@ -2,7 +2,7 @@
 import React, { ReactNode } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-
+import { ButtonChat } from "@/components/buttonChat/buttonChat";
 interface LayoutProps {
   children: ReactNode;
 }
@@ -19,8 +19,13 @@ export default function DashboardLayout({ children }: LayoutProps) {
       />
       <main className="flex-grow bg-secondary-1">
         {children}
+
       </main>
+      <div className="fixed bottom-10 right-10 z-500">
+        <ButtonChat />
+      </div>
       <Footer />
     </div>
+
   );
 }

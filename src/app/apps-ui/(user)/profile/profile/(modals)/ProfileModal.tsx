@@ -8,6 +8,7 @@ import { getSession } from "@/services/authservice";
 import { jwtVerify } from "jose";
 import Image from "next/image";
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
+
 interface ProfileModalProps {
   openModal: boolean;
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,6 +23,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   setFormData,
 }) => {
   const [isClosing, setIsClosing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (openModal) {
@@ -38,6 +41,15 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      const fileType = file.type;
+
+      if (fileType !== "image/jpeg") {
+        setErrorMessage("Invalid image format. Only JPG files are allowed.");
+        return;
+      }
+
+      setErrorMessage(null);
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData((prev) => ({
@@ -178,7 +190,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                             {/* Hidden file input for image upload */}
                             <input
                               type="file"
-                              accept="image/*"
+                              accept="image/jpeg"
                               className="hidden"
                               onChange={handleFileChange}
                               id="file-upload"
@@ -384,6 +396,10 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                   </motion.button>
                 </div>
               </form>
+              {/* Display error message */}
+              {errorMessage && (
+                <div className="text-red-500 text-center mt-4">{errorMessage}</div>
+              )}
               {/* Add your form components here */}
             </motion.div>
           </div>
