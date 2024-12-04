@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ButtonChat } from "@/components/buttonChat/buttonChat";
 import { AnimatePresence, motion } from "framer-motion";
+import { SidebarDrawer } from "@/components/layout/SideBarDrawer";
 interface LayoutProps {
   children: ReactNode;
 }
@@ -39,31 +40,12 @@ export default function DashboardLayout({ children }: LayoutProps) {
 
       <AnimatePresence>
         {isSidebarOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.7 }}
-            onClick={handleCloseSideBar}
-            className="w-full h-[90dvh] fixed bottom-0 left-0 z-[600] bg-black bg-opacity-50"
-          >
-            <motion.div
-            onClick={(e) => e.stopPropagation()}
-              initial={{ x: "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: "-100%", opacity: 0 }}
-              transition={{ duration: 0.5 }}
-              className="w-full md:max-w-md max-w-sm h-full bg-primary-1 relative"
-            >
-              <button
-                onClick={handleCloseSideBar}
-                className="absolute top-4 right-4 text-white"
-              >
-                Close
-              </button>
-              {/* Sidebar content goes here */}
-            </motion.div>
-          </motion.div>
+          <SidebarDrawer
+            isOpen={isSidebarOpen} 
+            onClose={handleCloseSideBar} 
+            linkName="/apps-ui/profile"
+            
+          />
         )}
       </AnimatePresence>
     </div>
