@@ -619,6 +619,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                 year={selectedImage.year}
                 onCancel={() => setInterestModalOpen(false)}
                 chat={chat}
+                
               />
             </motion.div>
           )}
