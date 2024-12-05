@@ -86,6 +86,8 @@ export const Interested = ({
   const [selectedId, setselectedId] = useState<string | null>(null);
   const [gettokenId, settokenId] = useState<string | null>(null);
   const [userDetails, setUserDetails] = useState<userDetails[]>([]);
+  const [isRightColumnVisible, setIsRightColumnVisible] = useState(false);
+  const [isChat, setChat] = useState<boolean>(false); 
 
   useEffect(() => {
     const subscription = supabase
@@ -111,6 +113,16 @@ export const Interested = ({
   useEffect(() => {
     getSessionToken();
     fetchSessionData();
+  }, []);
+
+  useEffect(() => {
+    if(!chat){
+      setChat(false);
+      setIsRightColumnVisible(true);
+    } else{
+      setChat(true);
+      setIsRightColumnVisible(false);
+    }
   }, []);
 
   const getSessionToken = async () => {
@@ -374,7 +386,6 @@ export const Interested = ({
     }
   };
 
-  const [isRightColumnVisible, setIsRightColumnVisible] = useState(false);
 
   const handleClick = async (id: string, getA: string, getB: string) => {
     const token = getSession();
@@ -444,12 +455,10 @@ export const Interested = ({
 
       <div className="w-full h-full rounded-lg overflow-hidden custom-scrollbar">
         <div className="w-full h-full flex flex-col gap-4">
-          {!isRightColumnVisible && (
-            <h3 className="text-sm text-black/50 font-bold">Recent Messages</h3>
-          )}
           
           {/* Left Column */}
           {!isRightColumnVisible && (
+            <><h3 className="text-sm text-black/50 font-bold">Recent Messages</h3>
             <div className="w-full h-full relative flex flex-col border border-black">
               <div className="space-y-4">
                 <div>
@@ -489,6 +498,7 @@ export const Interested = ({
                 </div>
               </div>
             </div>
+            </>
           )}
 
           {isRightColumnVisible && (
