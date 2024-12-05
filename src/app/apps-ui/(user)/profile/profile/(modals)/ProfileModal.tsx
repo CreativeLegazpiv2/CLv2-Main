@@ -24,6 +24,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 }) => {
   const [isClosing, setIsClosing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [profilePicFile, setProfilePicFile] = useState<File | null>(null);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -49,6 +50,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
       }
 
       setErrorMessage(null);
+      setProfilePicFile(file);
 
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -90,16 +92,20 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
       console.log("Retrieved token payload:", payload.id);
 
       const userId = payload.id as string;
+
+      const formDataToSend = new FormData();
+      formDataToSend.append('detailsid', userId);
+      formDataToSend.append('userDetails', JSON.stringify(formData));
+      if (profilePicFile) {
+        formDataToSend.append('profile_pic', profilePicFile);
+      }
+
       const response = await fetch("/api/creatives", {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${userId}`,
         },
-        body: JSON.stringify({
-          detailsid: userId,
-          userDetails: formData,
-        }),
+        body: formDataToSend,
       });
 
       if (!response.ok) {
