@@ -8,6 +8,7 @@ import { ButtonChat } from "@/components/buttonChat/buttonChat";
 import { AnimatePresence, motion } from "framer-motion";
 import { SidebarDrawer } from "@/components/layout/SideBarDrawer";
 import { getSession } from "@/services/authservice";
+
 interface LayoutProps {
   children: ReactNode;
 }
@@ -15,6 +16,7 @@ interface LayoutProps {
 export default function DashboardLayout({ children }: LayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isShowChat, setIsShowChat] = useState(false);
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
 
   useEffect(() => {
     const checkAuthAndRedirect = async () => {
@@ -46,6 +48,14 @@ export default function DashboardLayout({ children }: LayoutProps) {
     setIsSidebarOpen(false);
   };
 
+  const handleOpenChatModal = () => {
+    setIsChatModalOpen(true);
+  };
+
+  const handleCloseChatModal = () => {
+    setIsChatModalOpen(false);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header
@@ -59,7 +69,11 @@ export default function DashboardLayout({ children }: LayoutProps) {
       <main className="flex-grow p-8">{children}</main>
       {isShowChat && (
         <div className="fixed -bottom-2 -right-1 z-500 p-4">
-          <ButtonChat />
+          <ButtonChat
+            isChatModalOpen={isChatModalOpen}
+            onOpenChatModal={handleOpenChatModal}
+            onCloseChatModal={handleCloseChatModal}
+          />
         </div>
       )}
 

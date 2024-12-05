@@ -3,7 +3,7 @@ import { supabase } from "@/services/supabaseClient";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { motion } from "framer-motion";
 import { jwtVerify } from "jose";
-import { ArrowLeft, SendHorizontal } from "lucide-react";
+import { ArrowLeft, SendHorizontal, X } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
@@ -87,7 +87,7 @@ export const Interested = ({
   const [gettokenId, settokenId] = useState<string | null>(null);
   const [userDetails, setUserDetails] = useState<userDetails[]>([]);
   const [isRightColumnVisible, setIsRightColumnVisible] = useState(false);
-  const [isChat, setChat] = useState<boolean>(false); 
+  const [isChat, setChat] = useState<boolean>(false);
 
   useEffect(() => {
     const subscription = supabase
@@ -116,10 +116,10 @@ export const Interested = ({
   }, []);
 
   useEffect(() => {
-    if(!chat){
+    if (!chat) {
       setChat(false);
       setIsRightColumnVisible(true);
-    } else{
+    } else {
       setChat(true);
       setIsRightColumnVisible(false);
     }
@@ -386,7 +386,6 @@ export const Interested = ({
     }
   };
 
-
   const handleClick = async (id: string, getA: string, getB: string) => {
     const token = getSession();
     if (!token) return;
@@ -430,39 +429,50 @@ export const Interested = ({
     setIsRightColumnVisible(false);
   };
 
+  const modalVariants = {
+    hidden: {
+      opacity: 0,
+      scale: 0.8,
+    },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut",
+      },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.8,
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut",
+      },
+    },
+  };
+
   return (
-    <motion.div
-      onClick={(e) => e.stopPropagation()}
-      initial={{ scale: 0.9, y: 50, opacity: 0 }}
-      animate={{ scale: 1, y: 0, opacity: 1 }}
-      exit={{ scale: 0.9, y: 50, opacity: 0 }}
-      transition={{
-        type: "spring",
-        damping: 25,
-        stiffness: 500,
-      }}
-      className=" w-full max-w-md min-w-[28rem] h-[80vh] overflow-hidden flex flex-col bg-white rounded-lg p-4 relative shadow-customShadow2"
-    >
-      <Icon
+    <div className="fixed bottom-0 right-0 w-full max-w-md min-w-[28rem] h-[70vh] overflow-hidden flex flex-col rounded-xl shadow-customShadow3 bg-gray-200">
+      <button
         onClick={onCancel}
-        className="absolute top-4 right-4 cursor-pointer"
-        icon="line-md:close-small"
-        width="35"
-        height="35"
-      />
-      <h2 className="text-xl font-extrabold mb-2">Chat </h2>
-      <hr className="border-t border-gray-300" />
+        className="absolute top-2 right-2 p-2 bg-gray-200 rounded-lg cursor-pointer"
+      >
+        <X size={25} />
+      </button>
+      <div className="bg-primary-2 p-4">
+        <h2 className="text-xl text-gray-200 font-extrabold mb-2">Chat</h2>
+      </div>
 
       <div className="w-full h-full rounded-lg overflow-hidden custom-scrollbar">
-        <div className="w-full h-full flex flex-col gap-4">
-          
-          {/* Left Column */}
+        <div className="w-full h-full flex flex-col">
           {!isRightColumnVisible && (
-            <><h3 className="text-sm text-black/50 font-bold">Recent Messages</h3>
-            <div className="w-full h-full relative flex flex-col border border-black">
-              <div className="space-y-4">
-                <div>
-                  {/* recent messages */}
+            <div className="bg-white w-full h-full">
+              <h3 className="text-sm text-black/50 font-bold p-4">
+                Recent Messages
+              </h3>
+              <div className="w-full h-full relative flex flex-col border border-black/30 rounded-md p-2">
+                <div className="space-y-4">
                   {sessions.length > 0 ? (
                     <ul>
                       {sessions.map((session) => (
@@ -473,21 +483,21 @@ export const Interested = ({
                           }
                           className={`${
                             selectedSessionId === session.id
-                              ? "bg-gray-300"
+                              ? "bg-gray-400"
                               : ""
                           }`}
                         >
-                          {/* Display the session ID and user details */}
-                          {/* <div>Session {session.id}</div>
-                        <div>
-                          Between {session.a} and {session.b}
-                        </div> */}
-
-                          {/* User details */}
-                          <div>
-                            <strong>{session.userDetails.first_name}</strong> -
-                            {session.userDetails.creative_field},{" "}
-                            {session.userDetails.role}
+                          <div className="flex flex-col capitalize bg-black/10 rounded-md p-2 cursor-pointer">
+                            <strong>{session.userDetails.first_name}</strong>
+                            {session.userDetails.role === "buyer" ? (
+                              <span className="text-xs text-black/50">
+                                , {session.userDetails.role}
+                              </span>
+                            ) : (
+                              <div className="text-xs text-black/50 ">
+                                {session.userDetails.creative_field}
+                              </div>
+                            )}
                           </div>
                         </li>
                       ))}
@@ -498,20 +508,18 @@ export const Interested = ({
                 </div>
               </div>
             </div>
-            </>
           )}
 
           {isRightColumnVisible && (
-            <div className="flex flex-col h-full w-full">
+            <div className="flex flex-col h-full w-full bg-white">
               <button
                 onClick={handleBackToSessions}
-                className="absolute top-2 right-2 p-2 bg-gray-200 rounded-lg"
+                className="absolute top-2 right-2 p-2 bg-gray-200 rounded-lg cursor-pointer"
               >
                 <ArrowLeft size={25} />
               </button>
               <div className="mb-4 h-full flex flex-col gap-4">
-                {/* Messaging */}
-                <div className="h-full overflow-y-auto">
+                <div className="h-full overflow-y-auto p-4">
                   {messages.map((msg) => (
                     <div
                       key={msg.id + 1}
@@ -533,7 +541,6 @@ export const Interested = ({
                       <p className="text-xs text-gray-500">
                         {new Date(msg.created_at).toLocaleString()}
                       </p>
-                      {/* Show auto image_path here */}
                       {msg.image_path && (
                         <div className="mt-2">
                           <Image
@@ -549,26 +556,26 @@ export const Interested = ({
                   ))}
                 </div>
 
-                {selectedSessionId && (
+                {isRightColumnVisible && (
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
                       handleSendMessage();
                     }}
-                    className="h-fit flex gap-2"
+                    className="h-fit flex gap-2 bg-primary-2 p-4"
                   >
                     <input
                       type="text"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       placeholder="Type your message here"
-                      className="w-full py-2 border border-gray-300 rounded-full px-4 mb-2"
+                      className="w-full py-2 border border-gray-300 rounded-full px-4"
                     />
                     <button
                       type="submit"
-                      className=" text-blue-500 p-2 rounded-lg"
+                      className="text-gray-200 p-2 rounded-lg"
                     >
-                      <SendHorizontal size={24}/>
+                      <SendHorizontal size={24} />
                     </button>
                   </form>
                 )}
@@ -577,6 +584,6 @@ export const Interested = ({
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };

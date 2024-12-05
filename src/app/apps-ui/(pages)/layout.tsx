@@ -20,6 +20,7 @@ export default function MainLayout({
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isShowChat, setIsShowChat] = useState(false);
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
 
   useEffect(() => {
     const checkAuthAndRedirect = async () => {
@@ -50,6 +51,14 @@ export default function MainLayout({
   const handleCloseSideBar = () => {
     setIsSidebarOpen(false);
   };
+
+  const handleOpenChatModal = () => {
+    setIsChatModalOpen(true);
+  };
+
+  const handleCloseChatModal = () => {
+    setIsChatModalOpen(false);
+  };
   
   return (
     <main className="w-full flex flex-col min-h-screen">
@@ -75,7 +84,11 @@ export default function MainLayout({
       </AnimatePresence>
       {isShowChat && (
         <div className="fixed -bottom-2 -right-1 z-500 p-4">
-          <ButtonChat />
+          <ButtonChat
+           isChatModalOpen={isChatModalOpen}
+           onOpenChatModal={handleOpenChatModal}
+           onCloseChatModal={handleCloseChatModal}
+            />
         </div>
       )}
     </main>

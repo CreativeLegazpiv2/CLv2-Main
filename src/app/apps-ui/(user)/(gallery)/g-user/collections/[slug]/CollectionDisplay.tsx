@@ -431,7 +431,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
     <div className="bg-white min-h-screen relative lg:max-w-screen-xl w-full max-w-[95%] mx-auto">
       <Icon
         onClick={() => window.history.back()}
-        className="absolute top-2 right-2 cursor-pointer z-50"
+        className="absolute top-2 right-2 cursor-pointer"
         icon="ion:arrow-back"
         width="35"
         height="35"
@@ -598,53 +598,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
             </motion.div>
           )}
         </AnimatePresence>
-        <AnimatePresence>
-          {/* interest Modal */}
-          {isInterestModalOpen && selectedImage && (
-            <motion.div
-              className="fixed top-0 left-0 w-full h-full bg-black/50 z-[1000] flex justify-center items-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => setDeleteModalOpen(false)}
-            >
-              <Interested
-                childid={selectedImage.childid}
-                created_at={selectedImage.created_at}
-                artist={selectedImage.artist}
-                image={selectedImage.image_path}
-                title={selectedImage.title}
-                desc={selectedImage.desc}
-                year={selectedImage.year}
-                onCancel={() => setInterestModalOpen(false)}
-                chat={chat}
-                
-              />
-            </motion.div>
-          )}
-          {isEditModalOpen && selectedImage && (
-            <motion.div
-              className="fixed top-0 left-0 w-full h-full bg-black/50 z-[1000] flex justify-center items-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => setDeleteModalOpen(false)}
-            >
-              <EditCollection
-                created_at={selectedImage.created_at}
-                artist={selectedImage.artist}
-                image={selectedImage.image_path}
-                title={selectedImage.title}
-                desc={selectedImage.desc}
-                year={selectedImage.year}
-                onEdit={handleEdit}
-                onCancel={() => setEditModalOpen(false)}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+      
 
         <div className="max-h-[32rem] min-h-40 w-full border border-gray-300 rounded-lg p-4 overflow-hidden">
           {/* Comment Section */}
@@ -838,6 +792,21 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
           </div>
         </div>
       </div>
+      {isInterestModalOpen && selectedImage && (
+        <div className="fixed -bottom-2 -right-1 z-[500] p-4">
+          <Interested
+            childid={selectedImage.childid}
+            created_at={selectedImage.created_at}
+            artist={selectedImage.artist}
+            image={selectedImage.image_path}
+            title={selectedImage.title}
+            desc={selectedImage.desc}
+            year={selectedImage.year}
+            onCancel={() => setInterestModalOpen(false)}
+            chat={chat}
+          />
+        </div>
+      )}
       <ToastContainer />
     </div>
   );
