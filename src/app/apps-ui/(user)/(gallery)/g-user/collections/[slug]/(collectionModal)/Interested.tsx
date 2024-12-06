@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { jwtVerify } from "jose";
 import { ArrowLeft, Loader, SendHorizontal, X } from "lucide-react";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
 
@@ -89,6 +89,43 @@ export const Interested = ({
   const [userDetails, setUserDetails] = useState<userDetails[]>([]);
   const [isRightColumnVisible, setIsRightColumnVisible] = useState(false);
   const [isChat, setChat] = useState<boolean>(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isScrolledUp, setIsScrolledUp] = useState<boolean>(false);
+  // Scroll to bottom on initial load
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, []);
+
+  // Handle scroll behavior
+  const handleScroll = () => {
+    if (containerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+      const isAtBottom = scrollHeight - scrollTop === clientHeight;
+
+      if (isAtBottom) {
+        setIsScrolledUp(false);
+      } else {
+        setIsScrolledUp(true);
+      }
+    }
+  };
+
+  // Scroll to bottom on initial load
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [isRightColumnVisible]);
+  
+  // Scroll to bottom when new messages are added
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [messages]);
+  
 
   useEffect(() => {
     const subscription = supabase
@@ -454,7 +491,7 @@ export const Interested = ({
   };
 
   return (
-    <div className="fixed bottom-0 right-0 z-[900] w-full max-w-md min-w-[28rem] h-[70vh] overflow-hidden flex flex-col rounded-xl shadow-customShadow3 bg-gray-200">
+    <div className="fixed bottom-0 right-0 z-[900] w-full max-w-md min-w-[24rem] h-[70vh] overflow-hidden flex flex-col rounded-xl shadow-customShadow3 bg-gray-200">
       <button
         onClick={onCancel}
         className="absolute top-2 right-2 p-2 bg-gray-200 rounded-lg cursor-pointer"
@@ -492,7 +529,10 @@ export const Interested = ({
                             <div className="w-12 h-12 rounded-full overflow-hidden">
                               <Image
                                 className="w-full h-full object-cover"
-                                src={session.userDetails.profile_pic || "/images/emptyProfile.png"}
+                                src={
+                                  session.userDetails.profile_pic ||
+                                  "/images/emptyProfile.png"
+                                }
                                 alt="Profile Picture"
                                 width={48} // Set the width to match the container
                                 height={48} // Set the height to match the container
@@ -532,41 +572,42 @@ export const Interested = ({
               >
                 <ArrowLeft size={25} />
               </button>
-              <div className="mb-4 h-full flex flex-col gap-4">
-                <div className="h-full overflow-y-auto p-4">
+              <div className="mb-4 h-full flex flex-col gap-4 w-full">
+                <div
+                  ref={containerRef}
+                  className="h-full overflow-y-auto p-4 w-full"
+                >
                   {messages.length > 0 ? (
                     messages.map((msg) => (
                       <div
                         key={msg.id}
-                        className={`mb-2 p-2 rounded-lg ${
-                          msg.sender == gettokenId
-                            ? "bg-[skyblue]"
-                            : "bg-gray-100"
+                        className={`mb-2 p-2 rounded-lg flex flex-col w-full ${
+                          msg.sender == gettokenId ? "items-end" : "items-start"
                         }`}
                       >
-                        <p
-                          className={`mb-2 p-2 rounded-lg ${
+                        <div
+                          className={`mb-2 p-2 rounded-lg max-w-[70%] ${
                             msg.sender == gettokenId
-                              ? "bg-[skyblue]"
-                              : "bg-gray-100"
+                              ? "bg-[skyblue] text-right"
+                              : "bg-gray-100 text-left"
                           }`}
                         >
-                          {msg.message}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {new Date(msg.created_at).toLocaleString()}
-                        </p>
-                        {msg.image_path && (
-                          <div className="mt-2">
-                            <Image
-                              src={msg.image_path}
-                              alt="Message Image"
-                              width={300}
-                              height={200}
-                              className="object-cover rounded-lg"
-                            />
-                          </div>
-                        )}
+                          <p>{msg.message}</p>
+                          <p className="text-xs text-gray-500">
+                            {new Date(msg.created_at).toLocaleString()}
+                          </p>
+                          {msg.image_path && (
+                            <div className="mt-2">
+                              <Image
+                                src={msg.image_path}
+                                alt="Message Image"
+                                width={300}
+                                height={200}
+                                className="object-cover rounded-lg"
+                              />
+                            </div>
+                          )}
+                        </div>
                       </div>
                     ))
                   ) : (
