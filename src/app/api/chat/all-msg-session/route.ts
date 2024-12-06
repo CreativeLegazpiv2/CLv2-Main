@@ -20,11 +20,6 @@ export async function GET(req: Request) {
       throw new Error(sessionsError.message);
     }
 
-    // If no sessions are found, return a 404 error
-    if (!message || message.length === 0) {
-      return NextResponse.json({ error: 'No sessions found for the provideder' }, { status: 404 });
-    }
-
     // Return only the sessions (no messages)
     return NextResponse.json({ message }, { status: 200 });
 

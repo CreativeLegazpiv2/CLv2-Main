@@ -55,6 +55,14 @@ interface userDetails {
   profile_pic?: string;
 }
 
+interface getUsers {
+  detailsid: string;
+  first_name: string;
+  creative_field?: string;
+  role?: string;
+  profile_pic?: string;
+}
+
 export const Interested = ({
   childid,
   created_at,
@@ -91,6 +99,19 @@ export const Interested = ({
   const [isChat, setChat] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isScrolledUp, setIsScrolledUp] = useState<boolean>(false);
+
+  const [getUsers, setUsers] = useState<getUsers[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isMsgLoading, setMsgLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    setMsgLoading(true);
+  }, []);
+
+
   // Scroll to bottom on initial load
   useEffect(() => {
     if (containerRef.current) {
@@ -125,6 +146,47 @@ export const Interested = ({
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [messages]);
+
+  // getnew users to message
+  useEffect(() => {
+    fetchusersData();
+  }, []);
+
+  const fetchusersData = async () => {
+    const token = getSession();
+    if (!token) return;
+
+    try {
+      const { payload } = await jwtVerify(
+        token,
+        new TextEncoder().encode(JWT_SECRET)
+      );
+      const userIdFromToken = payload.id as string;
+
+      const response = await fetch("/api/chat/new-msg", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          tokenid: userIdFromToken, // Pass sender_a in headers
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch sessions");
+      }
+
+      const data = await response.json();
+      console.log("Fetched sessions:", data);
+
+      if (data && data.length > 0) {
+        setUsers(data);
+      } else {
+        console.error("No user found.");
+      }
+    } catch (error) {
+      console.error("Error fetching session data:", error);
+    }
+  };
 
   useEffect(() => {
     const subscription = supabase
@@ -202,8 +264,10 @@ export const Interested = ({
       if (data && data.length > 0) {
         // Update state with the combined session data
         setSessions(data); // The data should already include user details
+        setIsLoading(false);
       } else {
         console.error("No sessions found.");
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error fetching session data:", error);
@@ -292,7 +356,12 @@ export const Interested = ({
         }
 
         const data = await response.json();
+        if (data && data.length > 0) {
         setMessages(data.sessions.flatMap((session: any) => session.messages));
+        setMsgLoading(false);
+        } else {
+        setMsgLoading(false);
+        }
       } catch (error: any) {
         console.error("Error fetching messages:", error.message);
       }
@@ -313,7 +382,12 @@ export const Interested = ({
         }
 
         const data = await response.json();
+        if (data && data.length > 0) {
         setMessages(data.message);
+        setMsgLoading(false);
+        } else {
+        setMsgLoading(false);
+        }
       } catch (error: any) {
         console.error("Error fetching messages:", error.message);
       }
@@ -424,6 +498,7 @@ export const Interested = ({
   };
 
   const handleClick = async (id: string, getA: string, getB: string) => {
+    setMsgLoading(true);
     const token = getSession();
     if (!token) return;
 
@@ -456,10 +531,12 @@ export const Interested = ({
 
       const data = await response.json();
       setMessages(data.message);
+      fetchMessages();
     } catch (error: any) {
       console.error("Error fetching messages:", error.message);
     }
   };
+
 
   const handleBackToSessions = () => {
     setSelectedSessionId(null);
@@ -489,6 +566,71 @@ export const Interested = ({
     },
   };
 
+  const filteredUsers = getUsers.filter((user) =>
+    user.first_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleClickNewChat = async (id: string) => {
+    setMsgLoading(true);
+    console.log("clicked id:", id);
+    const token = getSession();
+    if (!token) {
+      console.error("No session token found");
+      return;
+    }
+    setIsRightColumnVisible(true);
+    try {
+      const { payload } = await jwtVerify(
+        token,
+        new TextEncoder().encode(JWT_SECRET)
+      );
+      const userIdFromToken = payload.id as string;
+  
+      const response = await fetch("/api/chat/new-msg", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          sender_a: userIdFromToken, // Use the user ID from the token
+          sender_b: id,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("To create new chat");
+      }
+  
+      const data = await response.json();
+      console.log("Message sent successfully", data);
+      const selectedUserId = data.a === userIdFromToken ? data.b : data.a;
+      setselectedId(selectedUserId);
+      setSelectedSessionId(data.sessionId);
+      fetchSessionData();
+      const selectedidmsg = selectedSessionId as string;
+  
+      const dataidmsg = data.sessionId as string;
+      const responseData = await fetch("/api/chat/all-msg-session", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          sender_a: dataidmsg,
+        },
+      });
+  
+      if (!responseData.ok) {
+        throw new Error("Failed to fetch messages");
+      }
+  
+      const dataResponse = await responseData.json(); // Corrected this line
+      setMessages(dataResponse.message);
+      fetchMessages();
+  
+    } catch (error: any) {
+      console.error("Error sending message:", error.message);
+    }
+  };
+
   return (
     <div className="fixed bottom-0 right-0 z-[900] w-full max-w-md min-w-[24rem] h-[70vh] overflow-hidden flex flex-col rounded-xl shadow-customShadow3 bg-gray-200">
       <button
@@ -504,6 +646,7 @@ export const Interested = ({
       <div className="w-full h-full rounded-lg overflow-hidden custom-scrollbar">
         <div className="w-full h-full flex flex-col">
           {!isRightColumnVisible && (
+            // search user
             <div className="bg-white w-full h-full ">
               <div className="p-2 relative group">
                 <Search className="absolute top-1/2 left-4 transform -translate-y-1/2 text-primary-3/30 group-focus-within:text-primary-3" />
@@ -511,35 +654,95 @@ export const Interested = ({
                   type="text"
                   className="border border-primary-3/30 pl-10 pr-4 py-2 rounded-full w-full outline-none focus:ring-primary-3 focus:ring-1 peer"
                   placeholder="Search creative username..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    if (e.target.value) {
+                      setShowModal(true);
+                    } else {
+                      setShowModal(false);
+                    }
+                  }}
                 />
+
               </div>
+              {/* Modal for searched users */}
+              {showModal && (
+                <div className="inset-0 z-[999] flex items-center justify-center bg-black bg-opacity-50">
+                  <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-md">
+                    <button
+                      onClick={() => setShowModal(false)}
+                      className="absolute top-2 right-2 p-2 bg-gray-200 rounded-lg cursor-pointer"
+                    >
+                      <X size={25} />
+                    </button>
+                    <h3 className="text-lg font-bold mb-4">Search Results</h3>
+                    <ul className="space-y-2">
+                      {filteredUsers.map((user) => (
+                        <li
+                          key={user.detailsid}
+                          onClick={() => {
+                            handleClickNewChat(user.detailsid)
+                            setShowModal(false);
+                          }}
+                          className="flex flex-row capitalize bg-black/10 rounded-md p-2 gap-4 cursor-pointer"
+                        >
+                          <div className="w-12 h-12 rounded-full overflow-hidden">
+                            <Image
+                              className="w-full h-full object-cover"
+                              src={
+                                user.profile_pic ||
+                                "/images/emptyProfile.png"
+                              }
+                              alt="Profile Picture"
+                              width={48} // Set the width to match the container
+                              height={48} // Set the height to match the container
+                            />
+                          </div>
+                          <div className="flex flex-col">
+                            <strong>{user.first_name}</strong>
+                            {user.role === "buyer" ? (
+                              <span className="text-xs text-black/50">
+                                , {user.role}
+                              </span>
+                            ) : (
+                              <div className="text-xs text-black/50 ">
+                                {user.creative_field}
+                              </div>
+                            )}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
               <h3 className="text-sm text-black/50 font-bold px-4 pb-2">
                 Recent Messages
               </h3>
               <div className="w-full h-full relative flex flex-col border border-black/30 rounded-md p-2 pb-4">
                 <div className="space-y-4 h-full flex flex-col gap-2 overflow-hidden pb-12">
-                  {sessions.length > 0 ? (
+                  {isLoading ? (
+                    <div className="w-full h-full flex justify-center items-center">
+                      <Loader size={55} className="animate-spin" />
+                    </div>
+                  ) : sessions.length === 0 ? (
+                    <div className="w-full h-full flex justify-center items-center">
+                      <p>No Recent Message yet</p>
+                    </div>
+                  ) : (
                     <ul className="space-y-2 flex flex-col h-full overflow-y-auto">
                       {sessions.map((session) => (
                         <li
                           key={session.id}
-                          onClick={() =>
-                            handleClick(session.id, session.a, session.b)
-                          }
-                          className={`${
-                            selectedSessionId === session.id
-                              ? "bg-gray-400"
-                              : ""
-                          }`}
+                          onClick={() => handleClick(session.id, session.a, session.b)}
+                          className={`${selectedSessionId === session.id ? "bg-gray-400" : ""}`}
                         >
                           <div className="flex flex-row capitalize bg-black/10 rounded-md p-2 gap-4 cursor-pointer">
                             <div className="w-12 h-12 rounded-full overflow-hidden">
                               <Image
                                 className="w-full h-full object-cover"
-                                src={
-                                  session.userDetails.profile_pic ||
-                                  "/images/emptyProfile.png"
-                                }
+                                src={session.userDetails.profile_pic || "/images/emptyProfile.png"}
                                 alt="Profile Picture"
                                 width={48} // Set the width to match the container
                                 height={48} // Set the height to match the container
@@ -561,10 +764,6 @@ export const Interested = ({
                         </li>
                       ))}
                     </ul>
-                  ) : (
-                    <div className="w-full h-full flex justify-center items-center">
-                      <Loader size={55} className="animate-spin" />
-                    </div>
                   )}
                 </div>
               </div>
@@ -584,20 +783,27 @@ export const Interested = ({
                   ref={containerRef}
                   className="h-full overflow-y-auto p-4 w-full"
                 >
-                  {messages.length > 0 ? (
+                  {isMsgLoading ? (
+                    <div className="w-full h-full flex justify-center items-center">
+                      <Loader size={55} className="animate-spin" />
+                    </div>
+                  ) : messages.length === 0 ? (
+                    <div className="w-full h-full flex justify-center items-center">
+                      <p>No Messages yet</p>
+                    </div>
+                  ) : (
                     messages.map((msg) => (
+
                       <div
                         key={msg.id}
-                        className={`mb-2 p-2 rounded-lg flex flex-col w-full ${
-                          msg.sender == gettokenId ? "items-end" : "items-start"
-                        }`}
+                        className={`mb-2 p-2 rounded-lg flex flex-col w-full ${msg.sender == gettokenId ? "items-end" : "items-start"
+                          }`}
                       >
                         <div
-                          className={`mb-2 p-2 rounded-lg max-w-[70%] ${
-                            msg.sender == gettokenId
-                              ? "bg-[skyblue] text-right"
-                              : "bg-gray-200 text-left"
-                          }`}
+                          className={`mb-2 p-2 rounded-lg max-w-[70%] ${msg.sender == gettokenId
+                            ? "bg-[skyblue] text-right"
+                            : "bg-gray-200 text-left"
+                            }`}
                         >
                           <p>{msg.message}</p>
                           <p className="text-xs text-gray-500">
@@ -617,10 +823,6 @@ export const Interested = ({
                         </div>
                       </div>
                     ))
-                  ) : (
-                    <div className="w-full h-full flex justify-center items-center">
-                      <Loader size={55} className="animate-spin" />
-                    </div>
                   )}
                 </div>
 
