@@ -3,7 +3,7 @@ import { supabase } from "@/services/supabaseClient";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { motion } from "framer-motion";
 import { jwtVerify } from "jose";
-import { ArrowLeft, Loader, SendHorizontal, X } from "lucide-react";
+import { ArrowLeft, Loader, Search, SendHorizontal, X } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 
@@ -118,14 +118,13 @@ export const Interested = ({
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [isRightColumnVisible]);
-  
+
   // Scroll to bottom when new messages are added
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [messages]);
-  
 
   useEffect(() => {
     const subscription = supabase
@@ -505,14 +504,22 @@ export const Interested = ({
       <div className="w-full h-full rounded-lg overflow-hidden custom-scrollbar">
         <div className="w-full h-full flex flex-col">
           {!isRightColumnVisible && (
-            <div className="bg-white w-full h-full">
-              <h3 className="text-sm text-black/50 font-bold p-4">
+            <div className="bg-white w-full h-full ">
+              <div className="p-2 relative group">
+                <Search className="absolute top-1/2 left-4 transform -translate-y-1/2 text-primary-3/30 peer-focus:text-primary-3" />
+                <input
+                  type="text"
+                  className="border border-primary-3/30 pl-10 pr-4 py-2 rounded-full w-full outline-none focus:ring-primary-3 focus:ring-1 peer"
+                  placeholder="Search creative username..."
+                />
+              </div>
+              <h3 className="text-sm text-black/50 font-bold px-4 pb-2">
                 Recent Messages
               </h3>
-              <div className="w-full h-full relative flex flex-col border border-black/30 rounded-md p-2">
-                <div className="space-y-4 h-full">
+              <div className="w-full h-full relative flex flex-col border border-black/30 rounded-md p-2 pb-4">
+                <div className="space-y-4 h-full flex flex-col gap-2 overflow-hidden pb-12">
                   {sessions.length > 0 ? (
-                    <ul>
+                    <ul className="space-y-2 flex flex-col h-full overflow-y-auto">
                       {sessions.map((session) => (
                         <li
                           key={session.id}
@@ -589,7 +596,7 @@ export const Interested = ({
                           className={`mb-2 p-2 rounded-lg max-w-[70%] ${
                             msg.sender == gettokenId
                               ? "bg-[skyblue] text-right"
-                              : "bg-gray-100 text-left"
+                              : "bg-gray-200 text-left"
                           }`}
                         >
                           <p>{msg.message}</p>
