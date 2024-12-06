@@ -3,7 +3,7 @@ import { supabase } from "@/services/supabaseClient";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { motion } from "framer-motion";
 import { jwtVerify } from "jose";
-import { ArrowLeft, SendHorizontal, X } from "lucide-react";
+import { ArrowLeft, Loader, SendHorizontal, X } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
@@ -52,6 +52,7 @@ interface userDetails {
   first_name: string;
   creative_field?: string;
   role?: string;
+  profile_pic?: string;
 }
 
 export const Interested = ({
@@ -453,7 +454,7 @@ export const Interested = ({
   };
 
   return (
-    <div className="fixed bottom-0 right-0 w-full max-w-md min-w-[28rem] h-[70vh] overflow-hidden flex flex-col rounded-xl shadow-customShadow3 bg-gray-200">
+    <div className="fixed bottom-0 right-0 z-[900] w-full max-w-md min-w-[28rem] h-[70vh] overflow-hidden flex flex-col rounded-xl shadow-customShadow3 bg-gray-200">
       <button
         onClick={onCancel}
         className="absolute top-2 right-2 p-2 bg-gray-200 rounded-lg cursor-pointer"
@@ -472,7 +473,7 @@ export const Interested = ({
                 Recent Messages
               </h3>
               <div className="w-full h-full relative flex flex-col border border-black/30 rounded-md p-2">
-                <div className="space-y-4">
+                <div className="space-y-4 h-full">
                   {sessions.length > 0 ? (
                     <ul>
                       {sessions.map((session) => (
@@ -487,23 +488,36 @@ export const Interested = ({
                               : ""
                           }`}
                         >
-                          <div className="flex flex-col capitalize bg-black/10 rounded-md p-2 cursor-pointer">
-                            <strong>{session.userDetails.first_name}</strong>
-                            {session.userDetails.role === "buyer" ? (
-                              <span className="text-xs text-black/50">
-                                , {session.userDetails.role}
-                              </span>
-                            ) : (
-                              <div className="text-xs text-black/50 ">
-                                {session.userDetails.creative_field}
-                              </div>
-                            )}
+                          <div className="flex flex-row capitalize bg-black/10 rounded-md p-2 gap-4 cursor-pointer">
+                            <div className="w-12 h-12 rounded-full overflow-hidden">
+                              <Image
+                                className="w-full h-full object-cover"
+                                src={session.userDetails.profile_pic || "/images/emptyProfile.png"}
+                                alt="Profile Picture"
+                                width={48} // Set the width to match the container
+                                height={48} // Set the height to match the container
+                              />
+                            </div>
+                            <div className="flex flex-col">
+                              <strong>{session.userDetails.first_name}</strong>
+                              {session.userDetails.role === "buyer" ? (
+                                <span className="text-xs text-black/50">
+                                  , {session.userDetails.role}
+                                </span>
+                              ) : (
+                                <div className="text-xs text-black/50 ">
+                                  {session.userDetails.creative_field}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <p>No active sessions found.</p>
+                    <div className="w-full h-full flex justify-center items-center">
+                      <Loader size={55} className="animate-spin" />
+                    </div>
                   )}
                 </div>
               </div>
@@ -520,40 +534,46 @@ export const Interested = ({
               </button>
               <div className="mb-4 h-full flex flex-col gap-4">
                 <div className="h-full overflow-y-auto p-4">
-                  {messages.map((msg) => (
-                    <div
-                      key={msg.id + 1}
-                      className={`mb-2 p-2 rounded-lg ${
-                        msg.sender == gettokenId
-                          ? "bg-[skyblue]"
-                          : "bg-gray-100"
-                      }`}
-                    >
-                      <p
+                  {messages.length > 0 ? (
+                    messages.map((msg) => (
+                      <div
+                        key={msg.id}
                         className={`mb-2 p-2 rounded-lg ${
                           msg.sender == gettokenId
                             ? "bg-[skyblue]"
                             : "bg-gray-100"
                         }`}
                       >
-                        {msg.message}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {new Date(msg.created_at).toLocaleString()}
-                      </p>
-                      {msg.image_path && (
-                        <div className="mt-2">
-                          <Image
-                            src={msg.image_path}
-                            alt="Message Image"
-                            width={300}
-                            height={200}
-                            className="object-cover rounded-lg"
-                          />
-                        </div>
-                      )}
+                        <p
+                          className={`mb-2 p-2 rounded-lg ${
+                            msg.sender == gettokenId
+                              ? "bg-[skyblue]"
+                              : "bg-gray-100"
+                          }`}
+                        >
+                          {msg.message}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {new Date(msg.created_at).toLocaleString()}
+                        </p>
+                        {msg.image_path && (
+                          <div className="mt-2">
+                            <Image
+                              src={msg.image_path}
+                              alt="Message Image"
+                              width={300}
+                              height={200}
+                              className="object-cover rounded-lg"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="w-full h-full flex justify-center items-center">
+                      <Loader size={55} className="animate-spin" />
                     </div>
-                  ))}
+                  )}
                 </div>
 
                 {isRightColumnVisible && (

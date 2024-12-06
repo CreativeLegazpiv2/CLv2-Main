@@ -28,7 +28,7 @@ export async function GET(req: Request) {
 
       const { data: userDetails, error: userDetailsError } = await supabase
         .from('userDetails')
-        .select('first_name, creative_field, role')
+        .select('first_name, creative_field, role, profile_pic')
         .eq('detailsid', otherUserId);
 
       if (userDetailsError) {

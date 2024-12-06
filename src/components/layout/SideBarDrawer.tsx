@@ -6,6 +6,7 @@ import { Icon } from "@iconify/react";
 import { getSession, logoutUser } from "@/services/authservice";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useBreakpoint } from "use-breakpoint";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -24,6 +25,8 @@ interface MenuItemProps {
   link: string;
 }
 
+const BREAKPOINTS = { sm: 0, md: 768, lg: 1024 };
+
 export function SidebarDrawer({
   isOpen,
   onClose,
@@ -39,6 +42,7 @@ export function SidebarDrawer({
   const [menuItems, setMenuItems] = useState<MenuItemProps[]>([]);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
+  const { breakpoint } = useBreakpoint(BREAKPOINTS, "sm");
 
   // Add this useEffect
   useEffect(() => {
@@ -111,18 +115,27 @@ export function SidebarDrawer({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
       onClick={onClose}
-      className="w-full h-[90dvh] fixed bottom-0 left-0 z-[600] bg-black bg-opacity-50 xl:hidden"
+      className="w-full h-dvh fixed bottom-0 left-0 z-[600] bg-black bg-opacity-50 xl:hidden"
     >
       <motion.div
         onClick={(e) => e.stopPropagation()}
-        initial={{ x: "-100%", opacity: 0 }}
+        initial={{
+          x: breakpoint === "md" || breakpoint === "lg" ? "100%" : "-100%",
+          opacity: 0,
+        }}
         animate={{ x: 0, opacity: 1 }}
-        exit={{ x: "-100%", opacity: 0 }}
+        exit={{
+          x: breakpoint === "md" || breakpoint === "lg" ? "100%" : "-100%",
+          opacity: 0,
+        }}
         transition={{ duration: 0.5 }}
-        className={`w-full md:max-w-md max-w-sm md:right-0 top-0 absolute h-full ${backgroundColor}`}
+        className={`w-full md:max-w-md max-w-sm md:right-0 bottom-0 absolute h-full max-h-[90dvh] ${backgroundColor}`}
       >
-        <div className="w-full h-full relative">
-          <button onClick={onClose} className="absolute top-4 md:left-4 right-4">
+        <div className="w-full h-full  relative">
+          <button
+            onClick={onClose}
+            className="absolute top-4 md:left-4 right-4"
+          >
             <Icon icon="mdi:close" width={24} height={24} />
           </button>
           {/* Sidebar content goes here */}
@@ -150,9 +163,7 @@ export function SidebarDrawer({
                   className={`
                 p-3 w-full
                 rounded-xl 
-                bg-gradient-to-br 
-                from-primary-1 
-                to-primary-3
+                bg-primary-2
                 text-white 
                 text-center 
                 uppercase 
@@ -184,9 +195,7 @@ export function SidebarDrawer({
                   <motion.button
                     className="uppercase w-full py-2.5 font-semibold rounded-md 
                 p-3
-                bg-gradient-to-br 
-                from-primary-1 
-                to-primary-3
+                bg-primary-2
                 text-white 
                 text-center 
                 tracking-wider 
@@ -236,14 +245,16 @@ const MenuItem = ({ name, link }: MenuItemProps) => {
     >
       <div
         className={`
-          ${isActive
-            ? "bg-gradient-to-br from-primary-1 to-primary-3"
-            : "bg-gradient-to-br from-primary-3 to-primary-1"}
+          ${
+            isActive
+              ? "bg-gradient-to-br from-primary-1 to-primary-2"
+              : "bg-gradient-to-br from-primary-2 to-primary-1"
+          }
             p-3 
             rounded-xl 
             bg-gradient-to-br 
             from-primary-1 
-            to-primary-3
+            to-primary-2
             text-white 
             text-center 
             uppercase 

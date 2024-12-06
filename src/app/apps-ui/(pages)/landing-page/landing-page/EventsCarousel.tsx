@@ -123,14 +123,14 @@ export const Events = () => {
         {/* Navigation buttons */}
         <button
           onClick={prev}
-          className="absolute left-0 top-1/2 z-50 transform -translate-y-1/2 text-primary-1 p-2"
+          className="absolute left-0 top-1/2 transform -translate-y-1/2 text-primary-1 p-2"
           disabled={currentPage === 0}
         >
           <Icon icon="ep:arrow-left" width="45" height="45" />
         </button>
         <button
           onClick={next}
-          className="absolute right-0 top-1/2 z-50 transform -translate-y-1/2 text-primary-1 p-2"
+          className="absolute right-0 top-1/2 transform -translate-y-1/2 text-primary-1 p-2"
           disabled={currentPage === totalPages - 1}
         >
           <Icon

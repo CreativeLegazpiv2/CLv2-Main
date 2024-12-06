@@ -22,7 +22,16 @@ export default function LoadLayout({
   const [contentLoaded, setContentLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isLogoutInProgress, setIsLogoutInProgress] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
   const pathname = usePathname();
+  const handleOpenSideBar = () => {
+    setIsSidebarOpen(true);
+  };
+
+  const handleCloseSideBar = () => {
+    setIsSidebarOpen(false);
+  };
 
   // Handle logout state
   const handleLogoutStart = useCallback(() => {
