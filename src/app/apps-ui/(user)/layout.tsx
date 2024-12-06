@@ -66,7 +66,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
         roundedCustom="rounded-bl-none"
         onOpenSidebar={handleOpenSideBar}
       />
-      <main className="flex-grow p-8">{children}</main>
+      <main className="flex-grow">{children}</main>
       {isShowChat && (
         <div className="fixed -bottom-2 -right-1 z-500 p-4">
           <ButtonChat
