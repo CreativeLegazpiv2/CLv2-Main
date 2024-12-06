@@ -506,7 +506,7 @@ export const Interested = ({
           {!isRightColumnVisible && (
             <div className="bg-white w-full h-full ">
               <div className="p-2 relative group">
-                <Search className="absolute top-1/2 left-4 transform -translate-y-1/2 text-primary-3/30 peer-focus:text-primary-3" />
+                <Search className="absolute top-1/2 left-4 transform -translate-y-1/2 text-primary-3/30 group-focus-within:text-primary-3" />
                 <input
                   type="text"
                   className="border border-primary-3/30 pl-10 pr-4 py-2 rounded-full w-full outline-none focus:ring-primary-3 focus:ring-1 peer"
