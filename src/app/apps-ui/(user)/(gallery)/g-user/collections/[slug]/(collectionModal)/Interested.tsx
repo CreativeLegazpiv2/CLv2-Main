@@ -521,7 +521,7 @@ export const Interested = ({
     try {
       const { data, error } = await supabase
         .from("userDetails")
-        .select("detailsid, first_name, profile_pic")
+        .select("detailsid, first_name, profile_pic, creative_field")
         .eq("detailsid", selectedUserId)
         .single();
       console.log("mock ", data);
@@ -656,8 +656,8 @@ export const Interested = ({
       >
         <X size={25} />
       </button>
-      <div className="bg-primary-2 p-4">
-        <div className="text-xl text-gray-200 font-extrabold mb-2">
+      <div className="bg-primary-2 p-2.5">
+        <div className="text-xl text-gray-200 font-extrabold">
           {/* Conditional rendering based on selected session */}
           {!selectedSessionId ? (
             // No session clicked yet, show "Chat" placeholder
@@ -666,7 +666,7 @@ export const Interested = ({
             // Session is selected, show the user details
             userDetails.length > 0 && (
               <div>
-                <div className="flex items-center mb-2">
+                <div className="flex items-center">
                   <img
                     src={
                       userDetails[0].profile_pic || "/images/emptyProfile.png"
@@ -674,9 +674,20 @@ export const Interested = ({
                     alt={userDetails[0].first_name}
                     className="w-10 h-10 rounded-full mr-2"
                   />
-                  <div>
-                    <p className="text-gray-200 font-semibold">
+                  <div className="flex flex-col">
+                    <p
+                      className={`text-gray-200 font-medium text-base ${
+                        userDetails[0].first_name.length > 10
+                          ? "line-clamp-1"
+                          : ""
+                      }`}
+                    >
                       {userDetails[0].first_name}
+                    </p>
+                    <p className="text-gray-200 text-xs font-normal">
+                      {userDetails[0].creative_field
+                        ? userDetails[0].creative_field
+                        : "Buyer"}
                     </p>
                   </div>
                 </div>
@@ -861,31 +872,23 @@ export const Interested = ({
                       return (
                         <div
                           key={msg.id}
-                          className={`mb-2 p-2 flex flex-col w-full ${
+                          className={`p-2 flex flex-col w-full ${
                             msg.sender == gettokenId
                               ? "items-end"
                               : "items-start"
                           }`}
                         >
                           <div
-                            className={`mb-2 p-3   rounded-t-3xl  max-w-[80%] ${
+                            className={`mb-2 p-4 min-w-14 rounded-t-3xl flex flex-col gap-2 max-w-[80%] ${
                               msg.sender == gettokenId
                                 ? "bg-[skyblue] rounded-bl-3xl"
-                                : "bg-gray-200 rounded-br-3xl"
+                                : "bg-black/10 rounded-br-3xl"
                             }`}
                           >
-                            <p>{msg.message}</p>
-                            <p
-                              className={`text-[10px] ${
-                                msg.sender == gettokenId
-                                  ? "text-black/80"
-                                  : "text-black/70"
-                              }`}
-                            >
-                              {formattedDate}, {formattedTime}
-                            </p>
+                            <p className="text-sm">{msg.message}</p>
+
                             {msg.image_path && (
-                              <div className="mt-2">
+                              <div className="w-full">
                                 <Image
                                   src={msg.image_path}
                                   alt="Message Image"
@@ -895,6 +898,17 @@ export const Interested = ({
                                 />
                               </div>
                             )}
+                          </div>
+                          <div>
+                            <p
+                              className={`text-[10px] ${
+                                msg.sender == gettokenId
+                                  ? "text-black/80"
+                                  : "text-black/70"
+                              }`}
+                            >
+                              {formattedDate}, {formattedTime}
+                            </p>
                           </div>
                         </div>
                       );
