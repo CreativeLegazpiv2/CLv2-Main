@@ -19,10 +19,6 @@ export async function GET(req: Request) {
       throw new Error(sessionsError.message);
     }
 
-    if (!sessions || sessions.length === 0) {
-      return NextResponse.json({ error: 'No sessions found for the provided sender_a' }, { status: 404 });
-    }
-
     const userDetailsPromises = sessions.map(async (session) => {
       const otherUserId = session.a == sender_a ? session.b : session.a;
 
