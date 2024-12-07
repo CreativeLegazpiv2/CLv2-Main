@@ -111,7 +111,6 @@ export const Interested = ({
     setMsgLoading(true);
   }, []);
 
-
   // Scroll to bottom on initial load
   useEffect(() => {
     if (containerRef.current) {
@@ -357,10 +356,12 @@ export const Interested = ({
 
         const data = await response.json();
         if (data && data.length > 0) {
-        setMessages(data.sessions.flatMap((session: any) => session.messages));
-        setMsgLoading(false);
+          setMessages(
+            data.sessions.flatMap((session: any) => session.messages)
+          );
+          setMsgLoading(false);
         } else {
-        setMsgLoading(false);
+          setMsgLoading(false);
         }
       } catch (error: any) {
         console.error("Error fetching messages:", error.message);
@@ -383,10 +384,10 @@ export const Interested = ({
 
         const data = await response.json();
         if (data && data.length > 0) {
-        setMessages(data.message);
-        setMsgLoading(false);
+          setMessages(data.message);
+          setMsgLoading(false);
         } else {
-        setMsgLoading(false);
+          setMsgLoading(false);
         }
       } catch (error: any) {
         console.error("Error fetching messages:", error.message);
@@ -506,16 +507,34 @@ export const Interested = ({
       token,
       new TextEncoder().encode(JWT_SECRET)
     );
-
     const userIdFromToken = payload.id as string;
 
     // Determine the other user's ID
     const selectedUserId = getA === userIdFromToken ? getB : getA;
     setselectedId(selectedUserId);
+    console.log("selectedSessionId", selectedSessionId); // Debug log
 
     setSelectedSessionId(id);
     setIsRightColumnVisible(true); // Show right column
 
+    // Fetch user details (first name, profile picture) from Supabase
+    try {
+      const { data, error } = await supabase
+        .from("userDetails")
+        .select("detailsid, first_name, profile_pic")
+        .eq("detailsid", selectedUserId)
+        .single();
+      console.log("mock ", data);
+
+      if (error) throw error;
+
+      // Update state to store the selected user details
+      setUserDetails([data]); // Set the fetched user details to state (e.g., user details)
+    } catch (error: any) {
+      console.error("Error fetching user details:", error.message);
+    }
+
+    // Fetch messages (existing functionality)
     try {
       const response = await fetch("/api/chat/all-msg-session", {
         method: "GET",
@@ -536,7 +555,6 @@ export const Interested = ({
       console.error("Error fetching messages:", error.message);
     }
   };
-
 
   const handleBackToSessions = () => {
     setSelectedSessionId(null);
@@ -585,7 +603,7 @@ export const Interested = ({
         new TextEncoder().encode(JWT_SECRET)
       );
       const userIdFromToken = payload.id as string;
-  
+
       const response = await fetch("/api/chat/new-msg", {
         method: "POST",
         headers: {
@@ -596,11 +614,11 @@ export const Interested = ({
           sender_b: id,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error("To create new chat");
       }
-  
+
       const data = await response.json();
       console.log("Message sent successfully", data);
       const selectedUserId = data.a === userIdFromToken ? data.b : data.a;
@@ -608,7 +626,7 @@ export const Interested = ({
       setSelectedSessionId(data.sessionId);
       fetchSessionData();
       const selectedidmsg = selectedSessionId as string;
-  
+
       const dataidmsg = data.sessionId as string;
       const responseData = await fetch("/api/chat/all-msg-session", {
         method: "GET",
@@ -617,15 +635,14 @@ export const Interested = ({
           sender_a: dataidmsg,
         },
       });
-  
+
       if (!responseData.ok) {
         throw new Error("Failed to fetch messages");
       }
-  
+
       const dataResponse = await responseData.json(); // Corrected this line
       setMessages(dataResponse.message);
       fetchMessages();
-  
     } catch (error: any) {
       console.error("Error sending message:", error.message);
     }
@@ -640,14 +657,40 @@ export const Interested = ({
         <X size={25} />
       </button>
       <div className="bg-primary-2 p-4">
-        <h2 className="text-xl text-gray-200 font-extrabold mb-2">Chat</h2>
+        <div className="text-xl text-gray-200 font-extrabold mb-2">
+          {/* Conditional rendering based on selected session */}
+          {!selectedSessionId ? (
+            // No session clicked yet, show "Chat" placeholder
+            <p>Chat</p>
+          ) : (
+            // Session is selected, show the user details
+            userDetails.length > 0 && (
+              <div>
+                <div className="flex items-center mb-2">
+                  <img
+                    src={
+                      userDetails[0].profile_pic || "/images/emptyProfile.png"
+                    }
+                    alt={userDetails[0].first_name}
+                    className="w-10 h-10 rounded-full mr-2"
+                  />
+                  <div>
+                    <p className="text-gray-200 font-semibold">
+                      {userDetails[0].first_name}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )
+          )}
+        </div>
       </div>
 
       <div className="w-full h-full rounded-lg overflow-hidden custom-scrollbar">
         <div className="w-full h-full flex flex-col">
           {!isRightColumnVisible && (
-            // search user
-            <div className="bg-white w-full h-full ">
+            // Search user section
+            <div className="bg-white w-full h-full">
               <div className="p-2 relative group">
                 <Search className="absolute top-1/2 left-4 transform -translate-y-1/2 text-primary-3/30 group-focus-within:text-primary-3" />
                 <input
@@ -664,8 +707,8 @@ export const Interested = ({
                     }
                   }}
                 />
-
               </div>
+
               {/* Modal for searched users */}
               {showModal && (
                 <div className="inset-0 z-[999] flex items-center justify-center bg-black bg-opacity-50">
@@ -682,7 +725,7 @@ export const Interested = ({
                         <li
                           key={user.detailsid}
                           onClick={() => {
-                            handleClickNewChat(user.detailsid)
+                            handleClickNewChat(user.detailsid); // Handle new chat creation
                             setShowModal(false);
                           }}
                           className="flex flex-row capitalize bg-black/10 rounded-md p-2 gap-4 cursor-pointer"
@@ -691,12 +734,11 @@ export const Interested = ({
                             <Image
                               className="w-full h-full object-cover"
                               src={
-                                user.profile_pic ||
-                                "/images/emptyProfile.png"
+                                user.profile_pic || "/images/emptyProfile.png"
                               }
                               alt="Profile Picture"
-                              width={48} // Set the width to match the container
-                              height={48} // Set the height to match the container
+                              width={48}
+                              height={48}
                             />
                           </div>
                           <div className="flex flex-col">
@@ -706,7 +748,7 @@ export const Interested = ({
                                 , {user.role}
                               </span>
                             ) : (
-                              <div className="text-xs text-black/50 ">
+                              <div className="text-xs text-black/50">
                                 {user.creative_field}
                               </div>
                             )}
@@ -717,6 +759,7 @@ export const Interested = ({
                   </div>
                 </div>
               )}
+
               <h3 className="text-sm text-black/50 font-bold px-4 pb-2">
                 Recent Messages
               </h3>
@@ -728,24 +771,33 @@ export const Interested = ({
                     </div>
                   ) : sessions.length === 0 ? (
                     <div className="w-full h-full flex justify-center items-center">
-                      <p>No Recent Message yet</p>
+                      <p>No Recent Messages yet</p>
                     </div>
                   ) : (
                     <ul className="space-y-2 flex flex-col h-full overflow-y-auto">
                       {sessions.map((session) => (
                         <li
                           key={session.id}
-                          onClick={() => handleClick(session.id, session.a, session.b)}
-                          className={`${selectedSessionId === session.id ? "bg-gray-400" : ""}`}
+                          onClick={() =>
+                            handleClick(session.id, session.a, session.b)
+                          }
+                          className={`${
+                            selectedSessionId === session.id
+                              ? "bg-gray-400"
+                              : ""
+                          }`}
                         >
                           <div className="flex flex-row capitalize bg-black/10 rounded-md p-2 gap-4 cursor-pointer">
                             <div className="w-12 h-12 rounded-full overflow-hidden">
                               <Image
                                 className="w-full h-full object-cover"
-                                src={session.userDetails.profile_pic || "/images/emptyProfile.png"}
-                                alt="Profile Picture"
-                                width={48} // Set the width to match the container
-                                height={48} // Set the height to match the container
+                                src={
+                                  session.userDetails.profile_pic ||
+                                  "/images/emptyProfile.png"
+                                }
+                                alt={session.userDetails.first_name}
+                                width={48}
+                                height={48}
                               />
                             </div>
                             <div className="flex flex-col">
@@ -755,7 +807,7 @@ export const Interested = ({
                                   , {session.userDetails.role}
                                 </span>
                               ) : (
-                                <div className="text-xs text-black/50 ">
+                                <div className="text-xs text-black/50">
                                   {session.userDetails.creative_field}
                                 </div>
                               )}
@@ -778,7 +830,7 @@ export const Interested = ({
               >
                 <ArrowLeft size={25} />
               </button>
-              <div className="mb-4 h-full flex flex-col gap-4 w-full">
+              <div className="h-full flex flex-col gap-4 w-full">
                 <div
                   ref={containerRef}
                   className="h-full overflow-y-auto p-4 w-full scroll-none"
@@ -792,37 +844,61 @@ export const Interested = ({
                       <p>No Messages yet</p>
                     </div>
                   ) : (
-                    messages.map((msg) => (
+                    messages.map((msg) => {
+                      // Format the created_at timestamp
+                      const createdAt = new Date(msg.created_at);
+                      const formattedDate = createdAt.toLocaleString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      }); // "Dec. 24, 2024"
+                      const formattedTime = createdAt.toLocaleString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      }); // "12:45 PM"
 
-                      <div
-                        key={msg.id}
-                        className={`mb-2 p-2 rounded-lg flex flex-col w-full ${msg.sender == gettokenId ? "items-end" : "items-start"
-                          }`}
-                      >
+                      return (
                         <div
-                          className={`mb-2 p-2 rounded-lg max-w-[70%] ${msg.sender == gettokenId
-                            ? "bg-[skyblue] text-right"
-                            : "bg-gray-200 text-left"
-                            }`}
+                          key={msg.id}
+                          className={`mb-2 p-2 flex flex-col w-full ${
+                            msg.sender == gettokenId
+                              ? "items-end"
+                              : "items-start"
+                          }`}
                         >
-                          <p>{msg.message}</p>
-                          <p className="text-xs text-gray-500">
-                            {new Date(msg.created_at).toLocaleString()}
-                          </p>
-                          {msg.image_path && (
-                            <div className="mt-2">
-                              <Image
-                                src={msg.image_path}
-                                alt="Message Image"
-                                width={300}
-                                height={200}
-                                className="object-cover rounded-lg"
-                              />
-                            </div>
-                          )}
+                          <div
+                            className={`mb-2 p-3   rounded-t-3xl  max-w-[80%] ${
+                              msg.sender == gettokenId
+                                ? "bg-[skyblue] rounded-bl-3xl"
+                                : "bg-gray-200 rounded-br-3xl"
+                            }`}
+                          >
+                            <p>{msg.message}</p>
+                            <p
+                              className={`text-[10px] ${
+                                msg.sender == gettokenId
+                                  ? "text-black/80"
+                                  : "text-black/70"
+                              }`}
+                            >
+                              {formattedDate}, {formattedTime}
+                            </p>
+                            {msg.image_path && (
+                              <div className="mt-2">
+                                <Image
+                                  src={msg.image_path}
+                                  alt="Message Image"
+                                  width={300}
+                                  height={200}
+                                  className="object-cover rounded-lg"
+                                />
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))
+                      );
+                    })
                   )}
                 </div>
 
