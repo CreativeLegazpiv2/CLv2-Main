@@ -519,7 +519,7 @@ export const Interested = ({
               <div className="w-full h-full relative flex flex-col border border-black/30 rounded-md p-2 pb-4">
                 <div className="space-y-4 h-full flex flex-col gap-2 overflow-hidden pb-12">
                   {sessions.length > 0 ? (
-                    <ul className="space-y-2 flex flex-col h-full overflow-y-auto">
+                    <ul className="space-y-2 flex flex-col h-full overflow-y-auto scroll-none">
                       {sessions.map((session) => (
                         <li
                           key={session.id}
@@ -582,7 +582,7 @@ export const Interested = ({
               <div className="mb-4 h-full flex flex-col gap-4 w-full">
                 <div
                   ref={containerRef}
-                  className="h-full overflow-y-auto p-4 w-full"
+                  className="h-full overflow-y-auto p-4 w-full scroll-none"
                 >
                   {messages.length > 0 ? (
                     messages.map((msg) => (

@@ -431,7 +431,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
     <div className="bg-white min-h-screen relative lg:max-w-screen-xl w-full max-w-[95%] mx-auto">
       <Icon
         onClick={() => window.history.back()}
-        className="absolute top-2 right-2 cursor-pointer"
+        className="absolute top-2 right-2 cursor-pointer z-20"
         icon="ion:arrow-back"
         width="35"
         height="35"
