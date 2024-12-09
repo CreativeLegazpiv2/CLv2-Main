@@ -37,7 +37,6 @@ export const CreativeUsers = () => {
     fetchUsers();
   }, []);
 
-
   return (
     <div className="w-full h-fit pb-[15dvh]">
       <ToastContainer />
@@ -327,9 +326,9 @@ const UserCard = ({
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
       whileHover={{ scale: 1.02 }}
-      className="w-full border border-gray-400 rounded-xl p-4 bg-secondary-1 shadow-customShadow"
+      className="w-full border border-gray-400 rounded-xl p-4 bg-secondary-1 shadow-customShadow "
     >
-      <div className="flex flex-col">
+      <div className="flex flex-col ">
         <div className="w-full h-52 relative">
           <img
             className="w-full h-full object-cover"
@@ -337,11 +336,12 @@ const UserCard = ({
             alt=""
           />
         </div>
-        <div className="w-full h-full max-h-28 -mt-8 flex justify-between items-center">
-          <div className="w-fit flex items-center justify-center gap-1.5">
+        <div className="w-full h-full max-h-28 -mt-8 flex justify-center items-center relative">
+          <div className="w-fit flex items-center justify-center gap-1.5 cursor-pointer absolute left-0 -translate-y-1/2 mt-6">
             <motion.span
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              className=""
             >
               {" "}
               <Icon
@@ -360,7 +360,6 @@ const UserCard = ({
             src={profile_pic || "../images/creative-directory/boy.png"}
             alt=""
           />
-          <div className="w-4"></div>
         </div>
         <div className="w-full min-h-32 max-h-fit mt-6">
           <div className="w-full h-full max-w-[87%] mx-auto flex flex-col gap-2 justify-center items-center">

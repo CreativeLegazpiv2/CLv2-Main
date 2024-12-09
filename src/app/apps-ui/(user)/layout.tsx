@@ -68,7 +68,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
       />
       <main className="flex-grow">{children}</main>
       {isShowChat && (
-        <div className="fixed -bottom-2 -right-1 z-500 p-4">
+        <div className="fixed -bottom-2 -right-1 z-[500] p-4">
           <ButtonChat
             isChatModalOpen={isChatModalOpen}
             onOpenChatModal={handleOpenChatModal}

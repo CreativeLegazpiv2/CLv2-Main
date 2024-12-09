@@ -83,7 +83,7 @@ export default function MainLayout({
         )}
       </AnimatePresence>
       {isShowChat && (
-        <div className="fixed -bottom-2 -right-1 z-500 p-4">
+        <div className="fixed -bottom-2 -right-1 z-[500] p-4">
           <ButtonChat
            isChatModalOpen={isChatModalOpen}
            onOpenChatModal={handleOpenChatModal}

@@ -696,7 +696,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                                   [comment.id]: e.target.value,
                                 })
                               }
-                              className="border-[1.5px] border-gray-300 focus:outline-none focus:ring-[1.5px] p-2 rounded-full w-full"
+                              className="border-[1.5px] border-gray-300 focus:outline-none focus:ring-[1.5px] px-4 rounded-full h-fit py-2 w-full"
                               placeholder={
                                 "Add a reply as" + " " + comment.first_name
                               }
@@ -771,17 +771,17 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
             {/* Comment */}
             <form
               onSubmit={handleCommentSubmit}
-              className="h-fit bg-white flex gap-2 w-full p-4 mb-4"
+              className="bg-white flex gap-2 w-full p-4 mb-4 items-center"
             >
               {/* Add here the image of the current user logged in base on session */}
               <input
                 type="text"
                 value={commentInput}
                 onChange={(e) => setCommentInput(e.target.value)}
-                className="border-[1.5px] border-gray-300 p-2 rounded-full  px-4 w-full"
+                className="border-[1.5px] border-gray-300 py-2 rounded-full h-fit  px-4 w-full"
                 placeholder="Add a comment..."
               />
-              <button type="submit" className="mt-2 p-2 rounded">
+              <button type="submit" className=" p-2 rounded">
                 <SendHorizontal
                   className=" text-blue-500 text-xl"
                   size={36}

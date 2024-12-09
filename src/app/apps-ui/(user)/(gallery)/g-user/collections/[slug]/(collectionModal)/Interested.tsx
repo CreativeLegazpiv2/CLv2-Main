@@ -657,7 +657,7 @@ export const Interested = ({
         <X size={25} />
       </button>
       <div className="bg-primary-2 p-2.5">
-        <div className="text-xl text-gray-200 font-extrabold">
+        <div className="text-xl text-gray-200 font-extrabold min-h-10">
           {/* Conditional rendering based on selected session */}
           {!selectedSessionId ? (
             // No session clicked yet, show "Chat" placeholder
@@ -701,7 +701,7 @@ export const Interested = ({
         <div className="w-full h-full flex flex-col">
           {!isRightColumnVisible && (
             // Search user section
-            <div className="bg-white w-full h-full">
+            <div className="bg-white w-full h-full z-[900]">
               <div className="p-2 relative group">
                 <Search className="absolute top-1/2 left-4 transform -translate-y-1/2 text-primary-3/30 group-focus-within:text-primary-3" />
                 <input
@@ -834,7 +834,7 @@ export const Interested = ({
           )}
 
           {isRightColumnVisible && (
-            <div className="flex flex-col h-full w-full bg-white">
+            <div className="flex flex-col h-full w-full bg-white z-[900]">
               <button
                 onClick={handleBackToSessions}
                 className="absolute top-2 right-2 p-2 bg-gray-200 rounded-lg cursor-pointer"

@@ -42,13 +42,24 @@ const config: Config = {
           9: "#FAEFD3", //brown-shade scoll-bar tracking line
         },
 
-        newColor: {
-          //ADD NEW COLOR HERE do not insert new color for the color above is already used, 
-          //changing the number will create error or change other component design change
+        new: {
+          /* SCSS HEX */
+          1: "#914F1E",
+          2: "#DEAC80",
+          3: "#403737",
+          4: "#F7DCB9",
+          5: "#4B5945",
+
+           /* SCSS HEX */
+          //  1: "#D398A6ff",
+          //  2: "#DA8CA2",
+          //  3: "#BC3D68",
+          //  4: "#C55375",
+          //  5: "#CE6E8A",
         },
 
       },
-      boxShadow:{
+      boxShadow: {
         "customShadow": '5px 5px 5px 0px rgba(0, 0, 0, 0.3)',
         "customShadow2": '5px 5px 5px 0px rgba(0, 0, 0, 0.6)',
         "customShadow3": '5px 5px 10px 15px rgba(0, 0, 0, 0.3)',
