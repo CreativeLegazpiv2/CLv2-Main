@@ -14,6 +14,7 @@ import { EditCollection } from "./(collectionModal)/EditCollection";
 import { Interested } from "./(collectionModal)/Interested";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { SendHorizontal } from "lucide-react";
+import Link from "next/link";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
 
@@ -33,6 +34,7 @@ interface CollectionProps {
 }
 
 interface UserDetails {
+  detailsid: string;
   first_name: string;
   profile_pic: string;
   // Add other user details properties here if needed
@@ -120,6 +122,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
               ...comment,
               first_name: userDetail.first_name || "Unknown",
               profile_pic: userDetail.profile_pic || "",
+              detailsid: userDetail.detailsid || "",
             };
           }
         );
@@ -183,9 +186,9 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
           prevComments.map((comment) =>
             comment.id === commentId
               ? {
-                  ...comment,
-                  subcomments: [...comment.subcomments, newSubcomment],
-                }
+                ...comment,
+                subcomments: [...comment.subcomments, newSubcomment],
+              }
               : comment
           )
         );
@@ -345,10 +348,10 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
       const updatedImages = images.map((img) =>
         img.generatedId === selectedImage.generatedId
           ? {
-              ...img,
-              ...updatedData,
-              image_path: updatedData.image_path || "/images/default.jpg", // Fallback value
-            }
+            ...img,
+            ...updatedData,
+            image_path: updatedData.image_path || "/images/default.jpg", // Fallback value
+          }
           : img
       );
       setImages(updatedImages);
@@ -465,11 +468,10 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.1 }}
-              className={`relative h-64 rounded-lg overflow-hidden shadow-lg cursor-pointer ${
-                selectedImage?.generatedId === image.generatedId
+              className={`relative h-64 rounded-lg overflow-hidden shadow-lg cursor-pointer ${selectedImage?.generatedId === image.generatedId
                   ? "border-2 border-sky-500"
                   : ""
-              }`}
+                }`}
               onClick={() => handleImageClick(image)}
             >
               <Image
@@ -598,7 +600,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
             </motion.div>
           )}
         </AnimatePresence>
-      
+
 
         <div className="max-h-[32rem] min-h-40 w-full border border-gray-300 rounded-lg p-4 overflow-hidden">
           {/* Comment Section */}
@@ -623,18 +625,23 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                     className="bg-gray-50 p-4 rounded-lg h-full overflow-y-auto relative"
                   >
                     <div className="w-full flex gap-2.5 items-start justify-start">
-                      <div className="w-10 h-10">
-                        <Image
-                          src={
-                            comment.profile_pic ||
-                            "/images/creative-directory/boy.png"
-                          }
-                          className="w-full h-full rounded-full bg-cover object-cover"
-                          width={100}
-                          height={100}
-                          alt={`Comment ${index + 1}`}
-                        />
-                      </div>
+                      <Link
+                        href={`/apps-ui/g-user/view-profile/${comment.detailsid}`} // Use Link for client-side navigation
+                        passHref
+                      >
+                        <div className="w-10 h-10">
+                          <Image
+                            src={
+                              comment.profile_pic ||
+                              "/images/creative-directory/boy.png"
+                            }
+                            className="w-full h-full rounded-full bg-cover object-cover"
+                            width={100}
+                            height={100}
+                            alt={`Comment ${index + 1}`}
+                          />
+                        </div>
+                      </Link>
                       <div className="w-full flex flex-col gap-1 justify-start items-start">
                         <div className="w-full flex flex-col gap-0.5 bg-gray-200 p-2.5 rounded-md">
                           <p className="text-base  text-gray-700 font-semibold">
@@ -720,18 +727,23 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                           className=" p-2 rounded-lg ml-12 mt-2"
                         >
                           <div className="w-full flex gap-2.5 items-start justify-start">
-                            <div className="w-10 h-10">
-                              <Image
-                                src={
-                                  comment.profile_pic ||
-                                  "/images/creative-directory/boy.png"
-                                }
-                                className="w-full h-full rounded-full bg-cover object-cover"
-                                width={100}
-                                height={100}
-                                alt={`Comment ${index + 1}`}
-                              />
-                            </div>
+                            <Link
+                              href={`/apps-ui/g-user/view-profile/${subcomment.userDetails?.detailsid}`} // Use Link for client-side navigation
+                              passHref
+                            >
+                              <div className="w-10 h-10">
+                                <Image
+                                  src={
+                                    comment.profile_pic ||
+                                    "/images/creative-directory/boy.png"
+                                  }
+                                  className="w-full h-full rounded-full bg-cover object-cover"
+                                  width={100}
+                                  height={100}
+                                  alt={`Comment ${index + 1}`}
+                                />
+                              </div>
+                            </Link>
                             <div className="w-full flex flex-col gap-1 justify-start items-start">
                               <div className="w-full flex flex-col gap-0.5 bg-gray-200 p-2.5 rounded-md">
                                 <p className="text-base  text-gray-700 font-semibold">
