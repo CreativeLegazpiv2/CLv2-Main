@@ -65,6 +65,8 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
 
   const [commentInput, setCommentInput] = useState("");
   const [comments, setComments] = useState<any[]>([]);
+  const [liked, setLike] = useState<boolean>(false);
+  const [likeCount, setLikeCount] = useState<number>(0);
   const [replyInput, setReplyInput] = useState<{ [key: string]: string }>({});
   const [showReplyInput, setShowReplyInput] = useState<{
     [key: string]: boolean;
@@ -139,6 +141,43 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
       toast.error("Failed to fetch comments.", { position: "bottom-right" });
     }
   };
+
+  // likes
+
+useEffect(() => {
+  const fetchLikeStatus = async () => {
+    if (!selectedImage || !getID) return;
+
+    try {
+      const response = await fetch(`/api/collections/like-collections`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          galleryId: selectedImage.generatedId,
+          fetchOnly: true, // Add this flag to indicate that we only want to fetch the status
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setLike(data.userLiked.includes(getID));
+        setLikeCount(data.likeCount); // Update the like count state
+      } else {
+        const data = await response.json();
+        console.error("Failed to fetch like status:", data.error);
+      }
+    } catch (error) {
+      console.error("Error fetching like status:", error);
+    }
+  };
+
+  fetchLikeStatus();
+}, [selectedImage, getID, liked]);
+
+
+
 
   const handleReplyClick = (commentId: string) => {
     setShowReplyInput({
@@ -430,6 +469,37 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
     return <>{timeAgo}</>;
   }
 
+  const toggleLike = async () => {
+    if (!selectedImage) return;
+  
+    try {
+      const response = await fetch(`/api/collections/like-collections`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: getID,
+          galleryId: selectedImage.generatedId,
+        }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setLike(data.userLiked.includes(getID!));
+        toast.success("Like toggled successfully!", { position: "bottom-right" });
+      } else {
+        const data = await response.json();
+        toast.error(`Failed to toggle like: ${data.error}`, { position: "bottom-right" });
+      }
+    } catch (error) {
+      console.error("Error toggling like:", error);
+      toast.error("Failed to toggle like.", { position: "bottom-right" });
+    }
+  };
+
+
+
   return (
     <div className="bg-white min-h-screen relative lg:max-w-screen-xl w-full max-w-[95%] mx-auto">
       <Icon
@@ -564,6 +634,15 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
 
         {selectedImage && (
           <div className="bg-gray-100 p-6 rounded-lg mb-8">
+            <div><Icon
+                className="cursor-pointer text-red-400"
+                icon={liked ? "jam:heart-f" : "jam:heart"}
+                width="35"
+                height="35"
+                onClick={toggleLike}
+              />
+              <span className="ml-2 text-gray-600">{likeCount} likes</span>
+              </div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">
               Collection Details
             </h2>
