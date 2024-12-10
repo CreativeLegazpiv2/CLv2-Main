@@ -19,8 +19,8 @@ interface UserDetails {
   facebook?: string;
   twitter?: string;
   portfolioLink?: string;
-  email?: string
-  bday:string;
+  email?: string;
+  bday: string;
 }
 
 const iconNifyNonColored = [
@@ -99,29 +99,29 @@ export const Profile = () => {
     twitter,
     portfolioLink,
     email,
-    bday
+    bday,
   } = userDetails;
 
   const handleGalleryClick = async () => {
     try {
       // Make the API request
       const response = await fetch(`/api/directoryServices`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'User-ID': detailsid,
+          "User-ID": detailsid,
         },
       });
-  
+
       // Check if the response is successful
       if (!response.ok) {
         throw new Error("Failed to fetch directory services data.");
       }
-  
+
       const data = await response.json();
-  
+
       // Log the data to inspect its structure
       console.log("API response data:", data);
-  
+
       // Check if the user has uploaded any works
       if (data.exists) {
         // If works exist, navigate to the gallery page
@@ -140,13 +140,12 @@ export const Profile = () => {
       });
     }
   };
-  
-  
+
   return (
     <div className="w-full md:h-dvh h-fit md:max-w-[70%] max-w-[90%] mx-auto pt-[10dvh] flex flex-col md:flex-row gap-6 items-end justify-between">
       <ToastContainer />
-      <div className="w-full md:h-[70dvh] h-fit md:pt-0 pt-[20dvh] border border-black z-50 flex flex-col-reverse md:flex-row md:gap-8 gap-4 justify-center items-center">
-        <div className=" w-fit md:h-full h-fit border border-black flex md:flex-col flex-row items-center justify-center gap-4">
+      <div className="w-full md:h-[70dvh] h-fit md:pt-0 pt-[20dvh] z-50 flex flex-col-reverse md:flex-row md:gap-8 gap-4 justify-center items-center">
+        <div className=" w-fit md:h-full h-fit flex md:flex-col flex-row items-center justify-center gap-4">
           {iconNifyNonColored.map((src, index) => (
             <Icon
               className="cursor-pointer text-white"
@@ -157,7 +156,7 @@ export const Profile = () => {
             />
           ))}
         </div>
-        <div className="w-full md:h-[70dvh] h-fit border border-black max-w-md rounded-t-3xl bg-white relative space-y-4">
+        <div className="w-full md:h-[70dvh] h-fit max-w-md rounded-t-3xl bg-white relative">
           <div className="w-full flex flex-col h-[18rem] max-w-[18rem] rounded-full mx-auto -mt-[8rem] bg-white overflow-hidden">
             <img
               src={profile_pic || "/images/creative-directory/boy.png"}
@@ -165,56 +164,95 @@ export const Profile = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="w-full p-4 text-center flex flex-col gap-6">
-            <div>
-              <p className="text-2xl font-semibold uppercase ">
 
-              </p>
+          <div className="w-full p-4 text-center flex flex-col gap-2">
+            <div>
+              <p className="text-2xl font-semibold uppercase "></p>
               <p className="text-base"></p>
             </div>
-            <div className="w-full">
-              <p className="w-full max-w-sm mx-auto">
-                {bio} {/* Display dynamic bio content */}
-              </p>
-              <div className="grid grid-cols-2 gap-1 md:hidden pt-4">
-                <p>Email: {email}</p>
-                <p>Name: {first_name}</p>
-                <p>Bday: {bday}</p>
-                <p>Address: {address}</p>
-                <p>Mobile: {mobileNo}</p>
+            <div className="w-full flex justify-between items-start px-6 py-4 space-x-4 text-left">
+              <div className="w-full space-y-2">
+              <div className="space-y-2">
+                  <label
+                    htmlFor="name"
+                    className="block text-base font-semibold text-gray-600 uppercase tracking-wider"
+                  >
+                    Name
+                  </label>
+                  <span className="block text-sm font-medium text-gray-800">
+                    {first_name}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <label
+                    htmlFor="email"
+                    className="block text-base font-semibold text-gray-600 uppercase tracking-wider"
+                  >
+                    Email
+                  </label>
+                  <span className="block text-sm font-medium text-gray-800 truncate">
+                    {email}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <label
+                    htmlFor="birthDate"
+                    className="block text-base font-semibold text-gray-600 uppercase tracking-wider"
+                  >
+                    Birth Date
+                  </label>
+                  <span className="block text-sm font-medium text-gray-800">
+                    {bday}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <label
+                    htmlFor="mobileNo"
+                    className="block text-base font-semibold text-gray-600 uppercase tracking-wider"
+                  >
+                    Mobile No
+                  </label>
+                  <span className="block text-sm font-medium text-gray-800">
+                    {mobileNo}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <label
+                    htmlFor="address"
+                    className="block text-base font-semibold text-gray-600 uppercase tracking-wider"
+                  >
+                    Address
+                  </label>
+                  <span className="block text-sm font-medium text-gray-800 line-clamp-2">
+                    {address}
+                  </span>
+                </div>
               </div>
             </div>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-40 border mt-4 border-new-3 hover:bg-new-3 hover:text-white text-new-3 py-2 rounded-full mx-auto duration-300 ease-in-out"
-              onClick={handleGalleryClick}
-           >
-              View Gallery
-            </motion.button>
           </div>
         </div>
       </div>
-      <div className="w-full h-[70dvh] max-w-screen-sm text-white z-50 md:text-right text-center flex flex-col justify-center items-end gap-6">
+      <div className="w-full h-[70dvh] max-w-screen-sm text-white z-50 md:text-right text-center flex flex-col justify-start items-end gap-4">
         <p className="text-6xl w-full max-w-sm uppercase">
-          Creative field here
+          {creative_field || "Buyer"}
         </p>
-        <p className="w-full max-w-lg text-lg">
-          Creative field description here // Lorem ipsum dolor sit amet
-          consectetur adipisicing elit. Fugit minus tenetur, hic error voluptas
-          voluptatem nostrum soluta eaque impedit voluptates cupiditate eveniet
-          dignissimos sapiente quasi? Iure molestias veniam qui quidem.
-        </p>
-        <div className="flex-col gap-1 md:flex hidden">
+        <p className="w-full max-w-lg text-lg">{bio || "Lorem"}</p>
+        {/* <div className="flex-col gap-1 md:flex hidden">
           <p>{email}</p>
           <p>{first_name}</p>
           <p>{bday}</p>
           <p>{address}</p>
           <p>{mobileNo}</p>
-        </div>
+        </div> */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="w-48 border mt-4 border-new-3 hover:bg-new-3 hover:text-white text-new-3 bg-new-4 py-2 rounded-full duration-300 ease-in-out"
+          onClick={handleGalleryClick}
+        >
+          View Gallery
+        </motion.button>
       </div>
     </div>
   );
 };
-
-
