@@ -152,7 +152,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
     }
     return (count / 1000000).toFixed(1) + "M";
   };
-
+  
   useEffect(() => {
     const fetchLikeStatus = async () => {
       if (!selectedImage?.generatedId || !getID) return;
