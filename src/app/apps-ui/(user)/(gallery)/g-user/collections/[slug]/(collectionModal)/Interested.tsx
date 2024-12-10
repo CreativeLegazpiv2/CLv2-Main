@@ -6,6 +6,7 @@ import { jwtVerify } from "jose";
 import { ArrowLeft, Loader, Search, SendHorizontal, X } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
+import { debounce } from "lodash";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
 
@@ -47,6 +48,7 @@ interface Session {
   // Add other session fields as needed
   userDetails: userDetails;
 }
+
 interface userDetails {
   detailsid: number;
   first_name: string;
@@ -89,9 +91,7 @@ export const Interested = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const [autoSendTriggered, setAutoSendTriggered] = useState<boolean>(false); // Flag to track auto-send
   const [sessions, setSessions] = useState<Session[]>([]);
-  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
-    null
-  );
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [selectedId, setselectedId] = useState<string | null>(null);
   const [gettokenId, settokenId] = useState<string | null>(null);
   const [userDetails, setUserDetails] = useState<userDetails[]>([]);
@@ -146,7 +146,7 @@ export const Interested = ({
     }
   }, [messages]);
 
-  // getnew users to message
+  // get new users to message
   useEffect(() => {
     fetchusersData();
   }, []);
@@ -281,10 +281,19 @@ export const Interested = ({
     fetchMessages();
   }, []);
 
+  const debouncedAutoSend = debounce(async () => {
+    await autoSend();
+  }, 1000);
+
   useEffect(() => {
+    let isAutoSendCalled = false;
+
     const checkAndAutoSend = async () => {
       const token = getSession();
-      if (!token || autoSendTriggered || chat) return; // Return if already triggered or chat is true
+      if (!token || autoSendTriggered || chat || isAutoSendCalled) {
+        console.log("Early return: token, autoSendTriggered, or chat condition met");
+        return;
+      }
 
       try {
         const { payload } = await jwtVerify(
@@ -307,32 +316,29 @@ export const Interested = ({
         }
 
         const data = await response.json();
-        const sessions = data.sessions;
 
-        // Check if previewImage exists in the messages and sessionid matches id
-        const imageExists = sessions.some((session: any) =>
-          session.messages.some((msg: any) => msg.image_path === previewImage)
-        );
-        if (!imageExists) {
-          await autoSend();
-          setAutoSendTriggered(true); // Set the flag to true after auto-send
+        // const imageExists = sessions.some((session: any) =>
+        //   session.messages.some((msg: any) => msg.image_path === previewImage)
+        // );
+       
+          console.log("Auto-send triggered");
+          debouncedAutoSend();
+          setAutoSendTriggered(true);
+          isAutoSendCalled = true;
           fetchSessionData();
-        }
+      
       } catch (error: any) {
-        console.error(
-          "Error checking and auto-sending message:",
-          error.message
-        );
+        console.error("Error checking and auto-sending message:", error.message);
       }
     };
 
     checkAndAutoSend();
-  }, [autoSendTriggered, chat, formData.childid, previewImage]); // Add dependencies
+  }, [autoSendTriggered, chat, formData.childid, previewImage]);
 
   const fetchMessages = async () => {
     const token = getSession();
     if (!token) return;
-    if (!chat) {
+    if (!isChat) {
       try {
         const { payload } = await jwtVerify(
           token,
@@ -341,7 +347,7 @@ export const Interested = ({
         const userIdFromToken = payload.id as string;
         const childid = formData.childid as string;
 
-        const response = await fetch("/api/chat/msg-session", {
+        const response = await fetch("/api/chat/msg-session1", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -355,10 +361,9 @@ export const Interested = ({
         }
 
         const data = await response.json();
-        if (data && data.length > 0) {
-          setMessages(
-            data.sessions.flatMap((session: any) => session.messages)
-          );
+        if (data && data.sessions && data.sessions.length > 0) {
+          // Instead of using flatMap, just use the data directly
+          setMessages(data.sessions); // This assumes 'sessions' contains all the message data you need
           setMsgLoading(false);
         } else {
           setMsgLoading(false);
@@ -435,7 +440,7 @@ export const Interested = ({
     const token = getSession();
     if (!token) return;
 
-    if (!chat) {
+    if (!isChat) {
       try {
         const { payload } = await jwtVerify(
           token,
@@ -557,6 +562,7 @@ export const Interested = ({
   };
 
   const handleBackToSessions = () => {
+    setChat(true);
     setSelectedSessionId(null);
     setIsRightColumnVisible(false);
   };
@@ -625,7 +631,6 @@ export const Interested = ({
       setselectedId(selectedUserId);
       setSelectedSessionId(data.sessionId);
       fetchSessionData();
-      const selectedidmsg = selectedSessionId as string;
 
       const dataidmsg = data.sessionId as string;
       const responseData = await fetch("/api/chat/all-msg-session", {
