@@ -172,7 +172,7 @@ export const Profile = () => {
             </div>
             <div className="w-full flex justify-between items-start px-6 py-4 space-x-4 text-left">
               <div className="w-full space-y-2">
-              <div className="space-y-2">
+                <div className="space-y-2">
                   <label
                     htmlFor="name"
                     className="block text-base font-semibold text-gray-600 uppercase tracking-wider"
@@ -232,9 +232,9 @@ export const Profile = () => {
           </div>
         </div>
       </div>
-      <div className="w-full h-[70dvh] max-w-screen-sm text-white z-50 md:text-right text-center flex flex-col justify-start items-end gap-4">
-        <p className="text-6xl w-full max-w-sm uppercase">
-          {creative_field || "Buyer"}
+      <div className="w-full h-[70dvh] max-w-screen-sm text-primary-2 z-50 md:text-right text-center flex flex-col justify-start items-end gap-4">
+        <p className="text-6xl w-full max-w-sm uppercase font-extrabold">
+          {(creative_field || "Buyer").split("-").join(" ")}
         </p>
         <p className="w-full max-w-lg text-lg">{bio || "Lorem"}</p>
         {/* <div className="flex-col gap-1 md:flex hidden">
