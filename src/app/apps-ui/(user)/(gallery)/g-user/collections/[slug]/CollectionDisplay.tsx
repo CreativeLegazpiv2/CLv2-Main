@@ -15,6 +15,8 @@ import { Interested } from "./(collectionModal)/Interested";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { SendHorizontal } from "lucide-react";
 import Link from "next/link";
+import CommentSkeleton from "@/components/Skeletal/commentSkeleton";
+import SubcommentSkeleton from "@/components/Skeletal/subcommentSkeleton";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
 
@@ -74,12 +76,19 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
   const [showMoreReplies, setShowMoreReplies] = useState<{
     [key: string]: boolean;
   }>({});
+  const [replyLoading, setReplyLoading] = useState<{ [key: string]: boolean }>(
+    {}
+  );
 
   const [chat, setChat] = useState(false);
-
+  const [isLoadingComments, setIsLoadingComments] = useState(true); // State for loading comments
   useEffect(() => {
     fetchComments();
   }, [selectedImage]);
+
+  useEffect(() => {
+    setIsLoadingComments(true); // Set loading state to true
+  }, []);
 
   const fetchComments = async () => {
     if (!selectedImage) return;
@@ -116,7 +125,6 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
           })
         );
 
-        // Extract first_name from userDetails for main comments
         const commentsWithUserDetails = commentsWithSubcomments.map(
           (comment: any) => {
             const userDetail = comment.userDetails || {};
@@ -139,6 +147,8 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
     } catch (error) {
       console.error("Error fetching comments:", error);
       toast.error("Failed to fetch comments.", { position: "bottom-right" });
+    } finally {
+      setIsLoadingComments(false); // Set loading state to false
     }
   };
 
@@ -152,7 +162,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
     }
     return (count / 1000000).toFixed(1) + "M";
   };
-  
+
   useEffect(() => {
     const fetchLikeStatus = async () => {
       if (!selectedImage?.generatedId || !getID) return;
@@ -175,7 +185,8 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
           setLike(data.userLiked?.includes(getID) ?? false);
 
           // Use the formatLikeCount function to set the like count
-          setLikeCount(formatLikeCount(data.likeCount || 0));
+          setLikeCount(
+            formatLikeCount(data.likeCount || 0));
         } else {
           const errorData = await response.json().catch(() => ({}));
           console.error(
@@ -189,7 +200,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
     };
 
     fetchLikeStatus();
-  }, [selectedImage?.generatedId, getID]);
+  }, [selectedImage?.generatedId, getID, likeCount]);
 
   // When rendering
   <span className="ml-2 text-gray-600">{likeCount} likes</span>;
@@ -215,6 +226,10 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
         new TextEncoder().encode(JWT_SECRET)
       );
       const userId = payload.id as string;
+
+      // Set loading state for the reply
+      setReplyLoading({ ...replyLoading, [commentId]: true });
+
       const response = await fetch("/api/collections/subcomment", {
         method: "POST",
         headers: {
@@ -227,28 +242,10 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
       });
 
       if (response.ok) {
-        fetchComments();
-        toast.success("Reply added successfully!", {
-          position: "bottom-right",
-        });
-        const newSubcomment = {
-          comment: replyInput[commentId],
-          userid: userId,
-          created_at: new Date().toISOString(),
-        };
-        setComments((prevComments) =>
-          prevComments.map((comment) =>
-            comment.id === commentId
-              ? {
-                  ...comment,
-                  subcomments: [...comment.subcomments, newSubcomment],
-                }
-              : comment
-          )
-        );
         setReplyInput({ ...replyInput, [commentId]: "" });
         setShowReplyInput({ ...showReplyInput, [commentId]: false });
         setShowMoreReplies({ ...showMoreReplies, [commentId]: true }); // Show all replies for this comment
+        fetchComments();
       } else {
         const data = await response.json();
         toast.error(`Failed to add reply: ${data.error}`, {
@@ -258,6 +255,11 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
     } catch (error) {
       console.error("Error submitting reply:", error);
       toast.error("Failed to add reply.", { position: "bottom-right" });
+    } finally {
+      // Reset loading state
+      setTimeout(() => {
+        setReplyLoading({ ...replyLoading, [commentId]: false });
+      }, 2000);
     }
   };
 
@@ -285,9 +287,6 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
       });
 
       if (response.ok) {
-        toast.success("Comment added successfully!", {
-          position: "bottom-right",
-        });
         setCommentInput("");
         fetchComments(); // Fetch updated comments after submission
       } else {
@@ -485,10 +484,11 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
   }
 
   const toggleLike = async () => {
-    if (!selectedImage) return;
-
+    if (!selectedImage || !getID) return;
+  
     try {
-      const response = await fetch(`/api/collections/like-collections`, {
+      // Step 1: Toggle the like status
+      const toggleResponse = await fetch(`/api/collections/like-collections`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -496,21 +496,42 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
         body: JSON.stringify({
           userId: getID,
           galleryId: selectedImage.generatedId,
+          fetchOnly: false, // This ensures the like status is toggled
         }),
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        setLike(data.userLiked.includes(getID!));
-        toast.success("Like toggled successfully!", {
+  
+      if (!toggleResponse.ok) {
+        const errorData = await toggleResponse.json();
+        toast.error(`Failed to toggle like: ${errorData.error}`, {
           position: "bottom-right",
         });
-      } else {
-        const data = await response.json();
-        toast.error(`Failed to toggle like: ${data.error}`, {
-          position: "bottom-right",
-        });
+        return;
       }
+  
+      // Step 2: Fetch the updated like count
+      const fetchResponse = await fetch(`/api/collections/like-collections`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          galleryId: selectedImage.generatedId,
+          fetchOnly: true, // This ensures only the like count is fetched
+        }),
+      });
+  
+      if (!fetchResponse.ok) {
+        const errorData = await fetchResponse.json();
+        toast.error(`Failed to fetch updated like count: ${errorData.error}`, {
+          position: "bottom-right",
+        });
+        return;
+      }
+  
+      // Step 3: Update the UI with the new like count and userLiked status
+      const { userLiked, likeCount } = await fetchResponse.json();
+      setLike(userLiked.includes(getID));
+      setLikeCount(likeCount);
     } catch (error) {
       console.error("Error toggling like:", error);
       toast.error("Failed to toggle like.", { position: "bottom-right" });
@@ -687,80 +708,87 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                 Comments
               </h2>
               <div className="h-full w-full overflow-y-auto">
-                {comments.map((comment, index) => {
-                  const subcommentsForComment: Subcomment[] =
-                    comment.subcomments || [];
-                  const shouldShowMoreButton = subcommentsForComment.length > 1;
-                  const displayedSubcomments = showMoreReplies[comment.id]
-                    ? subcommentsForComment
-                    : subcommentsForComment.slice(0, 1);
-                  const additionalRepliesCount =
-                    subcommentsForComment.length - 1;
+                {isLoadingComments ? (
+                  <>
+                    <CommentSkeleton />
+                    <CommentSkeleton />
+                    <CommentSkeleton />
+                  </>
+                ) : (
+                  comments.map((comment, index) => {
+                    const subcommentsForComment: Subcomment[] =
+                      comment.subcomments || [];
+                    const shouldShowMoreButton = subcommentsForComment.length > 1;
+                    const displayedSubcomments = showMoreReplies[comment.id]
+                      ? subcommentsForComment
+                      : subcommentsForComment.slice(0, 1);
+                    const additionalRepliesCount =
+                      subcommentsForComment.length - 1;
 
-                  return (
-                    <div
-                      key={index}
-                      className="bg-gray-50 p-4 rounded-lg overflow-y-auto relative"
-                    >
-                      <div className="w-full flex gap-2.5 items-start justify-start">
-                        <Link
-                          href={`/apps-ui/g-user/view-profile/${comment.detailsid}`} // Use Link for client-side navigation
-                          passHref
-                        >
-                          <div className="w-10 h-10">
-                            <Image
-                              src={
-                                comment.profile_pic ||
-                                "/images/creative-directory/boy.png"
-                              }
-                              className="w-full h-full rounded-full bg-cover object-cover"
-                              width={100}
-                              height={100}
-                              alt={`Comment ${index + 1}`}
-                            />
-                          </div>
-                        </Link>
-                        <div className="w-full flex flex-col gap-1 justify-start items-start">
-                          <div className="w-full flex flex-col gap-0.5 bg-gray-200 p-2.5 rounded-md">
-                            <p className="text-base  text-gray-700 font-semibold">
-                              {comment.first_name}
-                            </p>
-                            <p className="text-gray-600">{comment.comment}</p>
-                          </div>
-                          <div className="w-full flex justify-between">
-                            <div className="flex gap-4">
-                              <p className="text-gray-600 text-sm pl-2">
-                                <TimeAgo timestamp={comment.created_at} />
-                              </p>
-                              <button
-                                className="text-sm text-gray-400"
-                                onClick={() => handleReplyClick(comment.id)}
-                              >
-                                Reply
-                              </button>
-                            </div>
-                            {shouldShowMoreButton && (
-                              <button
-                                onClick={() =>
-                                  setShowMoreReplies({
-                                    ...showMoreReplies,
-                                    [comment.id]: !showMoreReplies[comment.id],
-                                  })
+                    return (
+                      <div
+                        key={index}
+                        className="bg-gray-50 p-4 rounded-lg overflow-y-auto relative"
+                      >
+                        <div className="w-full flex gap-2.5 items-start justify-start">
+                          <Link
+                            href={`/apps-ui/g-user/view-profile/${comment.detailsid}`} // Use Link for client-side navigation
+                            passHref
+                          >
+                            <div className="w-10 h-10">
+                              <Image
+                                src={
+                                  comment.profile_pic ||
+                                  "/images/creative-directory/boy.png"
                                 }
-                                className="text-gray-400 text-sm"
+                                className="w-full h-full rounded-full bg-cover object-cover"
+                                width={100}
+                                height={100}
+                                alt={`Comment ${index + 1}`}
+                              />
+                            </div>
+                          </Link>
+                          <div className="w-full flex flex-col gap-1 justify-start items-start">
+                            <div className="w-full flex flex-col gap-0.5 bg-gray-200 p-2.5 rounded-md">
+                              <p className="text-base  text-gray-700 font-semibold">
+                                {comment.first_name}
+                              </p>
+                              <p className="text-gray-600">{comment.comment}</p>
+                            </div>
+                            <div className="w-full flex justify-between">
+                              <div className="flex gap-4">
+                                <p className="text-gray-600 text-sm pl-2">
+                                  <TimeAgo timestamp={comment.created_at} />
+                                </p>
+                                <button
+                                  className="text-sm text-gray-400"
+                                  onClick={() => handleReplyClick(comment.id)}
+                                >
+                                  Reply
+                                </button>
+                              </div>
+                              {shouldShowMoreButton && (
+                                <button
+                                  onClick={() =>
+                                    setShowMoreReplies({
+                                      ...showMoreReplies,
+                                      [comment.id]: !showMoreReplies[comment.id],
+                                    })
+                                  }
+                                  className="text-gray-400 text-sm"
+                                >
+                                  {showMoreReplies[comment.id]
+                                    ? ""
+                                    : `View More ${additionalRepliesCount} Comments`}
+                                </button>
+                              )}
+                            </div>
+                            {showReplyInput[comment.id] && (
+                              <form
+                                onSubmit={(e) => handleReplySubmit(e, comment.id)}
+                                className="mt-2 pl-4 w-full flex gap-2"
                               >
-                                {showMoreReplies[comment.id]
-                                  ? ""
-                                  : `View More ${additionalRepliesCount} Comments`}
-                              </button>
-                            )}
-                          </div>
-                          {showReplyInput[comment.id] && (
-                            <form
-                              onSubmit={(e) => handleReplySubmit(e, comment.id)}
-                              className="mt-2 pl-4 w-full flex gap-2"
-                            >
-                              <div className="w-10 h-10">
+                                {/* <div className="w-10 h-10">
                                 <Image
                                   src={
                                     comment.profile_pic ||
@@ -771,94 +799,100 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                                   height={100}
                                   alt={`Comment ${index + 1}`}
                                 />
-                              </div>
-                              <input
-                                type="text"
-                                value={replyInput[comment.id] || ""}
-                                onChange={(e) =>
-                                  setReplyInput({
-                                    ...replyInput,
-                                    [comment.id]: e.target.value,
-                                  })
-                                }
-                                className="border-[1.5px] border-gray-300 focus:outline-none focus:ring-[1.5px] px-4 rounded-full h-fit py-2 w-full"
-                                placeholder={
-                                  "Add a reply as" + " " + comment.first_name
-                                }
-                              />
-                              <button
-                                type="submit"
-                                className="mt-2 text-blue-500 p-2 rounded"
-                              >
-                                <SendHorizontal size={36} strokeWidth={1.75} />
-                              </button>
-                            </form>
-                          )}
+                              </div> */}
+                                <input
+                                  type="text"
+                                  value={replyInput[comment.id] || ""}
+                                  onChange={(e) =>
+                                    setReplyInput({
+                                      ...replyInput,
+                                      [comment.id]: e.target.value,
+                                    })
+                                  }
+                                  className="border-[1.5px] border-gray-300 focus:outline-none focus:ring-[1.5px] px-4 rounded-full h-fit py-2 w-full"
+                                  placeholder={
+                                    "Add a reply as" + " " + comment.first_name
+                                  }
+                                />
+                                <button
+                                  type="submit"
+                                  className="mt-2 text-blue-500 p-2 rounded"
+                                >
+                                  <SendHorizontal size={36} strokeWidth={1.75} />
+                                </button>
+                              </form>
+                            )}
+                          </div>
                         </div>
-                      </div>
 
-                      {/* subcomment */}
-                      {displayedSubcomments.map(
-                        (subcomment: Subcomment, subIndex: number) => (
-                          <div
-                            key={subIndex}
-                            className=" p-2 rounded-lg ml-12 mt-2"
-                          >
-                            <div className="w-full flex gap-2.5 items-start justify-start">
-                              <Link
-                                href={`/apps-ui/g-user/view-profile/${subcomment.userDetails?.detailsid}`} // Use Link for client-side navigation
-                                passHref
-                              >
-                                <div className="w-10 h-10">
-                                  <Image
-                                    src={
-                                      comment.profile_pic ||
-                                      "/images/creative-directory/boy.png"
-                                    }
-                                    className="w-full h-full rounded-full bg-cover object-cover"
-                                    width={100}
-                                    height={100}
-                                    alt={`Comment ${index + 1}`}
-                                  />
-                                </div>
-                              </Link>
-                              <div className="w-full flex flex-col gap-1 justify-start items-start">
-                                <div className="w-full flex flex-col gap-0.5 bg-gray-200 p-2.5 rounded-md">
-                                  <p className="text-base  text-gray-700 font-semibold">
-                                    {subcomment.userDetails?.first_name}
-                                  </p>
-                                  <p className="text-gray-600">
-                                    {subcomment.comment}
-                                  </p>
-                                </div>
-                                <div className="flex gap-4">
-                                  <p className="text-gray-600 text-sm pl-2">
-                                    <TimeAgo
-                                      timestamp={subcomment.created_at}
+                        {/* subcomment */}
+                        {displayedSubcomments.map(
+                          (subcomment: Subcomment, subIndex: number) => (
+                            <div
+                              key={subIndex}
+                              className=" p-2 rounded-lg ml-12 mt-2"
+                            >
+                              <div className="w-full flex gap-2.5 items-start justify-start">
+                                <Link
+                                  href={`/apps-ui/g-user/view-profile/${subcomment.userDetails?.detailsid}`} // Use Link for client-side navigation
+                                  passHref
+                                >
+                                  <div className="w-10 h-10">
+                                    <Image
+                                      src={
+                                        subcomment.userDetails?.profile_pic ||
+                                        "/images/creative-directory/boy.png"
+                                      }
+                                      className="w-full h-full rounded-full bg-cover object-cover"
+                                      width={100}
+                                      height={100}
+                                      alt={`Comment ${index + 1}`}
                                     />
-                                  </p>
+                                  </div>
+                                </Link>
+                                <div className="w-full flex flex-col gap-1 justify-start items-start">
+                                  <div className="w-full flex flex-col gap-0.5 bg-gray-200 p-2.5 rounded-md">
+                                    <p className="text-base  text-gray-700 font-semibold">
+                                      {subcomment.userDetails?.first_name}
+                                    </p>
+                                    <p className="text-gray-600">
+                                      {subcomment.comment}
+                                    </p>
+                                  </div>
+                                  <div className="flex gap-4">
+                                    <p className="text-gray-600 text-sm pl-2">
+                                      <TimeAgo
+                                        timestamp={subcomment.created_at}
+                                      />
+                                    </p>
+                                  </div>
                                 </div>
                               </div>
                             </div>
+                          )
+                        )}
+                        {replyLoading[comment.id] && (
+                          <div className="ml-12 mt-2">
+                            <SubcommentSkeleton />
                           </div>
-                        )
-                      )}
-                      {shouldShowMoreButton && (
-                        <button
-                          onClick={() =>
-                            setShowMoreReplies({
-                              ...showMoreReplies,
-                              [comment.id]: !showMoreReplies[comment.id],
-                            })
-                          }
-                          className="text-gray-400 text-sm ml-[92%] whitespace-nowrap"
-                        >
-                          {showMoreReplies[comment.id] ? "View Less" : ""}
-                        </button>
-                      )}
-                    </div>
-                  );
-                })}
+                        )}
+                        {shouldShowMoreButton && (
+                          <button
+                            onClick={() =>
+                              setShowMoreReplies({
+                                ...showMoreReplies,
+                                [comment.id]: !showMoreReplies[comment.id],
+                              })
+                            }
+                            className="text-gray-400 text-sm ml-[92%] whitespace-nowrap"
+                          >
+                            {showMoreReplies[comment.id] ? "View Less" : ""}
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })
+                )}
               </div>
               {/* Comment */}
               <form

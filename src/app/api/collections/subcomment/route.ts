@@ -3,6 +3,7 @@
 
 import { NextResponse } from 'next/server';
 import { supabase } from '@/services/supabaseClient';
+import { v4 as uuidv4 } from 'uuid'; // Import UUID generator
 
 export async function POST(req: Request) {
   try {
@@ -16,11 +17,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'galleryid, userid, and comment are required' }, { status: 400 });
     }
 
-    // Insert the comment into the gallery_comments table
+    // Generate a unique identifier for the new subcomment
+    const subcommentId = uuidv4();
+
+    // Insert the comment into the gallery_subcomments table
     const { data, error } = await supabase
       .from('gallery_subcomments')
       .insert([
         {
+          id: subcommentId, // Use the generated UUID as the id
           commentid,
           userid,
           comment,
@@ -33,8 +38,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Respond with the inserted data
-    return NextResponse.json({ data }, { status: 201 });
+    // Respond with the inserted data and the unique identifier
+    return NextResponse.json({ subcommentId }, { status: 201 });
 
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
