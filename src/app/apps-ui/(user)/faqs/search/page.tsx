@@ -120,7 +120,7 @@ export default function SearchResults() {
                   {results.map((item, index) => (
                     <div
                       key={index}
-                      className="group p-6 bg-new-5 rounded-xl hover:bg-new-1 transition-all duration-300 hover:shadow-md hover:scale-[1.02] cursor-pointer border-2 border-transparent hover:border-newtext-new-4"
+                      className="group p-6 bg-new-5 rounded-xl hover:border-new-4 transition-all duration-300 hover:shadow-md hover:scale-[1.02] cursor-pointer border-2 border-transparent hover:border-newtext-new-4"
                     >
                       <div>
                         <h3 className="font-semibold text-xl mb-3 text-stone-200 group-hover:text-new-4 transition-colors duration-300">
