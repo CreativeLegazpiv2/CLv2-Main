@@ -945,6 +945,33 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
         )}
       </AnimatePresence>
 
+      <AnimatePresence>
+          {/* Edit Modal */}
+          {isEditModalOpen && selectedImage && (
+            <motion.div
+              className="fixed top-0 left-0 w-full h-full bg-black/50 z-[1000] flex justify-center items-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setDeleteModalOpen(false)}
+            >
+              <EditCollection
+                created_at={selectedImage.created_at}
+                artist={selectedImage.artist}
+                image={selectedImage.image_path}
+                title={selectedImage.title}
+                desc={selectedImage.desc}
+                year={selectedImage.year}
+                onEdit={handleEdit}
+                onCancel={() => setEditModalOpen(false)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+
+
       {isInterestModalOpen && selectedImage && (
         <div className="fixed -bottom-2 -right-1 z-[550] p-4">
           <Interested
