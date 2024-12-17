@@ -19,6 +19,7 @@ export const FeaturedCollections = () => {
   const [featuredItems, setFeaturedItems] = useState<CollectionItem[]>([]); // Array of CollectionItem
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null); // Allow both string and null types
+  const [currentIndex, setCurrentIndex] = useState(0); // Track the current index
 
   // Fetch data from the API
   useEffect(() => {
@@ -42,6 +43,31 @@ export const FeaturedCollections = () => {
     fetchCollection();
   }, []);
 
+  // Load the current index from localStorage when the component mounts
+  useEffect(() => {
+    const storedIndex = localStorage.getItem('currentIndex');
+    if (storedIndex) {
+      setCurrentIndex(parseInt(storedIndex, 10)); // Parse the stored value as an integer
+    }
+  }, []);
+
+  // Save the current index to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('currentIndex', currentIndex.toString());
+  }, [currentIndex]);
+
+  // Increment the index every 5 minutes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % Math.ceil(featuredItems.length / 6));
+    }, 5 * 60 * 1000); // 5 minutes in milliseconds
+
+    return () => clearInterval(interval);
+  }, [featuredItems.length]);
+
+  // Get the items to display for the current index
+  const itemsToDisplay = featuredItems.slice(currentIndex * 6, (currentIndex + 1) * 6);
+
   return (
     <section className="bg-white py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -58,7 +84,7 @@ export const FeaturedCollections = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {featuredItems.map((item, index) => (
+          {itemsToDisplay.map((item, index) => (
             <motion.div
               key={item.id} // Now TypeScript knows 'id' exists
               initial={{ opacity: 0, y: 50 }}
