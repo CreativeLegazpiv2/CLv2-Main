@@ -123,6 +123,8 @@ export default function PublishGallery() {
             <h3 className="text-lg font-semibold mb-2">Add to collections</h3>
             <button className="flex items-center text-sm text-gray-600 hover:text-gray-800">
               <svg
+                width="auto"
+                height="auto"
                 className="h-5 w-5 mr-1"
                 fill="none"
                 strokeLinecap="round"

@@ -324,7 +324,7 @@ export const Messages = () => {
     if (containerRef.current) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
-  }, [chatMessages, messageId]); // Run effect whenever chatMessages changes
+  }, [chatMessages,  ]); // Run effect whenever chatMessages changes
 
   const filteredMessages = messages.filter((message) => message.id !== userId);
 

@@ -1,7 +1,7 @@
 "use client";
 
+import { useAuth } from '@/context/authcontext';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
 import { useEffect } from 'react';
 import React from 'react';
 
@@ -11,7 +11,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (!user) {
-      router.push('/login');
+      router.push('/apps-ui/signin');
     }
   }, [user, router]);
 

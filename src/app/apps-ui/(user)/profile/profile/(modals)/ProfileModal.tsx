@@ -8,6 +8,7 @@ import { getSession } from "@/services/authservice";
 import { jwtVerify } from "jose";
 import Image from "next/image";
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
+
 interface ProfileModalProps {
   openModal: boolean;
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,6 +23,9 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   setFormData,
 }) => {
   const [isClosing, setIsClosing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [profilePicFile, setProfilePicFile] = useState<File | null>(null);
+
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (openModal) {
@@ -38,6 +42,16 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      const fileType = file.type;
+
+      if (fileType !== "image/jpeg") {
+        setErrorMessage("Invalid image format. Only JPG files are allowed.");
+        return;
+      }
+
+      setErrorMessage(null);
+      setProfilePicFile(file);
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData((prev) => ({
@@ -78,16 +92,20 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
       console.log("Retrieved token payload:", payload.id);
 
       const userId = payload.id as string;
+
+      const formDataToSend = new FormData();
+      formDataToSend.append('detailsid', userId);
+      formDataToSend.append('userDetails', JSON.stringify(formData));
+      if (profilePicFile) {
+        formDataToSend.append('profile_pic', profilePicFile);
+      }
+
       const response = await fetch("/api/creatives", {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${userId}`,
         },
-        body: JSON.stringify({
-          detailsid: userId,
-          userDetails: formData,
-        }),
+        body: formDataToSend,
       });
 
       if (!response.ok) {
@@ -178,7 +196,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                             {/* Hidden file input for image upload */}
                             <input
                               type="file"
-                              accept="image/*"
+                              accept="image/jpeg"
                               className="hidden"
                               onChange={handleFileChange}
                               id="file-upload"
@@ -298,22 +316,27 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                           </div>
                           {/* bottom form*/}
                           <div className="w-full flex md:flex-row flex-col justify-center items-center gap-4 text-base h-fit">
-                            <div className="w-full flex flex-col gap-1">
-                              <label
-                                className="ml-4 capitalize"
-                                htmlFor="creative_field"
-                              >
-                                Creative field
-                              </label>
-                              <input
-                                type="creative_field"
-                                name="creative_field"
-                                value={formData.creative_field}
-                                onChange={handleInputChange}
-                                className="w-full md:py-2.5 py-4 border rounded-xl px-4 outline-none"
-                                placeholder="Creative Field"
-                              />
-                            </div>
+                            {formData.role != 'buyer' && (
+                              <>
+                                <div className="w-full flex flex-col gap-1">
+                                  <label
+                                    className="ml-4 capitalize"
+                                    htmlFor="creative_field"
+                                  >
+                                    Creative field
+                                  </label>
+                                  <input
+                                    type="creative_field"
+                                    name="creative_field"
+                                    value={formData.creative_field}
+                                    onChange={handleInputChange}
+                                    className="w-full md:py-2.5 py-4 border rounded-xl px-4 outline-none"
+                                    placeholder="Creative Field"
+                                  />
+                                </div>
+                              </>
+                            )}
+
                             <div className="w-full flex flex-col gap-1">
                               <label
                                 className="ml-4 capitalize"
@@ -384,6 +407,10 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                   </motion.button>
                 </div>
               </form>
+              {/* Display error message */}
+              {errorMessage && (
+                <div className="text-red-500 text-center mt-4">{errorMessage}</div>
+              )}
               {/* Add your form components here */}
             </motion.div>
           </div>

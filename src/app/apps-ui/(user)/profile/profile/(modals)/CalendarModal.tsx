@@ -354,6 +354,8 @@ const CustomTimeInput: React.FC<CustomTimeInputProps> = ({
           <svg
             className="w-5 h-5 text-gray-400"
             fill="none"
+            width="auto"
+                                    height="auto"
             viewBox="0 0 24 24"
             stroke="currentColor"
           >

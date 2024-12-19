@@ -5,14 +5,14 @@ import React, { useEffect, useState } from "react";
 import { Calendar } from "./Calendar";
 import { Messages } from "./Messages";
 import { jwtVerify } from "jose";
-import { logoutUser } from "@/services/authservice";
+import { logoutUser, getSession } from "@/services/authservice";
 import { useRouter } from "next/navigation";
-import { getSession } from "@/services/authservice";
 import { ProfileModal } from "./(modals)/ProfileModal";
 import Image from "next/image";
 import Link from "next/link";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
+
 export interface UserDetail {
   id: string; // Assuming there's an id for user identification
   first_name: string;
@@ -27,6 +27,7 @@ export interface UserDetail {
   twitter: string;
   portfolioLink: string;
   profile_pic?: string;
+  role: string;
 }
 
 interface UserProfileProps {
@@ -40,7 +41,6 @@ interface ProfileButtonProps {
 
 export const UserProfile: React.FC<UserProfileProps> = ({ userDetail }) => {
   const [open, setOpen] = useState(false); // State to control Calendar and Messages
-
   return (
     <div className="min-h-dvh w-full text-primary-2">
       <div className="w-full xl:max-w-[65%] lg:max-w-[80%] max-w-[90%] lg:px-8 mx-auto h-fit py-[12dvh]">
@@ -97,13 +97,21 @@ const ProfileDetails: React.FC<{ userDetail: UserDetail }> = ({
 };
 
 const OtherDetails: React.FC<{ userDetail: UserDetail }> = ({ userDetail }) => {
+  const [isRole, setRole] = useState<string | null>(null);
+  useEffect(() => {
+    setRole(userDetail.role); // Update role state when userDetail changes
+    localStorage.setItem("role", userDetail.role);
+  }, [userDetail]);
   return (
     <div className="w-full h-fit py-12 bg-shade-8">
       <div className="w-full md:max-w-[80%] max-w-[90%] mx-auto flex flex-col gap-1.5">
         <UserDetailDisplay userDetail={userDetail} />{" "}
         {/* Use the updated component */}
         <div className="pt-8 w-full flex justify-center items-center">
-          <Button />
+          {isRole != 'buyer' && (
+
+            <Button />
+          )}
         </div>
       </div>
     </div>
@@ -113,11 +121,9 @@ const OtherDetails: React.FC<{ userDetail: UserDetail }> = ({ userDetail }) => {
 const UserDetailDisplay = ({ userDetail }: { userDetail: UserDetail }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<UserDetail>(userDetail);
+  const [role, setRole] = useState<string | null>(null); // State for role
 
   // Update form data when userDetail changes
-  useEffect(() => {
-    setFormData(userDetail);
-  }, [userDetail]);
 
   useEffect(() => {
     if (formData.first_name) {
@@ -185,6 +191,7 @@ const UserDetailDisplay = ({ userDetail }: { userDetail: UserDetail }) => {
   const closeProfileModal = () => {
     setOpenModal(false);
   };
+
   return (
     <>
       {isEditing ? (
@@ -221,17 +228,19 @@ const UserDetailDisplay = ({ userDetail }: { userDetail: UserDetail }) => {
               className="font-bold"
             />
           </div>
+
           <div>
-            <small className="font-bold opacity-80 capitalize">
-              Creative Field
-            </small>
-            <input
-              type="text"
-              name="creative_field"
-              value={formData.creative_field}
-              onChange={handleInputChange}
-              className="font-bold"
-            />
+            {formData.role != 'buyer' && (
+              <><small className="font-bold opacity-80 capitalize">
+                Creative Field
+              </small><input
+                  type="text"
+                  name="creative_field"
+                  value={formData.creative_field}
+                  onChange={handleInputChange}
+                  className="font-bold" /></>
+            )}
+
           </div>
           <button
             onClick={handleSave}
@@ -257,10 +266,14 @@ const UserDetailDisplay = ({ userDetail }: { userDetail: UserDetail }) => {
           <p className="font-bold">{formData.mobileNo}</p>
           <small className="font-bold opacity-80 capitalize">About me</small>
           <p className="font-bold">{formData.bio}</p>
-          <small className="font-bold opacity-80 capitalize">
-            Creative Field
-          </small>
-          <p className="font-bold">{formData.creative_field}</p>
+
+          {formData.role != 'buyer' && (
+            <div>
+              <small className="font-bold opacity-80 capitalize">Creative Field</small>
+              <p className="font-bold">{formData.creative_field}</p>
+            </div>
+          )}
+
           {/* Edith */}
           <Icon
             className="absolute top-2 right-2 cursor-pointer"

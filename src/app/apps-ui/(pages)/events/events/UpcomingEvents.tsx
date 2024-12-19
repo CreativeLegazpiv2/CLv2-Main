@@ -70,11 +70,20 @@ export const UpcomingEvents = () => {
       const response = await fetch("/api/admin-events");
       if (!response.ok) throw new Error("Error fetching events");
       const fetchedEvents: AdminEvent[] = await response.json();
-      setEvents(fetchedEvents);
+  
+      // Filter events to show only those with a date greater than or equal to the current date
+      const currentDate = new Date();
+      const upcomingEvents = fetchedEvents.filter(event => {
+        const eventDate = new Date(event.date);
+        return eventDate >= currentDate;
+      });
+  
+      setEvents(upcomingEvents);
     } catch (error) {
       console.error("Error fetching events:", error);
     }
   };
+  
 
   const [showPofconModal, setShowPofconModal] = useState(false); // Modal state
   const [selectedEvent, setSelectedEvent] = useState<AdminEvent | null>(null); // State to store the selected event
