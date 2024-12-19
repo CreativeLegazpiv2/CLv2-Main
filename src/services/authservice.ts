@@ -78,6 +78,84 @@ export const decryptToken = async (token: string) => {
   }
 };
 
+
+export const signupBuyer = async (
+  username: string,
+  email: string,
+  password: string,
+  firstName: string,
+  bday:string,
+  address: string,
+  mobileNo: string,
+  bio: string,
+  instagram: string,
+  facebook: string,
+  twitter: string,
+  portfolioLink: string,
+) => {
+  console.log("Attempting signup with:", { username, email });
+
+  // Hash the password before storing it
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const generatedId = Math.floor(10000 + Math.random() * 90000);
+  // Insert the new user into the 'users' table
+  const { data: userData, error: userError } = await supabase
+    .from("users")
+    .insert([{id:generatedId, username, email, password: hashedPassword}])
+    .select("id, username")
+    .single();
+
+  if (userError || !userData) {
+    console.log("Signup failed:", userError ? userError.message : "Unknown error");
+    throw new Error("Signup failed, please try again.");
+  }
+
+  console.log("User created in 'users' table:", { id: userData.id, username: userData.username });
+
+  // Insert additional details into the 'userDetails' table
+  const { error: detailsError } = await supabase
+    .from("userDetails")
+    .insert([{
+      detailsid: userData.id, 
+      first_name: firstName,
+      bday: bday,
+      address: address,
+      mobileNo: mobileNo,
+      bio: bio,
+      email: email,
+      instagram: instagram,
+      profile_pic:null,
+      facebook: facebook,
+      twitter: twitter,
+      portfolioLink: portfolioLink,
+      status:false,
+      role:"buyer"
+    }]);
+
+  if (detailsError) {
+    console.log("Failed to insert user details:", detailsError.message);
+    throw new Error("Signup failed, could not insert user details.");
+  }
+
+  console.log("User details added to 'userDetails' table");
+
+  // Create a JWT for the new user
+  const token = await createJWT({ id: userData.id, username: userData.username });
+  console.log("JWT created for new user:", token);
+
+  // Decrypt and log the token payload
+  try {
+    const decryptedPayload = await verifyJWT(token);
+  } catch (error) {
+    console.error("Failed to decrypt token:", error);
+  }
+
+  return { id: userData.id, username: userData.username, token };
+};
+
+
+
+
 export const signupUser = async (
   username: string,
   email: string,
@@ -203,6 +281,13 @@ export const getMessageId = () => {
   return null;
 };
 
+export const getRole = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem("role");
+  }
+  return null;
+};
+
 export const getUserName = () => {
   if (typeof window !== "undefined") {
       return localStorage.getItem("user");
@@ -226,8 +311,14 @@ export const logoutUser = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("messageTo");
     localStorage.removeItem("Fname");
+    localStorage.removeItem("role");
   }
 };
-
+export const getFname = () => {
+  if (typeof window !== "undefined") {
+      return localStorage.getItem("Fname");
+  }
+  return null; 
+};
 
 

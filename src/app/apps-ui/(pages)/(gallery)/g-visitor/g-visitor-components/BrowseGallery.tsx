@@ -22,15 +22,15 @@ const GalleryItem: React.FC<Artwork> = ({
         : desc;
 
     return (
-        <div className="inline-block px-3 max-sm:px-0"> {/* Remove padding on mobile */}
+        <div className="inline-block px-3 max-sm:px-0 w-full max-w-lg"> {/* Remove padding on mobile */}
         <Link href={`/apps-ui/g-visitor/artwork/${slug}`} passHref>
             <motion.article 
-                className="relative rounded-lg shadow-lg w-[500px] g-carousel h-auto max-md:max-w-full max-sm:w-[calc(100vw-32px)] bg-white cursor-pointer"
+                className="relative rounded-lg shadow-lg w-full g-carousel h-auto max-md:max-w-full max-sm:w-[calc(100vw-32px)] bg-white cursor-pointer"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
             >
-                    <div className="relative overflow-hidden h-[300px] max-sm:h-[250px]">
+                    <div className="relative overflow-hidden h-[30dvh] w-full rounded-lg">
                         <motion.img
                             src={image_path}
                             alt={`${title} artwork`}
@@ -59,7 +59,7 @@ const GalleryItem: React.FC<Artwork> = ({
                         </motion.p>
                     </div>
                     <motion.div
-                        className="g-carousel-button absolute top-[250px] max-sm:top-[200px] right-[-30px] max-sm:right-[-20px] bg-[#695C5C] text-white font-bold py-3 px-10 max-sm:py-2 max-sm:px-6 rounded-lg text-4xl max-sm:text-2xl transition hover:bg-[#958484]"
+                        className="g-carousel-button absolute bottom-4 right-[-30px] max-sm:right-[-20px] bg-primary-2 text-white font-bold py-3 px-10 max-sm:py-2 max-sm:px-6 rounded-lg transition hover:bg-quaternary-1"
                         style={{ zIndex: 10 }}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
@@ -184,6 +184,8 @@ const settings = {
                                     className="w-full h-full text-gray-400"
                                     fill="none" 
                                     strokeWidth="1.5"
+                                    width="auto"
+                                    height="auto"
                                     stroke="currentColor" 
                                     viewBox="0 0 24 24" 
                                     xmlns="http://www.w3.org/2000/svg"

@@ -15,6 +15,11 @@ interface MenuItemProps {
 }
 
 interface HeaderProps {
+  // ... existing props
+  onOpenSidebar?: () => void;
+}
+
+interface HeaderProps {
   backgroundColor?: string;
   textColor?: string;
   buttonName?: string;
@@ -50,6 +55,7 @@ export const Header = ({
   paddingLeftCustom = "pl-14",
   roundedCustom = "rounded-bl-3xl",
   linkName = "/apps-ui/signin",
+  onOpenSidebar
 }: HeaderProps) => {
   const headerRef = useRef<HTMLDivElement | null>(null);
   const gsapAnimationRef = useRef<gsap.core.Timeline | null>(null);
@@ -59,6 +65,8 @@ export const Header = ({
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
 
+  const handleOpenSideBar = () => {};
+
   const checkAuth = async () => {
     try {
       const session = await getSession();
@@ -66,7 +74,7 @@ export const Header = ({
 
       if (session) {
         setMenuItems([
-          { name: "Home", link: "/apps-ui/pofcon-landing-page" },
+          { name: "Home", link: "/apps-ui/home" },
           { name: "Directory", link: "/apps-ui/creative-dashboard" },
           { name: "Gallery", link: "/apps-ui/g-user" },
           { name: "FAQ", link: "/apps-ui/faqs" },
@@ -75,7 +83,7 @@ export const Header = ({
         ]);
       } else {
         setMenuItems([
-          { name: "Home", link: "/apps-ui/pofcon-landing-page" },
+          { name: "Home", link: "/apps-ui/home" },
           { name: "Directory", link: "/apps-ui/creative-dashboard" },
           { name: "Gallery", link: "/apps-ui/g-visitor" },
           { name: "FAQ", link: "/apps-ui/faqs" },
@@ -232,7 +240,10 @@ export const Header = ({
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.8, duration: 0.8 }}
             >
-              <Icon icon="eva:menu-fill" width="35" height="35" />
+              <button onClick={onOpenSidebar}>
+                <Icon icon="eva:menu-fill" width="35" height="35" />
+              </button>
+            
             </motion.div>
           </div>
         </motion.div>

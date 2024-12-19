@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+// import { Header } from "@/components/layout/Header";
+// import { Footer } from "@/components/layout/Footer";
 import { usePathname } from "next/navigation";
 import { AuthProvider } from "@/context/authcontext";
 import "react-toastify/dist/ReactToastify.css";
@@ -22,7 +22,16 @@ export default function LoadLayout({
   const [contentLoaded, setContentLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isLogoutInProgress, setIsLogoutInProgress] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
   const pathname = usePathname();
+  const handleOpenSideBar = () => {
+    setIsSidebarOpen(true);
+  };
+
+  const handleCloseSideBar = () => {
+    setIsSidebarOpen(false);
+  };
 
   // Handle logout state
   const handleLogoutStart = useCallback(() => {

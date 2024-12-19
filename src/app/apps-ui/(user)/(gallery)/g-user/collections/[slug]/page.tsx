@@ -62,7 +62,7 @@ export default async function ViewCollectionPage({ params }: { params: { slug: s
   }
 
   return (
-    <div className='h-fit w-full py-[15dvh] max-w-[80%] mx-auto'>
+    <div className='h-fit w-full py-[15dvh] mx-auto'>
       <CollectionDisplay collection={collectionData.collection} />
     </div>
   )

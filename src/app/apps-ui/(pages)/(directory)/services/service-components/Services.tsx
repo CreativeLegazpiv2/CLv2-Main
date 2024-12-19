@@ -36,7 +36,7 @@ export const Services = () => {
     loadUserDetails();
   }, [dynamic]);
 
-  
+
 
   if (loading) {
     return <div>Loading...</div>;
@@ -104,11 +104,11 @@ export const CreativeCards: React.FC<UserDetail> = ({
   const [totaluserLike, setTotaluserLike] = useState<number>(0);
 
 
-  
+
   useEffect(() => {
     const guestsString = localStorage.getItem("guest");
     let guests: string[] = [];
-  
+
     if (guestsString) {
       try {
         const parsedGuests = JSON.parse(guestsString);
@@ -156,25 +156,25 @@ export const CreativeCards: React.FC<UserDetail> = ({
       let userId = null;
 
       const guestsString = localStorage.getItem("guest");
-  let guests: string[] = [];
+      let guests: string[] = [];
 
-  if (guestsString) {
-    try {
-      const parsedGuests = JSON.parse(guestsString);
-      if (Array.isArray(parsedGuests)) {
-        guests = parsedGuests;
+      if (guestsString) {
+        try {
+          const parsedGuests = JSON.parse(guestsString);
+          if (Array.isArray(parsedGuests)) {
+            guests = parsedGuests;
+          }
+        } catch (error) {
+          console.error("Error parsing guests:", error);
+        }
       }
-    } catch (error) {
-      console.error("Error parsing guests:", error);
-    }
-  }
-  if (guests.includes(detailsid)) {
-    // Guest has liked
-    setLiked(true);
-  } else {
-    // Guest has disliked or hasn't liked yet
-    setLiked(false);
-  }
+      if (guests.includes(detailsid)) {
+        // Guest has liked
+        setLiked(true);
+      } else {
+        // Guest has disliked or hasn't liked yet
+        setLiked(false);
+      }
 
       if (token) {
         try {
@@ -221,12 +221,12 @@ export const CreativeCards: React.FC<UserDetail> = ({
       supabase.removeChannel(subscription);
     };
   }, [detailsid]);
-  
+
 
   const handleLike = async (detailsid: string) => {
     const token = getSession();
     let userId = null;
-  
+
     if (token) {
       // Logged-in user
       try {
@@ -235,7 +235,7 @@ export const CreativeCards: React.FC<UserDetail> = ({
           new TextEncoder().encode(process.env.JWT_SECRET || "your-secret")
         );
         userId = payload.id as string;
-  
+
         // Check if the user already liked this item
         if (liked) {
           // User already liked, so we dislike
@@ -258,7 +258,7 @@ export const CreativeCards: React.FC<UserDetail> = ({
       // Handle guest users
       const guestsString = localStorage.getItem("guest");
       let guests: string[] = [];
-  
+
       if (guestsString) {
         try {
           const parsedGuests = JSON.parse(guestsString);
@@ -269,9 +269,9 @@ export const CreativeCards: React.FC<UserDetail> = ({
           console.error("Error parsing guests:", error);
         }
       }
-  
+
       const index = guests.indexOf(detailsid);
-  
+
       if (index !== -1) {
         // Guest dislikes: Remove from array
         guests.splice(index, 1);
@@ -283,10 +283,10 @@ export const CreativeCards: React.FC<UserDetail> = ({
         setLiked(true); // Update liked state
         setTotaluserLike((prevTotal) => prevTotal + 1); // Increment total likes
       }
-  
+
       // Update localStorage
       localStorage.setItem("guest", JSON.stringify(guests));
-  
+
       // Send request to update guest count in backend
       try {
         const response = await fetch(`/api/fetchUsers/userLikes`, {
@@ -296,7 +296,7 @@ export const CreativeCards: React.FC<UserDetail> = ({
           },
           body: JSON.stringify({ detailsid, guestStorage: guests }),
         });
-  
+
         const data = await response.json();
         if (response.ok) {
           toast.success(data.message, { position: "bottom-right" });
@@ -313,7 +313,7 @@ export const CreativeCards: React.FC<UserDetail> = ({
       }
     }
   };
-  
+
   // Helper function to update like/dislike in the backend for logged-in users
   const updateLikeStatus = async (userId: string, detailsid: string, action: string) => {
     try {
@@ -324,7 +324,7 @@ export const CreativeCards: React.FC<UserDetail> = ({
         },
         body: JSON.stringify({ userId, detailsid, action }),
       });
-  
+
       const data = await response.json();
       if (response.ok) {
         console.log(`${action} successful!`);
@@ -335,7 +335,7 @@ export const CreativeCards: React.FC<UserDetail> = ({
       console.error(`Error during ${action}:`, error);
     }
   };
-  
+
 
 
   return (
@@ -410,7 +410,7 @@ const CreativeButton: React.FC<{ detailsid: string }> = ({ detailsid }) => {
   const [gettSession, setSession] = useState<string | null>(null);
   const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
   const token = getSession();
-  
+
   useEffect(() => {
     const fetchUserDetails = async () => {
       const token = getSession();
@@ -452,17 +452,51 @@ const CreativeButton: React.FC<{ detailsid: string }> = ({ detailsid }) => {
     }
   };
 
+  const viewProfile = async () => {
+    if (gettSession) {
+      window.location.href = `/apps-ui/g-user/view-profile/${detailsid}`;
+    } else {
+      toast.error("No uploaded works yet!", {
+        position: "bottom-right",
+      });
+    }
+  };
+
   return (
-    <motion.div
-      whileTap={{ scale: 0.95 }}
-      whileHover={{ scale: 1.05 }}
-      className="w-full h-fit flex flex-row-reverse gap-2 justify-center items-center text-primary-2"
-    >
-      <button className="py-2 bg-primary-1 rounded-full uppercase w-56 font-bold text-base"
-        onClick={handleGalleryClick}
+    <>
+
+      <motion.div
+        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.05 }}
+        className="w-full h-fit flex flex-row-reverse gap-2 justify-center items-center text-primary-2"
       >
-        view gallery
-      </button>
-    </motion.div>
+        <button className="py-2 bg-primary-1 rounded-full uppercase w-56 font-bold text-base"
+          onClick={handleGalleryClick}
+        >
+          view gallery
+        </button>
+      </motion.div>
+
+
+
+{/* fix this design @alroMercado */}
+      {gettSession && (
+        <motion.div
+          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.05 }}
+          className="w-full h-fit flex flex-row-reverse gap-2 justify-center items-center text-primary-2"
+        >
+          <button className="py-2 bg-primary-1 rounded-full uppercase w-56 font-bold text-base"
+            onClick={viewProfile}
+          >
+            view Profile
+          </button>
+        </motion.div>
+
+      )}
+
+    </>
+
+
   );
 };
