@@ -7,19 +7,19 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 interface CollectionProps {
   collection: {
     images: {
-      created_at:Date;
-      generatedId:string;
+      created_at: Date;
+      generatedId: string;
       image_path: string;
       title: string;
       desc: string;
       artist: string;
-      year: string;
-      childid:string
+      year: number;
+      childid: string;
     }[];
   };
 }
 
-async function getCollection(slug: string) {
+async function getCollection(slug: string): Promise<CollectionProps | null> {
   const { data, error } = await supabase
     .from('child_collection')
     .select('*')
@@ -29,21 +29,20 @@ async function getCollection(slug: string) {
     console.error('Error fetching collection:', error);
     return null;
   }
-  
 
   if (data && data.length > 0) {
     const collection = data[0];
 
     // Map the images correctly according to the CollectionProps interface
     const images = data.map(item => ({
-      created_at:item.created_at,
-      generatedId:item.generatedId,
+      created_at: new Date(item.created_at), // Convert to Date
+      generatedId: item.generatedId,
       image_path: item.path, // Assuming 'path' is the correct field for the image URL
-      title: item.title,     // Adjust these fields according to your actual data structure
+      title: item.title,
       desc: item.desc,
       artist: item.artist,
-      year: item.year,
-      childid:item.childid
+      year: Number(item.year), // Convert to number
+      childid: item.childid
     }));
 
     return {
