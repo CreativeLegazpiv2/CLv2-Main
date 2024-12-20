@@ -13,7 +13,7 @@ interface CollectionProps {
       title: string;
       desc: string;
       artist: string;
-      year: number; // Change this to number
+      year: number;
       childid: string;
     }[];
   };
