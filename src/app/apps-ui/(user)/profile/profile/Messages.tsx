@@ -50,33 +50,33 @@ export const Messages = () => {
   const [getSuggeted, setSuggested] = useState<null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      const token = getSession();
-      if (!token) return;
-      try {
-        const { payload } = await jwtVerify(
-          token,
-          new TextEncoder().encode(JWT_SECRET)
-        );
-        const userId = payload.id as string;
-        const response = await fetch("/api/chat/search_user", {
-          method: "GET",
-          headers: {
-            Authorization: userId, // Replace with actual userId logic
-          },
-        });
-        const data = await response.json();
-        if (data.userDetails) {
-          setAllUsers(data.userDetails); // Store all user details
-        }
-      } catch (error) {
-        console.error("Error fetching user details:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUserDetails = async () => {
+  //     const token = getSession();
+  //     if (!token) return;
+  //     try {
+  //       const { payload } = await jwtVerify(
+  //         token,
+  //         new TextEncoder().encode(JWT_SECRET)
+  //       );
+  //       const userId = payload.id as string;
+  //       const response = await fetch("/api/chat/search_user", {
+  //         method: "GET",
+  //         headers: {
+  //           Authorization: userId, // Replace with actual userId logic
+  //         },
+  //       });
+  //       const data = await response.json();
+  //       if (data.userDetails) {
+  //         setAllUsers(data.userDetails); // Store all user details
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching user details:", error);
+  //     }
+  //   };
 
-    fetchUserDetails();
-  }, []);
+  //   fetchUserDetails();
+  // }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;

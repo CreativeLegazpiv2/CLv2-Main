@@ -236,32 +236,34 @@ export const Interested = ({
 
   const fetchSessionData = async () => {
     const token = getSession();
-    if (!token) return;
-
+    if (!token) {
+      console.error("No session token found.");
+      return;
+    }
+  
     try {
       const { payload } = await jwtVerify(
         token,
         new TextEncoder().encode(JWT_SECRET)
       );
       const userIdFromToken = payload.id as string;
-
-      const response = await fetch("/api/chat/msg-recent", {
+  
+      // Use the dynamic route path
+      const response = await fetch(`/api/chat/msg-recent/${userIdFromToken}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          sender_a: userIdFromToken, // Pass sender_a in headers
         },
       });
-
+  
       if (!response.ok) {
-        throw new Error("Failed to fetch sessions");
+        throw new Error(`Failed to fetch sessions: ${response.statusText}`);
       }
-
+  
       const data = await response.json();
       console.log("Fetched sessions:", data); // Log the full combined data to inspect it
-
-      if (data && data.length > 0) {
-        // Update state with the combined session data
+  
+      if (Array.isArray(data) && data.length > 0) {
         setSessions(data); // The data should already include user details
         setIsLoading(false);
       } else {
@@ -270,6 +272,7 @@ export const Interested = ({
       }
     } catch (error) {
       console.error("Error fetching session data:", error);
+      setIsLoading(false); // Ensure loading state is reset on error
     }
   };
 

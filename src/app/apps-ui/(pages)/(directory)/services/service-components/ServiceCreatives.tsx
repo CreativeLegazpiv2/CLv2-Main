@@ -21,32 +21,33 @@ export const ServiceCreatives = () => {
   useEffect(() => {
     const fetchCreatives = async () => {
       try {
-        const response = await fetch(`/api/creatives/topCreatives?field=${encodeURIComponent(field)}`, {
+        // Fetch data from the dynamic API route
+        const response = await fetch(`/api/creatives/topCreatives/${field}`, {
           method: "GET",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
         });
-  
+
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
-  
+
         const data = await response.json();
-  
-        // Check the data structure in the console
         console.log("Fetched data:", data);
-  
-        // Transform the data to include newCount
+
+        // Transform the data to include default values for missing fields
         const transformedData = data.map((item: any) => ({
           first_name: item.first_name,
           profile_pic: item.profile_pic || "/images/creative-directory/boy.png",
           bio: item.bio || "No bio available",
-          newCount: item.newCount || 0, // Map newCount here
+          newCount: item.newCount || 0, // Ensure newCount is always a number
         }));
-  
+
         // Sort the data by newCount in descending order
         transformedData.sort((a: UserCardProps, b: UserCardProps) => b.newCount - a.newCount);
-  
-        // Set the sorted data to creatives
+
+        // Set the sorted data to the state
         setCreatives(transformedData);
         setLoading(false);
       } catch (err: any) {
@@ -54,12 +55,11 @@ export const ServiceCreatives = () => {
         setLoading(false);
       }
     };
-  
+
     if (field) {
       fetchCreatives();
     }
   }, [field]);
-  
 
   return (
     <div className="w-full h-fit relative">
@@ -75,6 +75,7 @@ export const ServiceCreatives = () => {
               ) : error ? (
                 <p>Error: {error}</p>
               ) : (
+                // Render the sorted list of creatives
                 creatives.map((user, id) => (
                   <UserCards
                     key={id}

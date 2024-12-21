@@ -1,15 +1,18 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/services/supabaseClient';
 
-export async function GET(req: Request) {
+export async function GET(
+  req: Request,
+  { params }: { params: { sender_a: string } }
+) {
   try {
-    const headers = req.headers;
-    const sender_a = headers.get('sender_a');
+    const { sender_a } = params; // Extract the dynamic `sender_a` parameter
 
     if (!sender_a) {
       return NextResponse.json({ error: 'sender_a is required' }, { status: 400 });
     }
 
+    // Fetch sessions from Supabase
     const { data: sessions, error: sessionsError } = await supabase
       .from('msgSession')
       .select('id, a, b')
@@ -19,6 +22,7 @@ export async function GET(req: Request) {
       throw new Error(sessionsError.message);
     }
 
+    // Fetch user details for each session
     const userDetailsPromises = sessions.map(async (session) => {
       const otherUserId = session.a == sender_a ? session.b : session.a;
 
@@ -36,6 +40,7 @@ export async function GET(req: Request) {
 
     const userDetails = await Promise.all(userDetailsPromises);
 
+    // Combine session data with user details
     const combinedData = sessions.map((session, index) => ({
       ...session,
       userDetails: userDetails[index],
