@@ -27,12 +27,13 @@ export default function PublishGallery() {
 
   const [loading, setLoading] = useState(false); // Add loading state
 
-  const fname = localStorage.getItem("Fname");
+  // Use useEffect to access localStorage only on the client side
   useEffect(() => {
+    const fname = localStorage.getItem("Fname");
     if (fname) {
       setFname(fname);
     }
-  }, [fname]);
+  }, []);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -260,7 +261,7 @@ export default function PublishGallery() {
                         <h3 className="text-lg font-bold text-white">
                           {formData.title || "Title"}
                         </h3>
-                        <p className="text-gray-200">by {fname}</p>
+                        <p className="text-gray-200">by {getFname}</p>
                       </div>
                     </div>
                     <div className="p-4">
