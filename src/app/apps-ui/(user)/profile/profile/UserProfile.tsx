@@ -323,14 +323,6 @@ const ProfileButton: React.FC<ProfileButtonProps> = ({ open, setOpen }) => {
         <Icon icon="ph:calendar-dots-thin" width="35" height="35" />
         Schedule
       </button>
-      <button
-        onClick={() => setOpen(true)}
-        className={`w-full py-4 font-bold text-lg uppercase flex justify-center items-center gap-2 ${open ? "bg-shade-1" : "bg-shade-8"
-          } rounded-tl-lg overflow-hidden`}
-      >
-        <Icon icon="ph:message-circle-dots" width="35" height="35" />
-        Messages
-      </button>
     </div>
   );
 };

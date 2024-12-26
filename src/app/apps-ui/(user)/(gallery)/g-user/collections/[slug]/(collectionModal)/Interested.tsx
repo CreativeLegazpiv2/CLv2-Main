@@ -91,13 +91,14 @@ export const Interested = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const [autoSendTriggered, setAutoSendTriggered] = useState<boolean>(false); // Flag to track auto-send
   const [sessions, setSessions] = useState<Session[]>([]);
-  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
+    null
+  );
   const [selectedId, setselectedId] = useState<string | null>(null);
   const [gettokenId, settokenId] = useState<string | null>(null);
   const [userDetails, setUserDetails] = useState<userDetails[]>([]);
   const [isRightColumnVisible, setIsRightColumnVisible] = useState(false);
   const [isChat, setChat] = useState<boolean>(false);
-  const containerRef = useRef<HTMLDivElement>(null);
   const [isScrolledUp, setIsScrolledUp] = useState<boolean>(false);
 
   const [getUsers, setUsers] = useState<getUsers[]>([]);
@@ -106,50 +107,22 @@ export const Interested = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isMsgLoading, setMsgLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    setIsLoading(true);
-    setMsgLoading(true);
-  }, []);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom on initial load
-  useEffect(() => {
+  const scrollToBottom = () => {
     if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
-  }, []);
-
-  // Handle scroll behavior
-  const handleScroll = () => {
-    if (containerRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
-      const isAtBottom = scrollHeight - scrollTop === clientHeight;
-
-      if (isAtBottom) {
-        setIsScrolledUp(false);
-      } else {
-        setIsScrolledUp(true);
-      }
+      containerRef.current.scrollTo({
+        top: containerRef.current.scrollHeight,
+        behavior: "auto",
+      });
     }
   };
 
-  // Scroll to bottom on initial load
   useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    if (!isMsgLoading && messages.length > 0) {
+      scrollToBottom();
     }
-  }, [isRightColumnVisible]);
-
-  // Scroll to bottom when new messages are added
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  // get new users to message
-  useEffect(() => {
-    fetchusersData();
-  }, []);
+  }, [messages, isMsgLoading, isRightColumnVisible]);
 
   const fetchusersData = async () => {
     const token = getSession();
@@ -240,14 +213,14 @@ export const Interested = ({
       console.error("No session token found.");
       return;
     }
-  
+
     try {
       const { payload } = await jwtVerify(
         token,
         new TextEncoder().encode(JWT_SECRET)
       );
       const userIdFromToken = payload.id as string;
-  
+
       // Use the dynamic route path
       const response = await fetch(`/api/chat/msg-recent/${userIdFromToken}`, {
         method: "GET",
@@ -255,14 +228,14 @@ export const Interested = ({
           "Content-Type": "application/json",
         },
       });
-  
+
       if (!response.ok) {
         throw new Error(`Failed to fetch sessions: ${response.statusText}`);
       }
-  
+
       const data = await response.json();
       console.log("Fetched sessions:", data); // Log the full combined data to inspect it
-  
+
       if (Array.isArray(data) && data.length > 0) {
         setSessions(data); // The data should already include user details
         setIsLoading(false);
@@ -294,7 +267,9 @@ export const Interested = ({
     const checkAndAutoSend = async () => {
       const token = getSession();
       if (!token || autoSendTriggered || chat || isAutoSendCalled) {
-        console.log("Early return: token, autoSendTriggered, or chat condition met");
+        console.log(
+          "Early return: token, autoSendTriggered, or chat condition met"
+        );
         return;
       }
 
@@ -323,15 +298,17 @@ export const Interested = ({
         // const imageExists = sessions.some((session: any) =>
         //   session.messages.some((msg: any) => msg.image_path === previewImage)
         // );
-       
-          console.log("Auto-send triggered");
-          debouncedAutoSend();
-          setAutoSendTriggered(true);
-          isAutoSendCalled = true;
-          fetchSessionData();
-      
+
+        console.log("Auto-send triggered");
+        debouncedAutoSend();
+        setAutoSendTriggered(true);
+        isAutoSendCalled = true;
+        fetchSessionData();
       } catch (error: any) {
-        console.error("Error checking and auto-sending message:", error.message);
+        console.error(
+          "Error checking and auto-sending message:",
+          error.message
+        );
       }
     };
 
@@ -851,7 +828,7 @@ export const Interested = ({
               </button>
               <div className="h-full flex flex-col gap-4 w-full">
                 <div
-                  ref={containerRef}
+                  ref={containerRef} // Attach ref only to the scrolling container
                   className="h-full overflow-y-auto p-4 w-full scroll-none"
                 >
                   {isMsgLoading ? (
@@ -864,31 +841,30 @@ export const Interested = ({
                     </div>
                   ) : (
                     messages.map((msg) => {
-                      // Format the created_at timestamp
                       const createdAt = new Date(msg.created_at);
                       const formattedDate = createdAt.toLocaleString("en-US", {
                         month: "short",
                         day: "numeric",
                         year: "numeric",
-                      }); // "Dec. 24, 2024"
+                      });
                       const formattedTime = createdAt.toLocaleString("en-US", {
                         hour: "2-digit",
                         minute: "2-digit",
                         hour12: true,
-                      }); // "12:45 PM"
+                      });
 
                       return (
                         <div
-                          key={msg.id}
+                          key={msg.id} // Use unique key for each message
                           className={`p-2 flex flex-col w-full ${
-                            msg.sender == gettokenId
+                            msg.sender === gettokenId
                               ? "items-end"
                               : "items-start"
                           }`}
                         >
                           <div
                             className={`mb-2 p-4 min-w-14 rounded-t-3xl flex flex-col gap-2 max-w-[80%] ${
-                              msg.sender == gettokenId
+                              msg.sender === gettokenId
                                 ? "bg-[skyblue] rounded-bl-3xl"
                                 : "bg-black/10 rounded-br-3xl"
                             }`}
@@ -910,7 +886,7 @@ export const Interested = ({
                           <div>
                             <p
                               className={`text-[10px] ${
-                                msg.sender == gettokenId
+                                msg.sender === gettokenId
                                   ? "text-black/80"
                                   : "text-black/70"
                               }`}
@@ -936,7 +912,7 @@ export const Interested = ({
                       type="text"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      placeholder="Type your message here"
+                      placeholder="Chat here..."
                       className="w-full py-2 border border-gray-300 rounded-full px-4"
                     />
                     <button

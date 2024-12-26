@@ -74,7 +74,7 @@ export const Form = () => {
         if (user) {
             // Store the token in local storage or cookies
             localStorage.setItem("token", user.token); // Example: Store JWT in localStorage
-            router.push("/apps-ui/profile");
+            router.push("/apps-ui/home");
         }
     } catch (err:any) {
         console.error(err);

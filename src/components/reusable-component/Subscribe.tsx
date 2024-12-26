@@ -55,8 +55,8 @@ export const SubscribeInsights: React.FC<SubscribeProps> = ({
               width="35"
               height="35"
             /> */}
-        <div className="w-full flex gap-2">
-        <button className="flex items-center gap-2 capitalize w-fit px-4 rounded-full py-2 font-semibold bg-shade-1">
+        <div className="w-full flex gap-8">
+        <button className="flex items-center gap-2 capitalize w-fit rounded-full py-2 font-semibold ">
           <Icon
             className="cursor-pointer"
             icon="devicon:facebook"
@@ -65,7 +65,7 @@ export const SubscribeInsights: React.FC<SubscribeProps> = ({
           />
           Facebook
         </button>
-        <button className="flex items-center gap-2 capitalize w-fit px-4 rounded-full py-2 font-semibold bg-shade-1">
+        <button className="flex items-center gap-2 capitalize w-fit rounded-full py-2 font-semibold ">
           <Icon
             className="cursor-pointer"
             icon="skill-icons:instagram"
