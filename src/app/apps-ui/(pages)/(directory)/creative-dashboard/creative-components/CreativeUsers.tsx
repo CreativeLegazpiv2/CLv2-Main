@@ -90,18 +90,6 @@ const UserCard = ({
   const [liked, setLiked] = useState<boolean>(false);
   const [totaluserLike, setTotaluserLike] = useState<number>(0);
 
-    const [gettSession, setSession] = useState<string | null>(null);
-    const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
-    const token = getSession();
-  
-    const viewProfile = async () => {
-      if (gettSession) {
-        window.location.href = `/apps-ui/g-user/view-profile/${detailsid}`;
-      } else {
-        console.log("No uploaded works yet!");
-      }
-    };
-
   useEffect(() => {
     const guestsString = localStorage.getItem("guest");
     let guests: string[] = [];
@@ -341,7 +329,7 @@ const UserCard = ({
       className="w-full border border-gray-400 rounded-xl p-4 bg-secondary-1 shadow-customShadow "
     >
       <div className="flex flex-col ">
-        <div className="w-full h-52 relative cursor-pointer">
+        <div className="w-full h-52 relative">
           <img
             className="w-full h-full object-cover"
             src={imageBg || "../images/landing-page/eabab.png"}
@@ -367,7 +355,7 @@ const UserCard = ({
             {totaluserLike}
           </div>
 
-          <img onClick={viewProfile}
+          <img
             className="h-28 w-28 z-50 rounded-full object-cover"
             src={profile_pic || "../images/creative-directory/boy.png"}
             alt=""

@@ -388,7 +388,7 @@ export const CreativeCards: React.FC<UserDetail> = ({
             </div>
           </div>
         </div>
-        <div className="w-full min-h-32 flex flex-col pt-4">
+        <div className="w-full min-h-32 flex flex-col pb-8">
           <div className="w-full h-full max-w-[87%] mx-auto flex flex-col gap-6 justify-center items-center">
             <p
               className={`text-center text-xs font-semibold ${bio.length > 100 ? "line-clamp-6" : ""
