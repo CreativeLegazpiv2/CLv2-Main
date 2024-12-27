@@ -70,20 +70,19 @@ export const UpcomingEvents = () => {
       const response = await fetch("/api/admin-events");
       if (!response.ok) throw new Error("Error fetching events");
       const fetchedEvents: AdminEvent[] = await response.json();
-  
+
       // Filter events to show only those with a date greater than or equal to the current date
       const currentDate = new Date();
-      const upcomingEvents = fetchedEvents.filter(event => {
+      const upcomingEvents = fetchedEvents.filter((event) => {
         const eventDate = new Date(event.date);
         return eventDate >= currentDate;
       });
-  
+
       setEvents(upcomingEvents);
     } catch (error) {
       console.error("Error fetching events:", error);
     }
   };
-  
 
   const [showPofconModal, setShowPofconModal] = useState(false); // Modal state
   const [selectedEvent, setSelectedEvent] = useState<AdminEvent | null>(null); // State to store the selected event
@@ -118,23 +117,23 @@ export const UpcomingEvents = () => {
         className="w-full h-fit flex justify-center items-center text-center pb-12"
       >
         <div className="w-fit flex gap-6 justify-center items-center">
-          <Icon
+          {/* <Icon
             icon="ph:arrow-left"
             width="35"
             height="35"
             onClick={goToPreviousMonth}
             className="cursor-pointer"
-          />
+          /> */}
           <h1 className="font-bold md:text-4xl text-2xl uppercase">
             {currentMonthYear}
           </h1>
-          <Icon
+          {/* <Icon
             icon="ph:arrow-right"
             width="35"
             height="35"
             onClick={goToNextMonth}
             className="cursor-pointer"
-          />
+          /> */}
         </div>
       </motion.div>
       <EventGrid
@@ -165,7 +164,7 @@ const EventGrid: React.FC<{
   setList: React.Dispatch<React.SetStateAction<boolean>>;
   setShowPofconModal: React.Dispatch<React.SetStateAction<boolean>>;
   events: AdminEvent[];
-  setSelectedEvent: React.Dispatch<React.SetStateAction<AdminEvent | null>>; // Setter for selected event
+  setSelectedEvent: React.Dispatch<React.SetStateAction<AdminEvent | null>>;
 }> = ({
   currentDate,
   list,
@@ -174,14 +173,20 @@ const EventGrid: React.FC<{
   setShowPofconModal,
   setSelectedEvent,
 }) => {
+  // Filter events to show only those occurring today
   const filteredEvents = events.filter((event) => {
     const eventDate = new Date(event.date);
+    const today = new Date(currentDate);
+
+    // Compare year, month, and day to ensure the event is today
     return (
-      eventDate.getFullYear() === currentDate.getFullYear() &&
-      eventDate.getMonth() === currentDate.getMonth()
+      eventDate.getFullYear() === today.getFullYear() &&
+      eventDate.getMonth() === today.getMonth() &&
+      eventDate.getDate() === today.getDate()
     );
   });
 
+  // Group events by date (though there should only be one group for today)
   const groupedEvents = groupEventsByDate(filteredEvents);
   const sortedDates = Object.keys(groupedEvents).sort(
     (a, b) => new Date(a).getTime() - new Date(b).getTime()
@@ -219,7 +224,7 @@ const EventGrid: React.FC<{
                   groupIndex={groupIndex}
                   list={list}
                   setShowPofconModal={setShowPofconModal}
-                  setSelectedEvent={setSelectedEvent} // Pass setter for event
+                  setSelectedEvent={setSelectedEvent}
                 />
               ))}
             </div>
@@ -232,7 +237,7 @@ const EventGrid: React.FC<{
         ))
       ) : (
         <p className="text-center text-2xl font-semibold mt-12">
-          No events available
+          No events available for today
         </p>
       )}
     </div>
@@ -342,7 +347,6 @@ const EventRegisterButton = ({
     </motion.button>
   );
 };
-
 
 const ListButton: React.FC<ButtonProp> = ({ list, setList }) => {
   return (
