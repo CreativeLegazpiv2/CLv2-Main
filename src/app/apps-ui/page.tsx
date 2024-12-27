@@ -34,7 +34,7 @@ export default function Home() {
 
       <div
         ref={websiteContentRef}
-        className="website-content w-full min-h-screen pb-[10dvh] relative"
+        className="website-content w-full min-h-screen relative"
       >
         <div className="w-full h-fit">
           <Header />
@@ -42,9 +42,8 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="pt-[15dvh]">
-        <Events />
-      </div>
+      <Events />
+
       <GallerySection />
       <Malikhain />
       <Transcribed />
