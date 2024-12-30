@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 export const Signin = () => {
   return (
     <div className="w-full min-h-dvh lg:py-[20dvh] py-[15dvh] bg-[url('/images/signup/background.jpg')] bg-cover bg-no-repeat relative">
@@ -68,23 +69,22 @@ export const Form = () => {
     setLoading(true);
 
     try {
-        const user = await loginUser(username, password);
-        console.log("Logged in user:", user);
-        toast.success("Successfully Login!", { position: "bottom-right" });
-        if (user) {
-            // Store the token in local storage or cookies
-            localStorage.setItem("token", user.token); // Example: Store JWT in localStorage
-            router.push("/apps-ui/home");
-        }
-    } catch (err:any) {
-        console.error(err);
-        toast.error(err.message, { position: "bottom-right" });
-        setError(err.message);
+      const user = await loginUser(username, password);
+      console.log("Logged in user:", user);
+      toast.success("Successfully Login!", { position: "bottom-right" });
+      if (user) {
+        // Store the token in local storage or cookies
+        localStorage.setItem("token", user.token); // Example: Store JWT in localStorage
+        router.push("/apps-ui/home");
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message, { position: "bottom-right" });
+      setError(err.message);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
-
+  };
 
   return (
     <form className="w-full h-full flex flex-col gap-6" onSubmit={handleSubmit}>
@@ -138,22 +138,24 @@ export const Form = () => {
       <div className="w-full flex flex-col justify-center items-center">
         <p>Not a member?</p>
         <motion.div
-        whileHover={{ scale: 1.05, color: "#0070f3" }}
-        whileTap={{ scale: 0.95 }}>
-        <Link href={"/apps-ui/signup"} className="uppercase font-medium cursor-pointer">
-          New Artist?
-        </Link>
+          whileHover={{ scale: 1.05, color: "#0070f3" }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Link href="/apps-ui/applyartist" className="uppercase font-medium cursor-pointer">
+            New Artist?
+          </Link>
         </motion.div>
-        
+
         <motion.div
-        whileHover={{ scale: 1.05, color: "#0070f3" }}
-        whileTap={{ scale: 0.95 }}>
-        <Link href={"/apps-ui/signupBuyer"} className="uppercase font-medium cursor-pointer">
-          Buyer?
-        </Link>
+          whileHover={{ scale: 1.05, color: "#0070f3" }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Link href={"/apps-ui/signupBuyer"} className="uppercase font-medium cursor-pointer">
+            Buyer?
+          </Link>
         </motion.div>
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </form>
   );
 };
