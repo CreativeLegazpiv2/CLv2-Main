@@ -2,16 +2,18 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Logo } from "./Logo";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import toast CSS
 
 interface InputFieldProps {
   icon: any;
   placeholder: string;
   type?: string;
   name: string;
-  value: string; // Add this line to handle the `value` prop
+  value: string;
   error?: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // Add the onChange handler
+  required?: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -22,13 +24,16 @@ const InputField: React.FC<InputFieldProps> = ({
   value,
   onChange,
   error,
+  required = true,
 }) => {
   const isContactField = name === "contact";
 
   return (
     <div className="relative w-full group">
       <div className="flex items-center">
-      {isContactField && <span className={`mr-1 text-gray-700 absolute ${isContactField ? "px-8" : ""}`}>+63</span>}
+        {isContactField && (
+          <span className={`mr-1 text-gray-700 absolute ${isContactField ? "px-8" : ""}`}>+63</span>
+        )}
         <input
           className={`w-full h-12 bg-transparent border-b-2 border-secondary-2/30 ${isContactField ? "pl-20" : "px-8"}
                  text-primary-2 placeholder:text-primary-2/50 outline-none transition-all duration-300
@@ -37,10 +42,9 @@ const InputField: React.FC<InputFieldProps> = ({
           name={name}
           placeholder={placeholder}
           autoComplete="off"
-          required
+          required={required}
           value={value}
           onChange={(e) => {
-            // Conditional validation for contact number
             if (isContactField) {
               const inputValue = e.target.value;
               if (!/^9\d{9}$/.test(inputValue)) {
@@ -51,7 +55,7 @@ const InputField: React.FC<InputFieldProps> = ({
                 e.target.setCustomValidity("");
               }
             }
-            onChange(e); // Call parent's onChange handler
+            onChange(e);
           }}
         />
         <Icon
@@ -67,8 +71,7 @@ const InputField: React.FC<InputFieldProps> = ({
   );
 };
 
-
-// New Gender Selection Component
+// Gender Selection Component
 const GenderSelect = ({ selectedGender, setSelectedGender }: any) => (
   <div className="relative w-full group">
     <select
@@ -110,6 +113,7 @@ export const RegisterModal = ({
   eventLocation,
   eventStartTime,
   eventEndTime,
+  onSuccess,
 }: {
   setShowPofconModal: React.Dispatch<React.SetStateAction<boolean>>;
   eventId: number | null;
@@ -117,6 +121,7 @@ export const RegisterModal = ({
   eventLocation: string;
   eventStartTime: string;
   eventEndTime: string;
+  onSuccess: () => void;
 }) => {
   const [isExiting, setIsExiting] = useState(false);
   const [formData, setFormData] = useState({
@@ -125,6 +130,9 @@ export const RegisterModal = ({
     address: "",
     email: "",
     contact: "",
+    artExp: "",
+    subjectExp: "",
+    portfolioLink: "", // Optional field
   });
 
   const [gender, setGender] = useState("");
@@ -157,12 +165,12 @@ export const RegisterModal = ({
     const { firstName, lastName, address, email, contact } = formData;
 
     if (!firstName || !lastName || !address || !email || !contact || !gender) {
-      setErrorMessage("Please fill in all fields.");
+      setErrorMessage("Please fill in all required fields.");
       setLoading(false);
       return;
     }
 
-    console.log("Form Data:", formData, "Gender:", gender); // Ensure formData is logged correctly
+    console.log("Form Data:", formData, "Gender:", gender);
 
     try {
       const response = await fetch("/api/admin-events", {
@@ -179,8 +187,9 @@ export const RegisterModal = ({
       const data = await response.json();
 
       if (response.ok) {
-        toast.success("Successfully Registered!", { position: "bottom-right" });
-        setShowPofconModal(false);
+        // Show success toast
+        onSuccess();
+        setShowPofconModal(false); // Close the modal
       } else {
         setErrorMessage(data.error || "An error occurred.");
       }
@@ -273,6 +282,34 @@ export const RegisterModal = ({
                   selectedGender={gender}
                   setSelectedGender={setGender}
                 />
+
+                <InputField
+                  icon="icon-park-solid:edit-name"
+                  placeholder="Total years of experience in art"
+                  type="number"
+                  name="artExp"
+                  value={formData.artExp}
+                  onChange={handleInputChange}
+                />
+
+                <InputField
+                  icon="icon-park-solid:edit-name"
+                  placeholder="Workshop subject years of experience"
+                  type="number"
+                  name="subjectExp"
+                  value={formData.subjectExp}
+                  onChange={handleInputChange}
+                />
+
+                <InputField
+                  icon="icon-park-solid:edit-name"
+                  placeholder="Online Portfolio if available"
+                  type="text" // Changed to "text" for URL input
+                  name="portfolioLink"
+                  value={formData.portfolioLink}
+                  onChange={handleInputChange}
+                  required={false} // Made this field optional
+                />
               </div>
 
               {errorMessage && <p className="text-red-500">{errorMessage}</p>}
@@ -310,6 +347,7 @@ export const RegisterModal = ({
               </div>
             </motion.div>
           </div>
+          <ToastContainer />
         </div>
       </motion.div>
     </motion.div>

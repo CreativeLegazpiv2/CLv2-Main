@@ -5,6 +5,8 @@ import { RegisterModal } from "@/components/reusable-component/RegisterModal";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface ButtonProp {
   list: boolean;
@@ -117,23 +119,9 @@ export const UpcomingEvents = () => {
         className="w-full h-fit flex justify-center items-center text-center pb-12"
       >
         <div className="w-fit flex gap-6 justify-center items-center">
-          {/* <Icon
-            icon="ph:arrow-left"
-            width="35"
-            height="35"
-            onClick={goToPreviousMonth}
-            className="cursor-pointer"
-          /> */}
           <h1 className="font-bold md:text-4xl text-2xl uppercase">
             {currentMonthYear}
           </h1>
-          {/* <Icon
-            icon="ph:arrow-right"
-            width="35"
-            height="35"
-            onClick={goToNextMonth}
-            className="cursor-pointer"
-          /> */}
         </div>
       </motion.div>
       <EventGrid
@@ -152,6 +140,12 @@ export const UpcomingEvents = () => {
           eventLocation={selectedEvent.location}
           eventStartTime={selectedEvent.start_time}
           eventEndTime={selectedEvent.end_time}
+          onSuccess={() => {
+            toast.success("Successfully Registered!", {
+              position: "bottom-right",
+              autoClose: 3000, // Close after 3 seconds
+            });
+          }}
         />
       )}
     </div>
@@ -314,6 +308,7 @@ const EventCard: React.FC<{
         setShowPofconModal={setShowPofconModal}
         setSelectedEvent={() => setSelectedEvent(event)} // Pass the event to setSelectedEvent
       />
+      <ToastContainer />
     </motion.div>
   );
 };
