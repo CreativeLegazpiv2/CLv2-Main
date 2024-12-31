@@ -89,7 +89,7 @@ export const Events = () => {
   return (
     <div className="w-dvw md:h-dvh h-fit md:py-0 py-24 gap-12 flex flex-col justify-center items-start md:max-w-[80%] mx-auto">
       <div className="overflow-hidden md:w-[90%] w-[80%] mx-auto flex flex-col gap-12">
-        <h1 className="h-fit font-bold md:text-5xl text-4xl md:mx-0 mx-auto mb-4 md:text-left text-center ">
+        <h1 className="h-fit font-bold md:text-5xl text-4xl md:mx-0 mx-auto mb-4 md:text-left text-center">
           Check out our events
         </h1>
       </div>

@@ -74,6 +74,9 @@ export async function GET(req: Request) {
             email: eventData.email,
             phoneNum: eventData.contact,
             gender: eventData.gender,
+            artExp:eventData.artExp,
+            subjectExp:eventData.subjectExp,
+            portfolioLink:eventData.portfolioLink
           }
         ]);
   

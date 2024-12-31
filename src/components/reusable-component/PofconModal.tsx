@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
+import { useRouter } from "next/navigation";
 
 interface PofconModalProps {
     setShowPofconModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,6 +22,7 @@ export const PofconModal: React.FC<PofconModalProps> = ({ setShowPofconModal }) 
             setShowPofconModal(false); // Hide modal after exit animation completes
         }
     };
+   
 
     return (
         <motion.div
@@ -66,8 +68,15 @@ export const PofconModal: React.FC<PofconModalProps> = ({ setShowPofconModal }) 
 };
 
 const RegisterButton = () => {
+
+    const router = useRouter();
+
+    const navigateToSignin = () => {
+        router.push('/apps-ui/signin')
+    }
     return (
         <motion.button
+            onClick={navigateToSignin}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="uppercase text-secondary-1 bg-primary-2 rounded-lg text-xl py-3 w-56 font-semibold"

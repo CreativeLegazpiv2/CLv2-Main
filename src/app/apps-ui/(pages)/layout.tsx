@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { ButtonChat } from "@/components/buttonChat/buttonChat";
 // app/layout.tsx
@@ -11,7 +11,6 @@ import React, { ReactNode, useEffect, useState } from "react";
 interface LayoutProps {
   children: ReactNode;
 }
-
 
 export default function MainLayout({
   children,
@@ -26,7 +25,7 @@ export default function MainLayout({
     const checkAuthAndRedirect = async () => {
       try {
         const session = await getSession();
-        
+
         if (session) {
           // User is logged in
           setIsShowChat(true);
@@ -42,7 +41,7 @@ export default function MainLayout({
     };
 
     checkAuthAndRedirect();
-  }, []); 
+  }, []);
 
   const handleOpenSideBar = () => {
     setIsSidebarOpen(true);
@@ -59,7 +58,7 @@ export default function MainLayout({
   const handleCloseChatModal = () => {
     setIsChatModalOpen(false);
   };
-  
+
   return (
     <main className="w-full flex flex-col min-h-screen">
       <Header
@@ -74,8 +73,8 @@ export default function MainLayout({
       <AnimatePresence>
         {isSidebarOpen && (
           <SidebarDrawer
-            isOpen={isSidebarOpen} 
-            onClose={handleCloseSideBar} 
+            isOpen={isSidebarOpen}
+            onClose={handleCloseSideBar}
             linkName="/apps-ui/profile"
             backgroundColor="bg-primary-1"
             textColor="text-secondary-2/60"
@@ -85,10 +84,10 @@ export default function MainLayout({
       {isShowChat && (
         <div className="fixed -bottom-2 -right-1 z-[500] p-4">
           <ButtonChat
-           isChatModalOpen={isChatModalOpen}
-           onOpenChatModal={handleOpenChatModal}
-           onCloseChatModal={handleCloseChatModal}
-            />
+            isChatModalOpen={isChatModalOpen}
+            onOpenChatModal={handleOpenChatModal}
+            onCloseChatModal={handleCloseChatModal}
+          />
         </div>
       )}
     </main>
