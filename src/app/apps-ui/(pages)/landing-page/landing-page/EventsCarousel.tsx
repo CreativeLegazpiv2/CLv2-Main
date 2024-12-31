@@ -35,10 +35,15 @@ export const Events = () => {
     setShowModal(true);
   };
 
+  const handleRegistrationSuccess = () => {
+    setShowModal(false); // Close the modal
+    console.log("Registration successful!");
+  };
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("/api/admin-events"); // Adjust the endpoint as needed
+        const response = await fetch("/api/admin-events");
         if (!response.ok) {
           throw new Error("Failed to fetch events");
         }
@@ -150,6 +155,7 @@ export const Events = () => {
           eventLocation={selectedEvent.location}
           eventStartTime={selectedEvent.start_time}
           eventEndTime={selectedEvent.end_time}
+          onSuccess={handleRegistrationSuccess} // Add this line
         />
       )}
       <ToastContainer/>
