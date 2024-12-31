@@ -142,9 +142,9 @@ export const Profile = () => {
   };
 
   return (
-    <div className="w-full md:h-dvh h-fit md:max-w-[70%] max-w-[90%] mx-auto pt-[10dvh] flex flex-col md:flex-row gap-6 items-end justify-between">
+    <div className="w-full md:h-dvh h-fit md:max-w-[70%] max-w-[90%] mx-auto pt-[10dvh] flex flex-col md:flex-row gap-6 items-end justify-between overflow-hidden">
       <ToastContainer />
-      <div className="w-full md:h-[70dvh] h-fit md:pt-0 pt-[20dvh] z-50 flex flex-col-reverse md:flex-row md:gap-8 gap-4 justify-center items-center">
+      <div className="w-full md:h-[70dvh] h-fit md:pt-0 pt-[20dvh] z-50 flex flex-col-reverse md:flex-row md:gap-8 gap-4 justify-center items-center ">
         <div className=" w-fit md:h-full h-fit flex md:flex-col flex-row items-center justify-center gap-4">
           {iconNifyNonColored.map((src, index) => (
             <Icon
@@ -156,7 +156,14 @@ export const Profile = () => {
             />
           ))}
         </div>
-        <div className="w-full md:h-[70dvh] h-fit max-w-md rounded-t-3xl bg-white relative">
+
+        {/* Profile Section with Spring Effect */}
+        <motion.div
+          initial={{ opacity: 0, y: "100%" }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 50, damping: 25 }}
+          className="w-full md:h-[70dvh] h-fit max-w-md rounded-t-3xl bg-white relative"
+        >
           <div className="w-full flex flex-col h-[18rem] max-w-[18rem] rounded-full mx-auto -mt-[8rem] bg-white overflow-hidden">
             <img
               src={profile_pic || "/images/creative-directory/boy.png"}
@@ -230,29 +237,29 @@ export const Profile = () => {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
-      <div className="w-full h-[70dvh] max-w-screen-sm text-primary-2 z-50 md:text-right text-center flex flex-col justify-start items-end gap-4">
+
+      {/* Right Side Section with Spring Effect */}
+      <motion.div
+        initial={{ x: "100%" }}
+        animate={{ x: 0 }}
+        transition={{ type: "spring", stiffness: 100, damping: 25 }}
+        className="w-full h-[70dvh] max-w-screen-sm text-primary-2 z-50 md:text-right text-center flex flex-col justify-start items-end gap-4"
+      >
         <p className="text-6xl w-full max-w-sm uppercase font-extrabold">
           {(creative_field || "Buyer").split("-").join(" ")}
         </p>
         <p className="w-full max-w-lg text-lg">{bio || "Lorem"}</p>
-        {/* <div className="flex-col gap-1 md:flex hidden">
-          <p>{email}</p>
-          <p>{first_name}</p>
-          <p>{bday}</p>
-          <p>{address}</p>
-          <p>{mobileNo}</p>
-        </div> */}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="w-48 border mt-4 border-new-3 hover:bg-new-3 hover:text-white text-new-3 bg-new-4 py-2 rounded-full duration-300 ease-in-out"
+          className="w-48 border mt-4 mr-4 border-new-3 hover:bg-new-3 hover:text-white text-new-3 bg-new-4 py-2 rounded-full duration-300 ease-in-out"
           onClick={handleGalleryClick}
         >
           View Gallery
         </motion.button>
-      </div>
+      </motion.div>
     </div>
   );
 };
