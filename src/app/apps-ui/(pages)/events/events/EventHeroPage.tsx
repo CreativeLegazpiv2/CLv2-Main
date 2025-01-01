@@ -1,6 +1,6 @@
 "use client";
 
-import { SubscribeInsights } from "@/components/reusable-component/Subscribe";
+import { Subscribe } from "@/components/reusable-component/Subscribe";
 import { motion } from "framer-motion";
 
 export const EventHeroPage = () => {
@@ -36,12 +36,11 @@ export const EventHeroPage = () => {
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
             className="w-full max-w-md mx-auto pl-14"
           >
-            <SubscribeInsights
+            <Subscribe
               textColor="text-white"
               bgColor="bg-transparent"
               placeHolder="Enter your email"
               borderColor="border-white"
-          
             />
           </motion.div>
         </div>

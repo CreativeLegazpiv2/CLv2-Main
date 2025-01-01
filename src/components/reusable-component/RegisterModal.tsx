@@ -153,11 +153,21 @@ export const RegisterModal = ({
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    const { name, value, type } = e.target;
+  
+    // Check if the target is an input element and has the `checked` property
+    if (e.target instanceof HTMLInputElement && type === "checkbox") {
+      const { checked } = e.target;
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: checked, // Use `checked` for checkboxes
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value, // Use `value` for other inputs
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
