@@ -73,11 +73,15 @@ export const UpcomingEvents = () => {
       if (!response.ok) throw new Error("Error fetching events");
       const fetchedEvents: AdminEvent[] = await response.json();
 
-      // Filter events to show only those with a date greater than or equal to the current date
-      const currentDate = new Date();
+      // Filter events to show only those in the selected month
+      const selectedMonth = currentDate.getMonth();
+      const selectedYear = currentDate.getFullYear();
       const upcomingEvents = fetchedEvents.filter((event) => {
         const eventDate = new Date(event.date);
-        return eventDate >= currentDate;
+        return (
+          eventDate.getMonth() === selectedMonth &&
+          eventDate.getFullYear() === selectedYear
+        );
       });
 
       setEvents(upcomingEvents);
@@ -178,20 +182,18 @@ const EventGrid: React.FC<{
   setShowPofconModal,
   setSelectedEvent,
 }) => {
-  // Filter events to show only those occurring today
+  // Filter events to show only those in the selected month
   const filteredEvents = events.filter((event) => {
     const eventDate = new Date(event.date);
-    const today = new Date(currentDate);
-
-    // Compare year, month, and day to ensure the event is today
+    const selectedMonth = currentDate.getMonth();
+    const selectedYear = currentDate.getFullYear();
     return (
-      eventDate.getFullYear() === today.getFullYear() &&
-      eventDate.getMonth() === today.getMonth() &&
-      eventDate.getDate() === today.getDate()
+      eventDate.getMonth() === selectedMonth &&
+      eventDate.getFullYear() === selectedYear
     );
   });
 
-  // Group events by date (though there should only be one group for today)
+  // Group events by date
   const groupedEvents = groupEventsByDate(filteredEvents);
   const sortedDates = Object.keys(groupedEvents).sort(
     (a, b) => new Date(a).getTime() - new Date(b).getTime()
@@ -242,7 +244,7 @@ const EventGrid: React.FC<{
         ))
       ) : (
         <p className="text-center text-2xl font-semibold mt-12">
-          No events available for today
+          No events available for this month
         </p>
       )}
     </div>
