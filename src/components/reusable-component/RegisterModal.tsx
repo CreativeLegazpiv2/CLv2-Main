@@ -13,7 +13,7 @@ interface InputFieldProps {
   value: string;
   error?: string;
   required?: boolean;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -34,34 +34,36 @@ const InputField: React.FC<InputFieldProps> = ({
         {isContactField && (
           <span className={`mr-1 text-gray-700 absolute ${isContactField ? "px-8" : ""}`}>+63</span>
         )}
-        <input
-          className={`w-full h-12 bg-transparent border-b-2 border-secondary-2/30 ${isContactField ? "pl-20" : "px-8"}
-                 text-primary-2 placeholder:text-primary-2/50 outline-none transition-all duration-300
-                 focus:border-secondary-2 [&:-webkit-autofill]:transition-[background-color_5000s_ease-in-out_0s]`}
-          type={type}
-          name={name}
-          placeholder={placeholder}
-          autoComplete="off"
-          required={required}
-          value={value}
-          onChange={(e) => {
-            if (isContactField) {
-              const inputValue = e.target.value;
-              if (!/^9\d{9}$/.test(inputValue)) {
-                e.target.setCustomValidity(
-                  "Contact number must start with 9 and be exactly 10 digits long."
-                );
-              } else {
-                e.target.setCustomValidity("");
-              }
-            }
-            onChange(e);
-          }}
-        />
+        {type === "textarea" ? (
+          <textarea
+            className={`w-full h-24 bg-transparent border-b-2 border-secondary-2/30 px-8
+                       text-primary-2 placeholder:text-primary-2/50 outline-none transition-all duration-300
+                       focus:border-secondary-2 resize-none`}
+            name={name}
+            placeholder={placeholder}
+            autoComplete="off"
+            required={required}
+            value={value}
+            onChange={onChange}
+          />
+        ) : (
+          <input
+            className={`w-full h-12 bg-transparent border-b-2 border-secondary-2/30 ${isContactField ? "pl-20" : "px-8"}
+                       text-primary-2 placeholder:text-primary-2/50 outline-none transition-all duration-300
+                       focus:border-secondary-2 [&:-webkit-autofill]:transition-[background-color_5000s_ease-in-out_0s]`}
+            type={type}
+            name={name}
+            placeholder={placeholder}
+            autoComplete="off"
+            required={required}
+            value={value}
+            onChange={onChange}
+          />
+        )}
         <Icon
           icon={icon}
           className="absolute left-0 top-1/2 -translate-y-1/2 text-primary-2/50 w-6 h-6
-                 group-focus-within:text-secondary-2 transition-colors duration-300"
+                   group-focus-within:text-secondary-2 transition-colors duration-300"
           width="25"
           height="25"
         />
@@ -131,8 +133,9 @@ export const RegisterModal = ({
     email: "",
     contact: "",
     artExp: "",
-    subjectExp: "",
-    portfolioLink: "", // Optional field
+    animationExp: "",
+    portfolioLink: "",
+    commitment: false,
   });
 
   const [gender, setGender] = useState("");
@@ -149,11 +152,11 @@ export const RegisterModal = ({
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, type, checked } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -162,9 +165,9 @@ export const RegisterModal = ({
     setLoading(true);
     setErrorMessage("");
 
-    const { firstName, lastName, address, email, contact } = formData;
+    const { firstName, lastName, address, email, contact, artExp, animationExp, commitment } = formData;
 
-    if (!firstName || !lastName || !address || !email || !contact || !gender) {
+    if (!firstName || !lastName || !address || !email || !contact || !gender || !artExp || !animationExp || !commitment) {
       setErrorMessage("Please fill in all required fields.");
       setLoading(false);
       return;
@@ -187,9 +190,8 @@ export const RegisterModal = ({
       const data = await response.json();
 
       if (response.ok) {
-        // Show success toast
         onSuccess();
-        setShowPofconModal(false); // Close the modal
+        setShowPofconModal(false);
       } else {
         setErrorMessage(data.error || "An error occurred.");
       }
@@ -233,7 +235,7 @@ export const RegisterModal = ({
             </div>
 
             <form className="py-10 flex flex-col gap-4" onSubmit={handleSubmit}>
-              {/* Other Input Fields */}
+              {/* Personal Information */}
               <div className="grid grid-cols-2 gap-4">
                 <InputField
                   icon="icon-park-solid:edit-name"
@@ -282,34 +284,53 @@ export const RegisterModal = ({
                   selectedGender={gender}
                   setSelectedGender={setGender}
                 />
+              </div>
 
-                <InputField
-                  icon="icon-park-solid:edit-name"
-                  placeholder="Total years of experience in art"
-                  type="number"
-                  name="artExp"
-                  value={formData.artExp}
-                  onChange={handleInputChange}
-                />
+              {/* Art Experience */}
+              <InputField
+                icon="icon-park-solid:edit-name"
+                placeholder="Describe your art experience"
+                type="textarea"
+                name="artExp"
+                value={formData.artExp}
+                onChange={handleInputChange}
+              />
 
-                <InputField
-                  icon="icon-park-solid:edit-name"
-                  placeholder="Workshop subject years of experience"
-                  type="number"
-                  name="subjectExp"
-                  value={formData.subjectExp}
-                  onChange={handleInputChange}
-                />
+              {/* Animation Experience */}
+              <InputField
+                icon="icon-park-solid:edit-name"
+                placeholder="Describe your animation experience"
+                type="textarea"
+                name="animationExp"
+                value={formData.animationExp}
+                onChange={handleInputChange}
+              />
 
-                <InputField
-                  icon="icon-park-solid:edit-name"
-                  placeholder="Online Portfolio if available"
-                  type="text" // Changed to "text" for URL input
-                  name="portfolioLink"
-                  value={formData.portfolioLink}
+              {/* Online Portfolio */}
+              <InputField
+                icon="icon-park-solid:edit-name"
+                placeholder="Online Portfolio (if available)"
+                type="text"
+                name="portfolioLink"
+                value={formData.portfolioLink}
+                onChange={handleInputChange}
+                required={false}
+              />
+
+              {/* Commitment */}
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="commitment"
+                  id="commitment"
+                  checked={formData.commitment}
                   onChange={handleInputChange}
-                  required={false} // Made this field optional
+                  required
+                  className="mr-2"
                 />
+                <label htmlFor="commitment" className="text-primary-2">
+                  I commit to attending the event if selected.
+                </label>
               </div>
 
               {errorMessage && <p className="text-red-500">{errorMessage}</p>}

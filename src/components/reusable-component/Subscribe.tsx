@@ -55,7 +55,7 @@ export const SubscribeInsights: React.FC<SubscribeProps> = ({
               width="35"
               height="35"
             /> */}
-        <div className="w-full flex gap-8">
+        {/* <div className="w-full flex gap-8">
         <button className="flex items-center gap-2 capitalize w-fit rounded-full py-2 font-semibold ">
           <Icon
             className="cursor-pointer"
@@ -74,7 +74,7 @@ export const SubscribeInsights: React.FC<SubscribeProps> = ({
           />
           Instagram
         </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

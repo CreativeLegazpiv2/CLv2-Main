@@ -5,11 +5,13 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
 interface EventProps {
   id: string;
   eventTitle: string;
@@ -19,6 +21,7 @@ interface EventProps {
   date: string;
   desc: string;
   title: string;
+  image_path: string; // Added image field
 }
 
 export const Events = () => {
@@ -29,10 +32,15 @@ export const Events = () => {
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventProps | null>(null);
+  const [showEventDetails, setShowEventDetails] = useState(false); // New state for event details
 
   const handleRegisterClick = (event: EventProps) => {
     setSelectedEvent(event);
-    setShowModal(true);
+    setShowEventDetails(true); // Show event details first
+  };
+
+  const handleInterestClick = () => {
+    setShowModal(true); // Show registration modal
   };
 
   const handleRegistrationSuccess = () => {
@@ -84,24 +92,29 @@ export const Events = () => {
   };
 
   if (loading) {
-    return <div>Loading events...</div>;
+    return <div className="text-center text-2xl font-semibold">Loading events...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="text-center text-2xl font-semibold text-red-500">Error: {error}</div>;
   }
 
   return (
-    <div className="w-dvw md:h-dvh h-fit md:py-0 py-24 gap-12 flex flex-col justify-center items-start md:max-w-[80%] mx-auto">
-      <div className="overflow-hidden md:w-[90%] w-[80%] mx-auto flex flex-col gap-12">
-        <h1 className="h-fit font-bold md:text-5xl text-4xl md:mx-0 mx-auto mb-4 md:text-left text-center">
-          Check out our events
-        </h1>
+    <div className="w-dvw md:h-dvh h-fit md:py-0 py-24 gap-12 flex flex-col justify-center items-center md:max-w-[90%] mx-auto">
+      <div className="w-full text-center">
+        <motion.h1
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="font-bold text-4xl sm:text-5xl md:text-6xl mb-8"
+        >
+          Check Out Our Events
+        </motion.h1>
       </div>
 
       {/* Carousel */}
-      <div className="h-fit w-full relative">
-        <div className="overflow-hidden md:w-[90%] w-[80%] mx-auto flex flex-col gap-12">
+      <div className="w-full h-fit relative">
+        <div className="overflow-hidden w-[90%] mx-auto">
           <motion.div
             className="flex"
             initial={false}
@@ -120,7 +133,7 @@ export const Events = () => {
                     : "w-1/3"
                 } p-4 flex-shrink-0 box-border`}
               >
-                <Cards {...event} onRegisterClick={() => handleRegisterClick(event)}/>
+                <Cards {...event} onRegisterClick={() => handleRegisterClick(event)} />
               </div>
             ))}
           </motion.div>
@@ -128,24 +141,73 @@ export const Events = () => {
         {/* Navigation buttons */}
         <button
           onClick={prev}
-          className="absolute left-0 top-1/2 transform -translate-y-1/2 text-primary-1 p-2"
+          className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white/80 p-3 rounded-full shadow-lg hover:bg-white transition-colors"
           disabled={currentPage === 0}
         >
-          <Icon icon="ep:arrow-left" width="45" height="45" />
+          <Icon icon="ep:arrow-left" width="30" height="30" />
         </button>
         <button
           onClick={next}
-          className="absolute right-0 top-1/2 transform -translate-y-1/2 text-primary-1 p-2"
+          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white/80 p-3 rounded-full shadow-lg hover:bg-white transition-colors"
           disabled={currentPage === totalPages - 1}
         >
-          <Icon
-            className="rotate-180"
-            icon="ep:arrow-left"
-            width="45"
-            height="45"
-          />
+          <Icon icon="ep:arrow-left" width="30" height="30" className="rotate-180" />
         </button>
       </div>
+
+      {/* Event Details Modal */}
+      {showEventDetails && selectedEvent && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+          <motion.div
+            className="relative w-full max-w-4xl h-fit bg-white rounded-2xl overflow-hidden shadow-2xl"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="grid md:grid-cols-2 gap-8 p-10">
+              {/* Left Side - Event Image */}
+              <div className="relative">
+                <img
+                  src={selectedEvent.image_path}
+                  alt={selectedEvent.title}
+                  className="w-full h-64 object-cover rounded-lg"
+                />
+              </div>
+
+              {/* Right Side - Event Details */}
+              <div className="space-y-4">
+                <h1 className="text-3xl font-bold text-gray-800">{selectedEvent.title}</h1>
+                <p className="text-gray-600">{selectedEvent.desc}</p>
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <Icon icon="mdi:calendar" className="text-gray-600 mr-2" />
+                    <p className="text-gray-600">
+                      {selectedEvent.start_time} - {selectedEvent.end_time} ({selectedEvent.date})
+                    </p>
+                  </div>
+                  <div className="flex items-center">
+                    <Icon icon="mdi:map-marker" className="text-gray-600 mr-2" />
+                    <p className="text-gray-600">{selectedEvent.location}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleInterestClick}
+                  className="w-full py-3 bg-primary-2 text-white rounded-lg font-semibold uppercase tracking-wide transition-all duration-300 hover:bg-primary-1 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                  I'm Interested
+                </button>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowEventDetails(false)}
+              className="absolute top-4 right-4 p-2 bg-white/80 rounded-full hover:bg-white transition-colors"
+            >
+              <Icon icon="mdi:close" width="24" height="24" />
+            </button>
+          </motion.div>
+        </div>
+      )}
+
       {/* Register Modal */}
       {showModal && selectedEvent && (
         <RegisterModal
@@ -155,10 +217,10 @@ export const Events = () => {
           eventLocation={selectedEvent.location}
           eventStartTime={selectedEvent.start_time}
           eventEndTime={selectedEvent.end_time}
-          onSuccess={handleRegistrationSuccess} // Add this line
+          onSuccess={handleRegistrationSuccess}
         />
       )}
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 };
@@ -170,26 +232,36 @@ const Cards: React.FC<EventProps & { onRegisterClick: () => void }> = ({
   end_time,
   location,
   desc,
-  onRegisterClick
+  image_path,
+  onRegisterClick,
 }) => {
   return (
-    <div className="w-full h-fit flex flex-col justify-center items-center gap-6 p-8 bg-shade-2 text-secondary-2 rounded-xl text-lg">
-      <h1 className="font-bold text-4xl title">{title}</h1>
-      <div className="w-full flex flex-col md:justify-start md:items-start justify-center items-center gap-6">
-        <div className="flex flex-col gap-2 leading-3">
-          <p className="whitespace-nowrap">
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.2 }}
+      className="w-full h-fit flex flex-col justify-center items-center gap-6 p-8 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+    >
+      {/* Event Image */}
+      <div className="relative w-full h-48 overflow-hidden rounded-lg">
+        <img
+          src={image_path}
+          alt={title}
+          className="w-full h-full object-cover"
+        />
+      </div>
+
+      {/* Event Details */}
+      <h1 className="font-bold text-3xl text-center text-gray-800">{title}</h1>
+      <div className="w-full flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <p className="whitespace-nowrap text-center text-gray-600">
             {start_time} - {end_time}
           </p>
-          <small>{location}</small>
+          <small className="text-center text-gray-500">{location}</small>
         </div>
-        <p className={`font-medium title w-full md:text-left text-center ${
-          desc.length > 25 ? "line-clamp-1" : ""
-        }`}>
-          {desc}
-        </p>
       </div>
       <EventButton onClick={onRegisterClick} />
-    </div>
+    </motion.div>
   );
 };
 
@@ -197,11 +269,11 @@ const EventButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   return (
     <motion.button
       onClick={onClick}
-      className="w-fit px-4 py-1.5 bg-primary-1 text-secondary-2 whitespace-nowrap"
+      className="w-fit px-6 py-2 bg-gradient-to-r from-orange-300 to-orange-200 text-white rounded-lg font-medium hover:from-orange-400 hover:to-orange-300 transition-all duration-300"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
     >
-      Register for free
+      Register for Free
     </motion.button>
   );
 };

@@ -1,16 +1,16 @@
 "use client";
 
-import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { ChangeEvent, FormEvent, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Logo } from "@/components/reusable-component/Logo";
 import { signupBuyer } from "@/services/authservice";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Step1 } from "./Step1";
-import { Step2 } from './Step2';
-import { Step3 } from './Step3';
-import { Step4 } from './Step4';
+import { Step2 } from "./Step2";
+import { Step3 } from "./Step3";
+import { Step4 } from "./Step4";
 
 interface UserDetail {
   username: string;
@@ -35,6 +35,7 @@ interface InputProps {
   icon: string;
   type?: string;
 }
+
 interface SelectProps {
   name: string;
   value: string;
@@ -44,18 +45,26 @@ interface SelectProps {
   options: Array<{ value: string; label: string }>;
 }
 
-
 export const SignupBuyer = () => {
   return (
-    <div className="w-full min-h-dvh lg:py-[20dvh] py-[15dvh] bg-[url('/images/signup/background.jpg')] bg-cover bg-no-repeat relative">
-      <div className="absolute inset-0 w-full h-full bg-black/30"></div>
+    <div className="w-full min-h-dvh lg:py-[20dvh] py-[15dvh] bg-[url('/images/signup/background.jpg')] bg-cover bg-no-repeat bg-center relative">
+      {/* Black overlay for better contrast */}
+      <div className="absolute inset-0 w-full h-full bg-black/50"></div>
+
+      {/* Content */}
       <div className="relative w-full h-full xl:max-w-[55%] sm:max-w-[70%] max-w-[95%] mx-auto flex flex-col gap-10 justify-center items-center">
-        <h1 className="font-bold lg:text-6xl md:text-5xl text-4xl text-white drop-shadow-xl lg:block hidden">
-          Explore unique art pieces
-          <span className="font-bold lg:text-5xl md:text-4xl text-3xl text-white drop-shadow-xl lg:block hidden">
-          Elevate your collection.
-        </span>
-        </h1>
+        <motion.h1
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="font-bold lg:text-6xl md:text-5xl text-4xl text-white drop-shadow-xl text-center"
+        >
+          Explore Unique Art Pieces
+          <br />
+          <span className="font-bold lg:text-5xl md:text-4xl text-3xl text-white drop-shadow-xl">
+            Elevate Your Collection.
+          </span>
+        </motion.h1>
         <AccountCreation />
       </div>
     </div>
@@ -65,25 +74,43 @@ export const SignupBuyer = () => {
 const AccountCreation = () => {
   return (
     <div className="w-full h-full relative">
-      <div className="w-full h-full flex bg-secondary-1 rounded-2xl z-50 relative">
+      {/* Main content */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="w-full h-full flex bg-white rounded-2xl z-50 relative shadow-2xl"
+      >
         <div className="w-full h-full sm:p-10 p-6 lg:block hidden">
           <img
-            className="w-fit h-full rounded-xl"
+            className="w-fit h-full rounded-xl object-cover"
             src="../images/signup/study.png"
-            alt=""
+            alt="Study"
           />
         </div>
         <div className="w-full min-h-full lg:-ml-8 flex flex-col gap-4 justify-center items-center sm:p-10 p-4">
-          <div className="w-64 h-fit"> 
+          <div className="w-64 h-fit">
             <Logo color="text-secondary-2" width={"auto"} height={"auto"} />
           </div>
           <div className="w-full h-full flex justify-end items-end">
             <MultiStepForm />
           </div>
         </div>
-      </div>
-      <div className="w-full absolute lg:-bottom-10 -bottom-6 z-10 max-w-[90%] left-0 right-0  mx-auto h-32 rounded-2xl bg-shade-6"></div>
-      <div className="w-full absolute lg:-bottom-20 -bottom-12 z-0 max-w-[80%] left-0 right-0  mx-auto h-32 rounded-2xl bg-shade-7"></div>
+      </motion.div>
+
+      {/* Background divs (behind the main content) */}
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+        className="w-full absolute lg:-bottom-10 -bottom-6 z-10 max-w-[90%] left-0 right-0 mx-auto h-32 rounded-2xl bg-shade-6 shadow-lg"
+      ></motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+        className="w-full absolute lg:-bottom-20 -bottom-12 z-0 max-w-[80%] left-0 right-0 mx-auto h-32 rounded-2xl bg-shade-7 shadow-lg"
+      ></motion.div>
     </div>
   );
 };
@@ -95,7 +122,7 @@ export const MultiStepForm = () => {
     email: "",
     password: "",
     name: "",
-    bday:"",
+    bday: "",
     address: "",
     mobileNo: "",
     bio: "",
@@ -114,7 +141,7 @@ export const MultiStepForm = () => {
   };
 
   const nextStep = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault(); // Prevent form submission on "Next" button click
+    e.preventDefault();
     if (isStepValid()) {
       setStep((prev) => Math.min(prev + 1, 4));
       setError("");
@@ -144,13 +171,12 @@ export const MultiStepForm = () => {
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    // Ensure this only happens on the final step (step 4)
     if (step !== 4) {
-      e.preventDefault(); // Prevent submission if not on the last step
+      e.preventDefault();
       return;
     }
-  
-    e.preventDefault(); // Prevent the default form submission
+
+    e.preventDefault();
     try {
       await signupBuyer(
         formData.username,
@@ -222,15 +248,15 @@ export const MultiStepForm = () => {
         </motion.div>
       </AnimatePresence>
 
-      {error && <div className="text-red-500 mt-2">{error}</div>}
-      {success && <div className="text-green-500 mt-2">{success}</div>}
+      {error && <div className="text-red-500 mt-2 text-sm">{error}</div>}
+      {success && <div className="text-green-500 mt-2 text-sm">{success}</div>}
 
       <div className="flex justify-center items-center gap-4 mt-4">
         {step > 1 && (
           <motion.button
             type="button"
             onClick={prevStep}
-            className="border-2 border-secondary-2 text-secondary-2 w-full py-2"
+            className="w-full py-2 bg-transparent border-2 border-primary-2 text-primary-2 rounded-lg hover:bg-primary-2 hover:text-white transition-colors"
             whileTap={{ scale: 0.95 }}
           >
             Previous
@@ -240,7 +266,7 @@ export const MultiStepForm = () => {
           <motion.button
             type="button"
             onClick={nextStep}
-            className="border-2 z-50 border-secondary-2 text-secondary-2 w-full py-2 ml-auto"
+            className="w-full py-2 bg-primary-2 text-white rounded-lg hover:bg-primary-1 transition-colors"
             whileTap={{ scale: 0.95 }}
           >
             Next
@@ -248,7 +274,7 @@ export const MultiStepForm = () => {
         ) : (
           <motion.button
             type="submit"
-            className="w-full border-2 border-secondary-2 text-secondary-2 py-2 ml-auto"
+            className="w-full py-2 bg-primary-2 text-white rounded-lg hover:bg-primary-2 transition-colors"
             whileTap={{ scale: 0.95 }}
           >
             Submit
@@ -257,8 +283,8 @@ export const MultiStepForm = () => {
       </div>
 
       <div className="w-full flex flex-col justify-center items-center mt-2">
-        <p>Already have an account?</p>
-        <Link href="/apps-ui/signin" className="uppercase font-medium cursor-pointer">
+        <p className="text-gray-600">Already have an account?</p>
+        <Link href="/apps-ui/signin" className="uppercase font-medium text-primary-1 hover:text-primary-2 transition-colors">
           Login
         </Link>
       </div>
@@ -266,11 +292,10 @@ export const MultiStepForm = () => {
   );
 };
 
-
 export const Input: React.FC<InputProps> = ({ name, value, onChange, placeholder, icon, type = "text" }) => (
   <div className="w-full relative">
     <input
-      className="w-full h-10 border-b-2 p-4 pl-12 [&:-webkit-autofill]:transition-[background-color_5000s_ease-in-out_0s] bg-transparent placeholder:text-primary-2 font-normal border-secondary-2 outline-none ring-0"
+      className="w-full h-12 border-b-2 p-4 pl-12 bg-transparent placeholder-gray-500 focus:border-primary-1 transition-colors outline-none ring-0"
       type={type}
       name={name}
       value={value}
@@ -290,7 +315,7 @@ export const Input: React.FC<InputProps> = ({ name, value, onChange, placeholder
 export const TextArea: React.FC<InputProps> = ({ name, value, onChange, placeholder, icon }) => (
   <div className="w-full relative">
     <textarea
-      className="w-full h-16 border-b-2 p-4 pl-12 bg-transparent [&:-webkit-autofill]:transition-[background-color_5000s_ease-in-out_0s] placeholder:text-primary-2 border-secondary-2 outline-none ring-0 resize-none"
+      className="w-full h-16 border-b-2 p-4 pl-12 bg-transparent placeholder-gray-500 focus:border-primary-1 transition-colors outline-none ring-0 resize-none"
       name={name}
       value={value}
       onChange={onChange}
@@ -306,14 +331,13 @@ export const TextArea: React.FC<InputProps> = ({ name, value, onChange, placehol
   </div>
 );
 
-
 export const Select: React.FC<SelectProps> = ({ name, value, onChange, placeholder, icon, options }) => (
   <div className="relative w-full">
     <select
       name={name}
       value={value}
       onChange={onChange}
-      className="w-full p-4 pl-12 pr-10 border-b-2 border-black outline-none [&:-webkit-autofill]:transition-[background-color_5000s_ease-in-out_0s] ring-0 appearance-none bg-transparent"
+      className="w-full p-4 pl-12 pr-10 border-b-2 bg-transparent placeholder-gray-500 focus:border-primary-1 transition-colors outline-none ring-0 appearance-none"
       required
     >
       <option value="" disabled>{placeholder}</option>
@@ -329,7 +353,7 @@ export const Select: React.FC<SelectProps> = ({ name, value, onChange, placehold
     />
     <Icon
       icon={"mdi:chevron-down"}
-      className="absolute top-1/2 right-3 -translate-y-1/2 text-black pointer-events-none"
+      className="absolute top-1/2 right-3 -translate-y-1/2 text-secondary-2 pointer-events-none"
       width="20"
       height="20"
     />

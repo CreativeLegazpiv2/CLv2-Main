@@ -5,34 +5,43 @@ import { motion } from "framer-motion";
 
 export const EventHeroPage = () => {
   return (
-    <div className="relative w-full h-dvh bg-[url('/images/events/hero.jpg')] bg-cover bg-no-repeat bg-[50%_45%]">
-      {/* Black overlay with 20% opacity */}
-      <div className="absolute inset-0 bg-black bg-opacity-20"></div>
+    <div className="relative w-full h-dvh bg-[url('/images/events/hero.jpg')] bg-cover bg-no-repeat bg-center">
+      {/* Gradient overlay for a modern look */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20"></div>
 
-      {/*  Contents of the page here */}
-      <div className="relative z-10 w-full h-full pt-[10dvh] ">
-        <div className="w-full h-full flex flex-col justify-evenly items-start">
-          <div className="w-full h-fit flex flex-col justify-center items-start gap-6 max-w-[90%] mx-auto">
-            <motion.h1
-              initial={{ opacity: 0, x: "-100%" }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1 }}
-              className="text-white font-bold lg:text-7xl md:text-6xl text-[50px] w-full max-w-32 md:text-left text-center leading-none"
-            >
-              Mukna Launching
-            </motion.h1>
-            <HeroButton />
-          </div>
+      {/* Contents of the page here */}
+      <div className="relative z-10 w-full h-full flex flex-col justify-center items-center px-4">
+        <div className="w-full max-w-4xl text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-white font-bold text-5xl sm:text-6xl lg:text-7xl leading-tight mb-8"
+          >
+            Mastering 2D Digital Character Animation
+          </motion.h1>
+
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="w-full max-w-[90%] mx-auto"
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+            className="mb-12"
+          >
+            <HeroButton />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+            className="w-full max-w-md mx-auto pl-14"
           >
             <SubscribeInsights
-              textColor="text-secondary-1"
+              textColor="text-white"
               bgColor="bg-transparent"
               placeHolder="Enter your email"
+              borderColor="border-white"
+          
             />
           </motion.div>
         </div>
@@ -44,13 +53,13 @@ export const EventHeroPage = () => {
 const HeroButton = () => {
   return (
     <motion.button
-      initial={{ opacity: 0, x: "-100%" }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 1 }}
-      className="w-fit px-8 py-2 bg-transparent text-secondary-1 text-xl uppercase border-[3px] border-secondary-1"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ duration: 0.2 }}
+      className="w-fit px-8 py-3 bg-transparent text-white text-lg uppercase border-2 border-white rounded-full hover:bg-white hover:text-black transition-colors duration-300"
     >
-      {/* this must be dynamic date for button name palitan nalang */}
-      September 07, 2024
+      {/* This must be a dynamic date for the button name */}
+      January 11-25, 2025
     </motion.button>
   );
 };
