@@ -1,19 +1,21 @@
-    "use client";
+"use client";
 
-    import { useState } from 'react';
-    import Lottie from 'lottie-react';
-    import graphicDesignAnimation from '../../../../../../public/lottie/animation/bg1.json';
-    import webDevelopmentAnimation from '../../../../../../public/lottie/animation/bg3.json';
-    import photographyAnimation from '../../../../../../public/lottie/animation/bg8.json';
-    import writingAnimation from '../../../../../../public/lottie/animation/bg6.json';
-    import musicAnimation from '../../../../../../public/lottie/animation/bg5.json';
-    import gamingAnimation from '../../../../../../public/lottie/animation/bg4.json';
-    import filmAnimation from '../../../../../../public/lottie/animation/bg7.json';
-    import fineArtsAnimation from '../../../../../../public/lottie/animation/bg9.json';
-    import fashionDesignAnimation from '../../../../../../public/lottie/animation/bg2.json';
-    import otherAnimation from '../../../../../../public/lottie/animation/bg10.json';
-    import { signupUser } from "@/services/authservice";
-    import { useRouter } from "next/navigation";
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
+import graphicDesignAnimation from '../../../../../../public/lottie/animation/bg1.json';
+import webDevelopmentAnimation from '../../../../../../public/lottie/animation/bg3.json';
+import photographyAnimation from '../../../../../../public/lottie/animation/bg8.json';
+import writingAnimation from '../../../../../../public/lottie/animation/bg6.json';
+import musicAnimation from '../../../../../../public/lottie/animation/bg5.json';
+import gamingAnimation from '../../../../../../public/lottie/animation/bg4.json';
+import filmAnimation from '../../../../../../public/lottie/animation/bg7.json';
+import fineArtsAnimation from '../../../../../../public/lottie/animation/bg9.json';
+import fashionDesignAnimation from '../../../../../../public/lottie/animation/bg2.json';
+import otherAnimation from '../../../../../../public/lottie/animation/bg10.json';
+import { signupUser } from "@/services/authservice";
+import { useRouter } from "next/navigation";
+
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
     interface UserDetail {
         username: string;

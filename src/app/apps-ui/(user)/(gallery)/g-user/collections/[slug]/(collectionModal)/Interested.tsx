@@ -118,6 +118,7 @@ export const Interested = ({
     }
   };
 
+
   useEffect(() => {
     if (!isMsgLoading && messages.length > 0) {
       scrollToBottom();
@@ -159,6 +160,11 @@ export const Interested = ({
       console.error("Error fetching session data:", error);
     }
   };
+
+  useEffect(() => {
+    fetchusersData();
+  }, []);
+
 
   useEffect(() => {
     const subscription = supabase

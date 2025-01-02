@@ -7,20 +7,25 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const Signin = () => {
   return (
-    <div className="w-full min-h-dvh lg:py-[20dvh] py-[15dvh] bg-[url('/images/signup/background.jpg')] bg-cover bg-no-repeat relative">
+    <div className="w-full min-h-dvh lg:py-[20dvh] py-[15dvh] bg-[url('/images/signup/background.jpg')] bg-cover bg-no-repeat bg-center relative">
       {/* Full height overlay covering the entire div */}
-      <div className="absolute inset-0 w-full h-full bg-black/30"></div>
+      <div className="absolute inset-0 w-full h-full bg-black/50"></div> {/* Increased opacity for better contrast */}
 
       {/* Content */}
       <div className="relative w-full h-full xl:max-w-[55%] sm:max-w-[70%] max-w-[95%] mx-auto flex flex-col gap-10 justify-center items-center">
-        <h1 className="font-bold lg:text-6xl md:text-5xl text-4xl text-white drop-shadow-xl lg:block hidden">
+        <motion.h1
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="font-bold lg:text-6xl md:text-5xl text-4xl text-white drop-shadow-xl lg:block hidden text-center"
+        >
           BE ONE OF US
-        </h1>
+        </motion.h1>
         <AccountCreation />
       </div>
     </div>
@@ -31,12 +36,17 @@ const AccountCreation = () => {
   return (
     <div className="w-full h-full relative">
       {/* Main content */}
-      <div className="w-full h-full flex bg-secondary-1 rounded-2xl z-50 relative">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="w-full h-full flex bg-white rounded-2xl z-50 relative shadow-2xl"
+      >
         <div className="w-full h-full sm:p-10 p-6 lg:block hidden">
           <img
-            className="w-fit h-full rounded-xl"
+            className="w-fit h-full rounded-xl object-cover"
             src="../images/signup/study.png"
-            alt=""
+            alt="Study"
           />
         </div>
         <div className="w-full h-full flex flex-col gap-12 justify-center items-center sm:p-10 p-6">
@@ -47,11 +57,21 @@ const AccountCreation = () => {
             <Form />
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Background divs (behind the main content) */}
-      <div className="w-full absolute lg:-bottom-10 -bottom-6 z-10 max-w-[90%] left-0 right-0  mx-auto h-32 rounded-2xl bg-shade-6"></div>
-      <div className="w-full absolute lg:-bottom-20 -bottom-12 z-0 max-w-[80%] left-0 right-0  mx-auto h-32 rounded-2xl bg-shade-7"></div>
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+        className="w-full absolute lg:-bottom-10 -bottom-6 z-10 max-w-[90%] left-0 right-0 mx-auto h-32 rounded-2xl bg-shade-6 shadow-lg"
+      ></motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+        className="w-full absolute lg:-bottom-20 -bottom-12 z-0 max-w-[80%] left-0 right-0 mx-auto h-32 rounded-2xl bg-shade-7 shadow-lg"
+      ></motion.div>
     </div>
   );
 };
@@ -71,7 +91,7 @@ export const Form = () => {
     try {
       const user = await loginUser(username, password);
       console.log("Logged in user:", user);
-      toast.success("Successfully Login!", { position: "bottom-right" });
+      toast.success("Successfully Logged In!", { position: "bottom-right" });
       if (user) {
         // Store the token in local storage or cookies
         localStorage.setItem("token", user.token); // Example: Store JWT in localStorage
@@ -91,7 +111,7 @@ export const Form = () => {
       {/* Username */}
       <div className="w-full lg:max-w-sm relative">
         <input
-          className="w-full h-10 border-b-2 p-4 pl-12 border-secondary-2 outline-none ring-0"
+          className="w-full h-12 border-b-2 p-4 pl-12 border-secondary-2 outline-none ring-0 bg-transparent placeholder-gray-500 focus:border-primary-1 transition-colors"
           type="text"
           placeholder="Username"
           value={username}
@@ -108,7 +128,7 @@ export const Form = () => {
       {/* Password */}
       <div className="w-full lg:max-w-sm relative">
         <input
-          className="w-full h-10 border-b-2 p-4 pl-12 border-secondary-2 outline-none ring-0"
+          className="w-full h-12 border-b-2 p-4 pl-12 border-secondary-2 outline-none ring-0 bg-transparent placeholder-gray-500 focus:border-primary-1 transition-colors"
           type="password" // Changed to password type
           placeholder="Password"
           value={password}
@@ -122,11 +142,11 @@ export const Form = () => {
         />
       </div>
 
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-red-500 text-sm">{error}</p>}
 
       <div className="w-full lg:max-w-sm pt-4">
         <motion.button
-          className="border-2 border-secondary-2 w-full py-3 text-lg font-semibold uppercase"
+          className="w-full py-3 text-lg font-semibold uppercase bg-primary-1 text-white rounded-lg hover:bg-primary-2 transition-colors"
           type="submit"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -135,22 +155,23 @@ export const Form = () => {
           {loading ? "Logging in..." : "Log in"} {/* Show loading state */}
         </motion.button>
       </div>
-      <div className="w-full flex flex-col justify-center items-center">
-        <p>Not a member?</p>
+      <div className="w-full flex flex-col justify-center items-center gap-2">
+        <p className="text-gray-600">Not a member?</p>
         <motion.div
-          whileHover={{ scale: 1.05, color: "#0070f3" }}
+          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <Link href="/apps-ui/applyartist" className="uppercase font-medium cursor-pointer">
+          <Link href="/apps-ui/applyartist" className="uppercase font-medium text-primary-1 hover:text-primary-2 transition-colors flex items-center gap-2">
+            <Icon icon="mdi:artist" width="24" height="24" /> {/* Icon for New Artist */}
             New Artist?
           </Link>
         </motion.div>
-
         <motion.div
-          whileHover={{ scale: 1.05, color: "#0070f3" }}
+          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <Link href={"/apps-ui/signupBuyer"} className="uppercase font-medium cursor-pointer">
+          <Link href="/apps-ui/signupBuyer" className="uppercase font-medium text-primary-1 hover:text-primary-2 transition-colors flex items-center gap-2">
+            <Icon icon="mdi:cart" width="24" height="24" /> {/* Icon for Buyer */}
             Buyer?
           </Link>
         </motion.div>
