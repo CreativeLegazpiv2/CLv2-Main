@@ -4,6 +4,7 @@ import { motion, AnimatePresence, wrap } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 const sliderVariants = {
   incoming: (direction: number) => ({
@@ -33,6 +34,7 @@ export function GallerySection() {
     0, 0,
   ]);
   const activeImageIndex = wrap(0, images.length, imageCount);
+  const router = useRouter(); // Initialize useRouter
 
   const swipeToImage = (swipeDirection: number) => {
     setImageCount(([prevCount, _]) => [prevCount + swipeDirection, swipeDirection]);
@@ -91,6 +93,11 @@ export function GallerySection() {
     opacity: { duration: 0.2 },
     scale: { duration: 0.5 },
     height: { duration: 0.5 },
+  };
+
+  // Function to handle Learn More button click
+  const handleLearnMoreClick = () => {
+    router.push("/apps-ui/g-visitor"); // Redirect to /apps-ui/g-visitor
   };
 
   return (
@@ -232,7 +239,9 @@ export function GallerySection() {
         </div>
       </div>
 
+      {/* Learn More Button */}
       <motion.button
+        onClick={handleLearnMoreClick} // Redirect to /apps-ui/g-visitor
         className="max-w-60 w-full py-3 bg-white text-primary-2 rounded-full font-semibold shadow-md"
         whileHover={{ scale: 1.05, boxShadow: "0px 5px 15px rgba(0,0,0,0.1)" }}
         whileTap={{ scale: 0.95 }}

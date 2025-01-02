@@ -38,14 +38,17 @@ export const PofconHeroPage: React.FC<PofconHeroPageProps> = ({
     <motion.div
       className="w-full min-h-screen pb-[10dvh] relative"
       style={{
+        backgroundImage: "url('/intro/img7.png')",
         backgroundPosition: "47.5% 53.5%", // Shift the image slightly to the right
-        backgroundSize: "118.5%",
+        backgroundSize: "cover",
+        backgroundAttachment: "fixed", // This creates the parallax effect
+        backgroundRepeat: "no-repeat",
       }}
       initial="hidden"
       animate="visible"
       variants={containerVariants}
     >
-      <div className="w-full h-full absolute inset-0 bg-[url('/intro/img7.png')] bg-cover bg-no-repeat bg-black bg-opacity-10 z-10"></div>
+      <div className="w-full h-full absolute inset-0 bg-black bg-opacity-10 z-10"></div>
       <motion.div
         className="w-full md:max-w-[80%] max-w-[90%] min-h-[30dvh] mx-auto flex flex-col gap-8 justify-center pt-[20.4vh] items-center z-20 relative"
         variants={itemVariants}

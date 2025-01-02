@@ -73,11 +73,15 @@ export const UpcomingEvents = () => {
       if (!response.ok) throw new Error("Error fetching events");
       const fetchedEvents: AdminEvent[] = await response.json();
 
-      // Filter events to show only those with a date greater than or equal to the current date
-      const currentDate = new Date();
+      // Filter events to show only those in the selected month
+      const selectedMonth = currentDate.getMonth();
+      const selectedYear = currentDate.getFullYear();
       const upcomingEvents = fetchedEvents.filter((event) => {
         const eventDate = new Date(event.date);
-        return eventDate >= currentDate;
+        return (
+          eventDate.getMonth() === selectedMonth &&
+          eventDate.getFullYear() === selectedYear
+        );
       });
 
       setEvents(upcomingEvents);
@@ -101,27 +105,37 @@ export const UpcomingEvents = () => {
   return (
     <div className="w-full h-fit min-h-dvh max-w-[90%] mx-auto py-[15dvh] flex flex-col gap-6">
       <motion.div
-        initial={{ opacity: 0, scale: 0.6 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ margin: "20px", once: false }}
-        transition={{ duration: 1 }}
-        className="w-full"
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="w-full text-center"
       >
-        <h1 className="font-extrabold lg:text-6xl md:text-5xl text-4xl text-primary-3 uppercase text-center">
-          upcoming events
+        <h1 className="font-extrabold text-5xl sm:text-6xl lg:text-7xl text-primary-3 uppercase">
+          Upcoming Events
         </h1>
       </motion.div>
       <motion.div
-        initial={{ opacity: 0, scale: 0.6 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ margin: "50px", once: false }}
-        transition={{ duration: 1 }}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
         className="w-full h-fit flex justify-center items-center text-center pb-12"
       >
         <div className="w-fit flex gap-6 justify-center items-center">
-          <h1 className="font-bold md:text-4xl text-2xl uppercase">
+          <button
+            onClick={goToPreviousMonth}
+            className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+          >
+            <Icon icon="ph:arrow-left-bold" width="24" height="24" />
+          </button>
+          <h1 className="font-bold text-2xl sm:text-3xl uppercase">
             {currentMonthYear}
           </h1>
+          <button
+            onClick={goToNextMonth}
+            className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+          >
+            <Icon icon="ph:arrow-right-bold" width="24" height="24" />
+          </button>
         </div>
       </motion.div>
       <EventGrid
@@ -130,7 +144,7 @@ export const UpcomingEvents = () => {
         setList={setList}
         events={events}
         setShowPofconModal={setShowPofconModal}
-        setSelectedEvent={setSelectedEvent} // Pass the setter for selected event
+        setSelectedEvent={setSelectedEvent}
       />
       {showPofconModal && selectedEvent !== null && (
         <RegisterModal
@@ -143,11 +157,12 @@ export const UpcomingEvents = () => {
           onSuccess={() => {
             toast.success("Successfully Registered!", {
               position: "bottom-right",
-              autoClose: 3000, // Close after 3 seconds
+              autoClose: 3000,
             });
           }}
         />
       )}
+      <ToastContainer />
     </div>
   );
 };
@@ -167,20 +182,18 @@ const EventGrid: React.FC<{
   setShowPofconModal,
   setSelectedEvent,
 }) => {
-  // Filter events to show only those occurring today
+  // Filter events to show only those in the selected month
   const filteredEvents = events.filter((event) => {
     const eventDate = new Date(event.date);
-    const today = new Date(currentDate);
-
-    // Compare year, month, and day to ensure the event is today
+    const selectedMonth = currentDate.getMonth();
+    const selectedYear = currentDate.getFullYear();
     return (
-      eventDate.getFullYear() === today.getFullYear() &&
-      eventDate.getMonth() === today.getMonth() &&
-      eventDate.getDate() === today.getDate()
+      eventDate.getMonth() === selectedMonth &&
+      eventDate.getFullYear() === selectedYear
     );
   });
 
-  // Group events by date (though there should only be one group for today)
+  // Group events by date
   const groupedEvents = groupEventsByDate(filteredEvents);
   const sortedDates = Object.keys(groupedEvents).sort(
     (a, b) => new Date(a).getTime() - new Date(b).getTime()
@@ -194,7 +207,7 @@ const EventGrid: React.FC<{
       {sortedDates.length > 0 ? (
         sortedDates.map((date, groupIndex) => (
           <div key={date}>
-            <h1 className="font-bold text-4xl uppercase pb-8 md:text-left text-center">
+            <h1 className="font-bold text-3xl sm:text-4xl uppercase pb-8 text-center md:text-left">
               {(() => {
                 const dateObject = new Date(date);
                 const day = dateObject.getDate().toString().padStart(2, "0");
@@ -208,7 +221,7 @@ const EventGrid: React.FC<{
               className={`w-full h-fit ${
                 list
                   ? "flex flex-col gap-4"
-                  : "grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-12"
+                  : "grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-8"
               }`}
             >
               {groupedEvents[date].map((event) => (
@@ -231,7 +244,7 @@ const EventGrid: React.FC<{
         ))
       ) : (
         <p className="text-center text-2xl font-semibold mt-12">
-          No events available for today
+          No events available for this month
         </p>
       )}
     </div>
@@ -243,47 +256,40 @@ const EventCard: React.FC<{
   groupIndex: number;
   list: boolean;
   setShowPofconModal: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectedEvent: React.Dispatch<React.SetStateAction<AdminEvent | null>>; // Setter for event
+  setSelectedEvent: React.Dispatch<React.SetStateAction<AdminEvent | null>>;
 }> = ({ event, groupIndex, list, setShowPofconModal, setSelectedEvent }) => {
   const colorClasses = getColorClasses(groupIndex);
 
   return (
     <motion.div
-      whileHover={
-        list
-          ? { backgroundColor: "transparent" }
-          : { scale: 1.05, backgroundColor: "transparent" }
-      }
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.2 }}
       className={`w-full ${
         list
-          ? "flex flex-row gap-6 justify-start items-center"
-          : "max-w-xs mx-auto flex flex-col gap-4"
+          ? "flex flex-row gap-6 items-center p-6 rounded-lg shadow-md"
+          : "flex flex-col gap-4 p-6 rounded-lg shadow-md"
       } ${colorClasses.bgColor} border-2 ${
         colorClasses.border
-      } duration-500 p-4 text-base group`}
+      } transition-all duration-300`}
     >
-      <div className={`${list ? "h-24 w-full max-w-44" : "h-48 w-full"}`}>
+      <div className={`${list ? "h-24 w-44" : "h-48 w-full"}`}>
         <img
           className={`object-cover ${list ? "w-44 h-24" : "h-48 w-full"}`}
           src={event.image_path || "../images/events/cover.png"}
           alt={event.title}
         />
       </div>
-      <div
-        className={`w-full flex gap-4 ${
-          list ? "flex-col-reverse" : "flex-col"
-        }`}
-      >
+      <div className={`w-full flex gap-4 ${list ? "flex-col-reverse" : "flex-col"}`}>
         <div className="w-full flex justify-between items-center">
           <div className="w-fit flex flex-col leading-3">
-            <p className={`font-bold duration-500 ${colorClasses.textColor}`}>
+            <p className={`font-bold ${colorClasses.textColor}`}>
               {event.start_time} - {event.end_time}
             </p>
             <p className="text-sm capitalize font-medium">{event.location}</p>
           </div>
           <motion.div whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.05 }}>
             <Icon
-              className={`rotate-180 -mt-4 cursor-pointer duration-300 ${
+              className={`rotate-180 -mt-4 cursor-pointer ${
                 colorClasses.textColor
               } ${list ? "hidden" : "block"}`}
               icon="ph:arrow-left-bold"
@@ -294,7 +300,7 @@ const EventCard: React.FC<{
         </div>
         <div className="w-full">
           <h1
-            className={`w-full text-xl font-semibold title duration-300 ${
+            className={`w-full text-xl font-semibold ${
               colorClasses.textColor
             } ${list ? "max-w-full" : "max-w-56"}`}
           >
@@ -306,9 +312,8 @@ const EventCard: React.FC<{
         colorClasses={colorClasses}
         list={list}
         setShowPofconModal={setShowPofconModal}
-        setSelectedEvent={() => setSelectedEvent(event)} // Pass the event to setSelectedEvent
+        setSelectedEvent={() => setSelectedEvent(event)}
       />
-      <ToastContainer />
     </motion.div>
   );
 };
@@ -326,7 +331,7 @@ const EventRegisterButton = ({
 }) => {
   return (
     <motion.button
-      className={`px-6 py-1.5 bg-primary-1 text-secondary-2 font-medium transition-colors duration-500 ease-in-out 
+      className={`px-6 py-1.5 bg-primary-1 text-secondary-2 font-medium transition-colors duration-300 ease-in-out 
         ${colorClasses.bgHover} 
         ${colorClasses.textHover}
         ${list ? "w-fit px-6 whitespace-nowrap" : "w-full"}
@@ -334,7 +339,7 @@ const EventRegisterButton = ({
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={() => {
-        setSelectedEvent(); // Set the selected event
+        setSelectedEvent();
         setShowPofconModal(true);
       }}
     >
@@ -346,7 +351,7 @@ const EventRegisterButton = ({
 const ListButton: React.FC<ButtonProp> = ({ list, setList }) => {
   return (
     <motion.button
-      className="w-44 py-1 bg-secondary-1 border-2 border-secondary-2 text-secondary-2 font-medium transition-colors duration-500 ease-in-out md:block hidden"
+      className="w-44 py-1.5 bg-secondary-1 border-2 border-secondary-2 text-secondary-2 font-medium transition-colors duration-300 ease-in-out md:block hidden rounded-lg"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={() => setList((prev) => !prev)}
@@ -361,34 +366,34 @@ const getColorClasses = (index: number) => {
     case 0:
       return {
         bgColor: "bg-shade-2",
-        textColor: "group-hover:text-shade-3",
+        textColor: "text-shade-3",
         border: "border-shade-2",
-        bgHover: "group-hover:bg-shade-3",
-        textHover: "group-hover:text-white",
+        bgHover: "hover:bg-shade-3",
+        textHover: "hover:text-white",
       };
     case 1:
       return {
-        textColor: "group-hover:text-shade-4",
         bgColor: "bg-shade-5",
+        textColor: "text-shade-4",
         border: "border-shade-5",
-        bgHover: "group-hover:bg-shade-4",
-        textHover: "group-hover:text-white",
+        bgHover: "hover:bg-shade-4",
+        textHover: "hover:text-white",
       };
     case 2:
       return {
         bgColor: "bg-shade-1",
-        textColor: "group-hover:text-primary-3",
+        textColor: "text-primary-3",
         border: "border-shade-1",
-        bgHover: "group-hover:bg-primary-3",
-        textHover: "group-hover:text-white",
+        bgHover: "hover:bg-primary-3",
+        textHover: "hover:text-white",
       };
     default:
       return {
         bgColor: "bg-gray-500",
         textColor: "text-gray-500",
         border: "border-gray-500",
-        bgHover: "group-hover:bg-gray-500",
-        textHover: "group-hover:text-white",
+        bgHover: "hover:bg-gray-500",
+        textHover: "hover:text-white",
       };
   }
 };

@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 interface CreativeDirectoryProps {
   textFont?: string;
@@ -24,6 +25,18 @@ export const CreativeDirectory: React.FC<CreativeDirectoryProps> = ({
   textGap = "gap-12",
   setShowPofconModal // Destructure the prop
 }) => {
+  const router = useRouter(); // Initialize useRouter
+
+  // Function to handle Join button click
+  const handleJoinClick = () => {
+    router.push("/apps-ui/signin"); // Redirect to /apps-ui/signin
+  };
+
+  // Function to handle Explore button click
+  const handleExploreClick = () => {
+    router.push("/apps-ui/creative-dashboard"); // Redirect to /apps-ui/creative-dashboard
+  };
+
   return (
     <div className={`w-dvw lg:h-[70dvh] h-fit p-6 bg-shade-1 max-w-screen-xl mx-auto ${roundedEdges}`}>
       <div className={`w-full h-full flex lg:flex-row flex-col ${borderColor}`}>
@@ -39,6 +52,7 @@ export const CreativeDirectory: React.FC<CreativeDirectoryProps> = ({
           <img className="w-full lg:h-full block lg:hidden" src={"../images/landing-page/laptop.png"} alt="" />
           <div className="lg:w-fit w-full flex flex-row md:justify-center justify-evenly items-center md:gap-6 gap-4 font-semibold">
             <motion.button
+              onClick={handleJoinClick} // Redirect to /apps-ui/signin
               className={`bg-primary-2 text-secondary-1 md:w-36 w-32 py-2 rounded-full uppercase ${trackingWide} ${textFont}`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -46,7 +60,7 @@ export const CreativeDirectory: React.FC<CreativeDirectoryProps> = ({
               join
             </motion.button>
             <motion.button
-              onClick={() => setShowPofconModal(true)} // Use the prop to set modal state
+              onClick={handleExploreClick} // Redirect to /apps-ui/creative-dashboard
               className={`bg-secondary-1 text-primary-2 md:w-36 w-32 py-2 rounded-full uppercase ${trackingWide} ${textFont}`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -63,4 +77,4 @@ export const CreativeDirectory: React.FC<CreativeDirectoryProps> = ({
       </div>
     </div>
   );
-};
+};  
