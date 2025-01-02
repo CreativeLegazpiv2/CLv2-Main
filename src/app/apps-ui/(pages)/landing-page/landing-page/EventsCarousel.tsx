@@ -12,7 +12,7 @@ interface ModalProps {
   onClose: () => void;
 }
 
-interface EventProps {
+interface ExtendedEventProps {
   id: string;
   eventTitle: string;
   start_time: string;
@@ -21,30 +21,55 @@ interface EventProps {
   date: string;
   desc: string;
   title: string;
-  image_path: string; // Added image field
+  image_path: string;
+  contact?: string;
+  objective?: string;
+  announcement?: string;
+  website?: string;
+  columns?: string[];
 }
+
+interface TabButtonProps {
+  label: string;
+  isActive: boolean;
+  onClick: () => void;
+}
+
+const TabButton: React.FC<TabButtonProps> = ({ label, isActive, onClick }) => (
+  <button
+    onClick={onClick}
+    className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
+      isActive 
+        ? 'bg-primary-2 text-white shadow-md' 
+        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+    }`}
+  >
+    {label}
+  </button>
+);
 
 export const Events = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [cardsPerPage, setCardsPerPage] = useState(1);
-  const [events, setEvents] = useState<EventProps[]>([]);
+  const [events, setEvents] = useState<ExtendedEventProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<EventProps | null>(null);
-  const [showEventDetails, setShowEventDetails] = useState(false); // New state for event details
+  const [selectedEvent, setSelectedEvent] = useState<ExtendedEventProps | null>(null);
+  const [showEventDetails, setShowEventDetails] = useState(false);
+  const [activeTab, setActiveTab] = useState('details');
 
-  const handleRegisterClick = (event: EventProps) => {
+  const handleRegisterClick = (event: ExtendedEventProps) => {
     setSelectedEvent(event);
-    setShowEventDetails(true); // Show event details first
+    setShowEventDetails(true);
   };
 
   const handleInterestClick = () => {
-    setShowModal(true); // Show registration modal
+    setShowModal(true);
   };
 
   const handleRegistrationSuccess = () => {
-    setShowModal(false); // Close the modal
+    setShowModal(false);
     console.log("Registration successful!");
   };
 
@@ -121,7 +146,6 @@ export const Events = () => {
             animate={{ x: `${-currentPage * 100}%` }}
             transition={{ duration: 0.5 }}
           >
-            {/* Cards */}
             {events.map((event) => (
               <div
                 key={event.id}
@@ -138,6 +162,7 @@ export const Events = () => {
             ))}
           </motion.div>
         </div>
+
         {/* Navigation buttons */}
         <button
           onClick={prev}
@@ -155,49 +180,153 @@ export const Events = () => {
         </button>
       </div>
 
-      {/* Event Details Modal */}
+      {/* Enhanced Event Details Modal */}
       {showEventDetails && selectedEvent && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
           <motion.div
-            className="relative w-full max-w-4xl h-fit bg-white rounded-2xl overflow-hidden shadow-2xl"
+            className="relative w-full max-w-5xl h-[80vh] bg-white rounded-2xl overflow-hidden shadow-2xl"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="grid md:grid-cols-2 gap-8 p-10">
-              {/* Left Side - Event Image */}
-              <div className="relative">
-                <img
-                  src={selectedEvent.image_path}
-                  alt={selectedEvent.title}
-                  className="w-full h-64 object-cover rounded-lg"
+            {/* Hero Section */}
+            <div className="relative h-64">
+              <img
+                src={selectedEvent.image_path}
+                alt={selectedEvent.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+              <h1 className="absolute bottom-6 left-8 text-4xl font-bold text-white">
+                {selectedEvent.title}
+              </h1>
+            </div>
+
+            {/* Content Section */}
+            <div className="p-8">
+              {/* Tabs */}
+              <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+                <TabButton 
+                  label="Details" 
+                  isActive={activeTab === 'details'} 
+                  onClick={() => setActiveTab('details')} 
+                />
+                <TabButton 
+                  label="About" 
+                  isActive={activeTab === 'about'} 
+                  onClick={() => setActiveTab('about')} 
+                />
+                <TabButton 
+                  label="Contact" 
+                  isActive={activeTab === 'contact'} 
+                  onClick={() => setActiveTab('contact')} 
                 />
               </div>
 
-              {/* Right Side - Event Details */}
-              <div className="space-y-4">
-                <h1 className="text-3xl font-bold text-gray-800">{selectedEvent.title}</h1>
-                <p className="text-gray-600">{selectedEvent.desc}</p>
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <Icon icon="mdi:calendar" className="text-gray-600 mr-2" />
-                    <p className="text-gray-600">
-                      {selectedEvent.start_time} - {selectedEvent.end_time} ({selectedEvent.date})
-                    </p>
+              {/* Tab Content */}
+              <div className="h-[calc(80vh-400px)] overflow-y-auto custom-scrollbar">
+                {activeTab === 'details' && (
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-4">
+                      <Icon icon="mdi:calendar" className="text-2xl text-gray-600" />
+                      <div>
+                        <p className="font-medium text-gray-800">Date & Time</p>
+                        <p className="text-gray-600">
+                          {selectedEvent.date} • {selectedEvent.start_time} - {selectedEvent.end_time}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <Icon icon="mdi:map-marker" className="text-2xl text-gray-600" />
+                      <div>
+                        <p className="font-medium text-gray-800">Location</p>
+                        <p className="text-gray-600">{selectedEvent.location}</p>
+                      </div>
+                    </div>
+                    {selectedEvent.columns && (
+                      <div className="grid md:grid-cols-2 gap-4 mt-6">
+                        {selectedEvent.columns.map((column, index) => (
+                          <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                            <p className="text-gray-600">{column}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <div className="flex items-center">
-                    <Icon icon="mdi:map-marker" className="text-gray-600 mr-2" />
-                    <p className="text-gray-600">{selectedEvent.location}</p>
+                )}
+
+                {activeTab === 'about' && (
+                  <div className="space-y-6">
+                    {selectedEvent.objective && (
+                      <div>
+                        <h3 className="text-xl font-semibold mb-2">Objective</h3>
+                        <p className="text-gray-600">{selectedEvent.objective}</p>
+                      </div>
+                    )}
+                    {selectedEvent.announcement && (
+                      <div>
+                        <h3 className="text-xl font-semibold mb-2">Announcement</h3>
+                        <p className="text-gray-600">{selectedEvent.announcement}</p>
+                      </div>
+                    )}
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Description</h3>
+                      <p className="text-gray-600">{selectedEvent.desc}</p>
+                    </div>
                   </div>
+                )}
+
+                {activeTab === 'contact' && (
+                  <div className="space-y-6">
+                    {selectedEvent.contact && (
+                      <div className="flex items-center gap-4">
+                        <Icon icon="mdi:contact" className="text-2xl text-gray-600" />
+                        <div>
+                          <p className="font-medium text-gray-800">Contact Information</p>
+                          <p className="text-gray-600">{selectedEvent.contact}</p>
+                        </div>
+                      </div>
+                    )}
+                    {selectedEvent.website && (
+                      <div className="flex items-center gap-4">
+                        <Icon icon="mdi:web" className="text-2xl text-gray-600" />
+                        <div>
+                          <p className="font-medium text-gray-800">Website</p>
+                          <a 
+                            href={selectedEvent.website} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-primary-2 hover:underline"
+                          >
+                            {selectedEvent.website}
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="absolute bottom-0 left-0 right-0 p-6 bg-white border-t">
+                <div className="flex justify-between items-center">
+                  <button
+                    onClick={() => setShowEventDetails(false)}
+                    className="px-6 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    Close
+                  </button>
+                  <button
+                    onClick={handleInterestClick}
+                    className="px-6 py-2 bg-primary-2 text-white rounded-lg font-medium hover:bg-primary-1 transition-colors"
+                  >
+                    Register Now
+                  </button>
                 </div>
-                <button
-                  onClick={handleInterestClick}
-                  className="w-full py-3 bg-primary-2 text-white rounded-lg font-semibold uppercase tracking-wide transition-all duration-300 hover:bg-primary-1 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                >
-                  I'm Interested
-                </button>
               </div>
             </div>
+
+            {/* Close button */}
             <button
               onClick={() => setShowEventDetails(false)}
               className="absolute top-4 right-4 p-2 bg-white/80 rounded-full hover:bg-white transition-colors"
@@ -225,7 +354,7 @@ export const Events = () => {
   );
 };
 
-const Cards: React.FC<EventProps & { onRegisterClick: () => void }> = ({
+const Cards: React.FC<ExtendedEventProps & { onRegisterClick: () => void }> = ({
   title,
   eventTitle,
   start_time,
@@ -239,10 +368,10 @@ const Cards: React.FC<EventProps & { onRegisterClick: () => void }> = ({
     <motion.div
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.2 }}
-      className="w-full h-fit flex flex-col justify-center items-center gap-6 p-8 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+      className="w-full h-[500px] flex flex-col bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
     >
-      {/* Event Image */}
-      <div className="relative w-full h-48 overflow-hidden rounded-lg">
+      {/* Fixed height container for image */}
+      <div className="w-full h-48 flex-shrink-0 overflow-hidden rounded-t-xl">
         <img
           src={image_path}
           alt={title}
@@ -250,17 +379,33 @@ const Cards: React.FC<EventProps & { onRegisterClick: () => void }> = ({
         />
       </div>
 
-      {/* Event Details */}
-      <h1 className="font-bold text-3xl text-center text-gray-800">{title}</h1>
-      <div className="w-full flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <p className="whitespace-nowrap text-center text-gray-600">
+      {/* Content container with fixed padding and overflow handling */}
+      <div className="flex flex-col flex-grow p-6 overflow-hidden">
+        {/* Title with truncation */}
+        <h1 className="font-bold text-2xl text-gray-800 mb-4 line-clamp-2 text-center">
+          {title}
+        </h1>
+
+        {/* Time and location with consistent spacing */}
+        <div className="flex flex-col gap-2 mb-4">
+          <p className="text-gray-600 text-center truncate">
             {start_time} - {end_time}
           </p>
-          <small className="text-center text-gray-500">{location}</small>
+          <p className="text-gray-500 text-center text-sm truncate">
+            {location}
+          </p>
+        </div>
+
+        {/* Description with line clamping */}
+        <p className="text-gray-600 line-clamp-3 text-center mb-4 flex-grow">
+          {desc}
+        </p>
+
+        {/* Button container fixed to bottom */}
+        <div className="flex justify-center mt-auto">
+          <EventButton onClick={onRegisterClick} />
         </div>
       </div>
-      <EventButton onClick={onRegisterClick} />
     </motion.div>
   );
 };
