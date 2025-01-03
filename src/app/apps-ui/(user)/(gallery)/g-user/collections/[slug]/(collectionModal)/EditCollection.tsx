@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret';
 
 interface FormData {
+  generatedId:string;
   created_at: Date;
   title: string;
   desc: string;
@@ -17,6 +18,7 @@ interface FormData {
 }
 
 interface EditCollectionProps {
+  generatedId:string;
   created_at: Date;
   image: string | null;
   title: string;
@@ -27,6 +29,7 @@ interface EditCollectionProps {
   onCancel: () => void;
 }
 export const EditCollection = ({
+  generatedId,
   created_at,
   image,
   title,
@@ -40,6 +43,7 @@ export const EditCollection = ({
   const [originalImage, setOriginalImage] = useState<string | null>(image); // Track the original image
   const [imageFileName, setImageFileName] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
+    generatedId,
     created_at,
     title,
     desc,
@@ -54,7 +58,7 @@ export const EditCollection = ({
     setPreviewImage(image);
     setOriginalImage(image); // Set original image
     setPreviewImage(image);
-    setFormData({ created_at, title, desc, year, image: null, artist }); // Reset image in formData
+    setFormData({ generatedId, created_at, title, desc, year, image: null, artist }); // Reset image in formData
   }, [image, title, desc, year]);
 
   const handleChange = (
@@ -96,18 +100,35 @@ export const EditCollection = ({
       data.append('desc', formData.desc);
       data.append('year', formData.year.toString());
       data.append('artist', formData.artist);
-      data.append('created_at', formData.created_at.toString());
+  
+      // Convert created_at to ISO string format
+      const createdAtISO = new Date(formData.created_at).toISOString();
+      data.append('created_at', createdAtISO);
+      data.append('generatedId', formData.generatedId);
+  
+      // Append the original image path for cleanup
       data.append('imageBefore', originalImage || '');
+  
       // Append the image only if it exists and is different from the original image
       if (formData.image) {
-        console.log("Image passing " + formData.image.name);
+        console.log("Image passing: " + formData.image.name);
         data.append('image', formData.image); // Append new image
-      } else if (previewImage) { // Check if previewImage is not null
-        const response = await fetch(previewImage); // Make sure previewImage is defined
+      } else if (previewImage) {
+        // If no new image is provided, use the preview image
+        const response = await fetch(previewImage);
         const blob = await response.blob();
         data.append('image', blob, imageFileName || 'image.png'); // Use the filename
       } else {
         throw new Error("No image available for upload."); // Handle the case where no image is provided
+      }
+  
+      // Debugging: Log FormData contents
+      const entries = data.entries();
+      let entry = entries.next();
+      while (!entry.done) {
+        const [key, value] = entry.value;
+        console.log(key, value);
+        entry = entries.next();
       }
   
       const response = await fetch(`/api/collections/updateCollection`, {
@@ -124,13 +145,15 @@ export const EditCollection = ({
         throw new Error(responseData.error || 'Failed to update collection');
       }
   
+      // Call the onEdit callback with updated data
       onEdit({
+        generatedId: formData.generatedId,
         created_at: formData.created_at,
         title: formData.title,
         desc: formData.desc,
         year: formData.year,
         artist: formData.artist,
-        image_path: previewImage ? previewImage : originalImage // Keep the original if no new image
+        image_path: previewImage ? previewImage : originalImage, // Keep the original if no new image
       });
     } catch (error) {
       console.error('Error updating collection:', error);
