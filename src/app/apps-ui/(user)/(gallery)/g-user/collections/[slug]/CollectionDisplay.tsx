@@ -957,6 +957,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
               onClick={() => setDeleteModalOpen(false)}
             >
               <EditCollection
+              generatedId={selectedImage.generatedId}
                 created_at={selectedImage.created_at}
                 artist={selectedImage.artist}
                 image={selectedImage.image_path}
