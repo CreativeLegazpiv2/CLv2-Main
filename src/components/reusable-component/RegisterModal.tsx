@@ -135,6 +135,8 @@ export const RegisterModal = ({
     artExp: "",
     animationExp: "",
     portfolioLink: "",
+    fb: "", // Added Facebook field
+    ig: "", // Added Instagram field
     commitment: false,
   });
 
@@ -154,18 +156,17 @@ export const RegisterModal = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
-  
-    // Check if the target is an input element and has the `checked` property
+
     if (e.target instanceof HTMLInputElement && type === "checkbox") {
       const { checked } = e.target;
       setFormData((prevData) => ({
         ...prevData,
-        [name]: checked, // Use `checked` for checkboxes
+        [name]: checked,
       }));
     } else {
       setFormData((prevData) => ({
         ...prevData,
-        [name]: value, // Use `value` for other inputs
+        [name]: value,
       }));
     }
   };
@@ -200,7 +201,8 @@ export const RegisterModal = ({
       const data = await response.json();
 
       if (response.ok) {
-        onSuccess();
+        console.log("Registration successful, calling onSuccess"); // Debugging
+        onSuccess(); // Ensure this is called
         setShowPofconModal(false);
       } else {
         setErrorMessage(data.error || "An error occurred.");
@@ -327,6 +329,28 @@ export const RegisterModal = ({
                 required={false}
               />
 
+              {/* Facebook Profile */}
+              <InputField
+                icon="mdi:facebook"
+                placeholder="Facebook Profile (optional)"
+                type="text"
+                name="fb"
+                value={formData.fb}
+                onChange={handleInputChange}
+                required={false}
+              />
+
+              {/* Instagram Profile */}
+              <InputField
+                icon="mdi:instagram"
+                placeholder="Instagram Profile (optional)"
+                type="text"
+                name="ig"
+                value={formData.ig}
+                onChange={handleInputChange}
+                required={false}
+              />
+
               {/* Commitment */}
               <div className="flex items-center">
                 <input
@@ -378,7 +402,6 @@ export const RegisterModal = ({
               </div>
             </motion.div>
           </div>
-          <ToastContainer />
         </div>
       </motion.div>
     </motion.div>

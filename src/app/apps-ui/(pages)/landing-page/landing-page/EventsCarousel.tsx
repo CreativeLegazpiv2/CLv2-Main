@@ -4,7 +4,7 @@ import { RegisterModal } from "@/components/reusable-component/RegisterModal";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 interface ModalProps {
@@ -346,7 +346,12 @@ export const Events = () => {
           eventLocation={selectedEvent.location}
           eventStartTime={selectedEvent.start_time}
           eventEndTime={selectedEvent.end_time}
-          onSuccess={handleRegistrationSuccess}
+          onSuccess={() => {
+            toast.success("Successfully Registered!", {
+              position: "bottom-right", // Position of the toast
+              autoClose: 3000, // Auto-close after 3 seconds
+            });
+          }}
         />
       )}
       <ToastContainer />
