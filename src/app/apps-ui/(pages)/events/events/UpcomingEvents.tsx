@@ -146,22 +146,22 @@ export const UpcomingEvents = () => {
         setShowPofconModal={setShowPofconModal}
         setSelectedEvent={setSelectedEvent}
       />
-      {showPofconModal && selectedEvent !== null && (
-        <RegisterModal
-          setShowPofconModal={setShowPofconModal}
-          eventId={selectedEvent.id}
-          eventTitle={selectedEvent.title}
-          eventLocation={selectedEvent.location}
-          eventStartTime={selectedEvent.start_time}
-          eventEndTime={selectedEvent.end_time}
-          onSuccess={() => {
-            toast.success("Successfully Registered!", {
-              position: "bottom-right",
-              autoClose: 3000,
-            });
-          }}
-        />
-      )}
+{showPofconModal && selectedEvent !== null && (
+  <RegisterModal
+    setShowPofconModal={setShowPofconModal}
+    eventId={selectedEvent.id}
+    eventTitle={selectedEvent.title}
+    eventLocation={selectedEvent.location}
+    eventStartTime={selectedEvent.start_time}
+    eventEndTime={selectedEvent.end_time}
+    onSuccess={() => {
+      toast.success("Successfully Registered!", {
+        position: "bottom-right", // Position of the toast
+        autoClose: 3000, // Auto-close after 3 seconds
+      });
+    }}
+  />
+)}
       <ToastContainer />
     </div>
   );
