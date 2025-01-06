@@ -4,6 +4,7 @@ import { Logo } from "./Logo";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import toast CSS
+import { X } from "lucide-react";
 
 interface InputFieldProps {
   icon: any;
@@ -13,7 +14,9 @@ interface InputFieldProps {
   value: string;
   error?: string;
   required?: boolean;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -32,11 +35,17 @@ const InputField: React.FC<InputFieldProps> = ({
     <div className="relative w-full group">
       <div className="flex items-center">
         {isContactField && (
-          <span className={`mr-1 text-gray-700 absolute ${isContactField ? "px-8" : ""}`}>+63</span>
+          <span
+            className={`mr-1 text-sm text-gray-700 absolute ${
+              isContactField ? "px-8" : ""
+            }`}
+          >
+            +63
+          </span>
         )}
         {type === "textarea" ? (
           <textarea
-            className={`w-full h-24 bg-transparent border-b-2 border-secondary-2/30 px-8
+            className={`w-full h-12 bg-transparent border-b-2 border-secondary-2/30 px-8 placeholder:text-sm
                        text-primary-2 placeholder:text-primary-2/50 outline-none transition-all duration-300
                        focus:border-secondary-2 resize-none`}
             name={name}
@@ -48,8 +57,10 @@ const InputField: React.FC<InputFieldProps> = ({
           />
         ) : (
           <input
-            className={`w-full h-12 bg-transparent border-b-2 border-secondary-2/30 ${isContactField ? "pl-20" : "px-8"}
-                       text-primary-2 placeholder:text-primary-2/50 outline-none transition-all duration-300
+            className={`w-full h-12 bg-transparent border-b-2 border-secondary-2/30 placeholder:text-sm ${
+              isContactField ? "pl-20" : "px-8"
+            }
+                       text-primary-2 placeholder:text-primary-2/50 outline-none transition-all duration-300 
                        focus:border-secondary-2 [&:-webkit-autofill]:transition-[background-color_5000s_ease-in-out_0s]`}
             type={type}
             name={name}
@@ -62,8 +73,10 @@ const InputField: React.FC<InputFieldProps> = ({
         )}
         <Icon
           icon={icon}
-          className="absolute left-0 top-1/2 -translate-y-1/2 text-primary-2/50 w-6 h-6
-                   group-focus-within:text-secondary-2 transition-colors duration-300"
+          className={`absolute left-0  -translate-y-1/2 text-primary-2/50 w-6 h-6
+                   group-focus-within:text-secondary-2 transition-colors duration-300 ${
+                     type === "textarea" ? "top-4" : "top-1/2"
+                   }`}
           width="25"
           height="25"
         />
@@ -75,7 +88,7 @@ const InputField: React.FC<InputFieldProps> = ({
 
 // Gender Selection Component
 const GenderSelect = ({ selectedGender, setSelectedGender }: any) => (
-  <div className="relative w-full group">
+  <div className="relative w-full group text-sm">
     <select
       className="w-full h-12 bg-transparent border-b-2 border-secondary-2/30 px-8 
                  text-primary-2 outline-none transition-all duration-300
@@ -154,7 +167,9 @@ export const RegisterModal = ({
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value, type } = e.target;
 
     if (e.target instanceof HTMLInputElement && type === "checkbox") {
@@ -176,9 +191,28 @@ export const RegisterModal = ({
     setLoading(true);
     setErrorMessage("");
 
-    const { firstName, lastName, address, email, contact, artExp, animationExp, commitment } = formData;
+    const {
+      firstName,
+      lastName,
+      address,
+      email,
+      contact,
+      artExp,
+      animationExp,
+      commitment,
+    } = formData;
 
-    if (!firstName || !lastName || !address || !email || !contact || !gender || !artExp || !animationExp || !commitment) {
+    if (
+      !firstName ||
+      !lastName ||
+      !address ||
+      !email ||
+      !contact ||
+      !gender ||
+      !artExp ||
+      !animationExp ||
+      !commitment
+    ) {
       setErrorMessage("Please fill in all required fields.");
       setLoading(false);
       return;
@@ -224,19 +258,20 @@ export const RegisterModal = ({
       onAnimationComplete={handleAnimationComplete}
     >
       <motion.div
-        className="relative w-full max-w-4xl h-fit bg-secondary-1 rounded-2xl overflow-hidden shadow-2xl"
+        className="relative w-full max-w-7xl h-fit bg-secondary-1 rounded-2xl overflow-hidden shadow-2xl"
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.3 }}
         onClick={(e) => e.stopPropagation()}
       >
+        <X className="absolute right-4 top-4 z-[100] cursor-pointer hover:scale-110 duration-300" onClick={handleClose} />
         {/* Decorative circles */}
-        <div className="absolute -left-32 -top-32 w-64 h-64 bg-primary-2/20 rounded-full" />
-        <div className="absolute -right-32 -bottom-32 w-96 h-96 bg-primary-2/30 rounded-full" />
+        <div className="absolute -left-32 -top-32 w-96 h-96 bg-primary-2/20 rounded-full" />
+        <div className="absolute -right-32 -bottom-32 w-[400px] h-[400px] bg-primary-2/40 rounded-full" />
 
-        <div className="relative grid md:grid-cols-2 gap-8 md:p-10 p-6">
+        <div className="w-full relative flex justify-center items-center gap-8 md:p-10 p-6">
           {/* Left side - Form */}
-          <div className="space-y-0">
+          <div className="space-y-0 w-full">
             <div className="space-y-2">
               <h2 className="text-2xl font-bold text-primary-2">
                 Register for {eventTitle}
@@ -246,24 +281,26 @@ export const RegisterModal = ({
               </p>
             </div>
 
-            <form className="py-10 flex flex-col gap-4" onSubmit={handleSubmit}>
+            <form
+              className="h-full py-10 grid md:grid-cols-3 grid-cols-2 gap-4"
+              onSubmit={handleSubmit}
+            >
               {/* Personal Information */}
-              <div className="grid grid-cols-2 gap-4">
-                <InputField
-                  icon="icon-park-solid:edit-name"
-                  placeholder="First Name"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                />
-                <InputField
-                  icon="icon-park-solid:edit-name"
-                  placeholder="Last Name"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                />
-              </div>
+
+              <InputField
+                icon="icon-park-solid:edit-name"
+                placeholder="First Name"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleInputChange}
+              />
+              <InputField
+                icon="icon-park-solid:edit-name"
+                placeholder="Last Name"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleInputChange}
+              />
 
               <InputField
                 icon="mdi:address-marker"
@@ -282,40 +319,18 @@ export const RegisterModal = ({
                 onChange={handleInputChange}
               />
 
-              <div className="grid grid-cols-2 gap-4">
-                <InputField
-                  icon="bxs:contact"
-                  placeholder="Number"
-                  type="number"
-                  name="contact"
-                  value={formData.contact}
-                  onChange={handleInputChange}
-                  error={errorMessage}
-                />
-                <GenderSelect
-                  selectedGender={gender}
-                  setSelectedGender={setGender}
-                />
-              </div>
-
-              {/* Art Experience */}
               <InputField
-                icon="icon-park-solid:edit-name"
-                placeholder="Describe your art experience"
-                type="textarea"
-                name="artExp"
-                value={formData.artExp}
+                icon="bxs:contact"
+                placeholder="Number"
+                type="number"
+                name="contact"
+                value={formData.contact}
                 onChange={handleInputChange}
+                error={errorMessage}
               />
-
-              {/* Animation Experience */}
-              <InputField
-                icon="icon-park-solid:edit-name"
-                placeholder="Describe your animation experience"
-                type="textarea"
-                name="animationExp"
-                value={formData.animationExp}
-                onChange={handleInputChange}
+              <GenderSelect
+                selectedGender={gender}
+                setSelectedGender={setGender}
               />
 
               {/* Online Portfolio */}
@@ -339,8 +354,8 @@ export const RegisterModal = ({
                 onChange={handleInputChange}
                 required={false}
               />
-
               {/* Instagram Profile */}
+              <div className="md:col-span-1 col-span-2">
               <InputField
                 icon="mdi:instagram"
                 placeholder="Instagram Profile (optional)"
@@ -350,9 +365,34 @@ export const RegisterModal = ({
                 onChange={handleInputChange}
                 required={false}
               />
+              </div>
+
+              {/* Art Experience */}
+              <div className="md:col-span-3 col-span-2">
+                <InputField
+                  icon="icon-park-solid:edit-name"
+                  placeholder="Art experience"
+                  type="textarea"
+                  name="artExp"
+                  value={formData.artExp}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="md:col-span-3 col-span-2">
+                {/* Animation Experience */}
+                <InputField
+                  icon="icon-park-solid:edit-name"
+                  placeholder="Animation experience"
+                  type="textarea"
+                  name="animationExp"
+                  value={formData.animationExp}
+                  onChange={handleInputChange}
+                />
+              </div>
 
               {/* Commitment */}
-              <div className="flex items-center">
+              <div className="flex items-start col-span-2">
                 <input
                   type="checkbox"
                   name="commitment"
@@ -360,7 +400,7 @@ export const RegisterModal = ({
                   checked={formData.commitment}
                   onChange={handleInputChange}
                   required
-                  className="mr-2"
+                  className="mr-2 mt-1 "
                 />
                 <label htmlFor="commitment" className="text-primary-2">
                   I commit to attending the event if selected.
@@ -371,7 +411,7 @@ export const RegisterModal = ({
 
               <motion.button
                 type="submit"
-                className="w-full py-3 mt-6 bg-primary-2 text-secondary-1 rounded-lg 
+                className="w-full col-span-2 py-3 mt-6 bg-primary-2 text-secondary-1 rounded-lg 
                          font-semibold uppercase tracking-wide transition-all duration-300
                          hover:bg-primary-2/90 focus:ring-2 focus:ring-primary-2/50 focus:ring-offset-2"
                 whileHover={{ scale: 1.02 }}
@@ -384,12 +424,12 @@ export const RegisterModal = ({
           </div>
 
           {/* Right side - Logo and decorative content */}
-          <div className="hidden h-full md:flex flex-col -mt-10 items-center justify-center relative">
+          <div className="md:w-[60%] w-full h-full hidden md:flex justify-center items-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="w-full max-w-xs "
+              className="w-full max-w-xs h-full"
             >
               <Logo color="text-primary-2 h-fit" width="auto" height="auto" />
               <div className="text-center space-y-4">
