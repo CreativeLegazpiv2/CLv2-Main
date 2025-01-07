@@ -24,6 +24,58 @@ export const CollectionsCarousel = () => {
   const [loading, setLoading] = useState(true); // Add loading state
   const [isRole, setRole] = useState<string | null>(null);
   // Fetch image collections when the component mounts
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Get the token from the session
+        const token = getSession();
+  
+        // Check if the token exists
+        if (!token) {
+          throw new Error('No session token found');
+        }
+  
+        // Verify and decode the token
+        const { payload } = await jwtVerify(
+          token,
+          new TextEncoder().encode(JWT_SECRET)
+        );
+  
+        // Extract the user ID from the token payload
+        const userIdFromToken = payload.id as string;
+  
+        // Call the API with the userIdFromToken
+        const response = await fetch('/api/user', {
+          method: 'GET',
+          headers: {
+            'Authorization': userIdFromToken, // Pass the userId as the Authorization header
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to fetch user details');
+        }
+  
+        // Parse the response JSON
+        const data = await response.json();
+  
+        // Store the first_name in localStorage under the key "Fname"
+        if (data.first_name) {
+          localStorage.setItem('Fname', data.first_name);
+          console.log('First name stored in localStorage:', data.first_name);
+        } else {
+          console.error('No first_name found in the response');
+        }
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+      }
+    };
+  
+    fetchUserData();
+  }, []);
+
+
   useEffect(() => {
     const role = getRole() as string;
     setRole(role);

@@ -28,6 +28,59 @@ export default function PublishGallery() {
   const [loading, setLoading] = useState(false); // Add loading state
 
   // Use useEffect to access localStorage only on the client side
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Get the token from the session
+        const token = getSession();
+  
+        // Check if the token exists
+        if (!token) {
+          throw new Error('No session token found');
+        }
+  
+        // Verify and decode the token
+        const { payload } = await jwtVerify(
+          token,
+          new TextEncoder().encode(JWT_SECRET)
+        );
+  
+        // Extract the user ID from the token payload
+        const userIdFromToken = payload.id as string;
+  
+        // Call the API with the userIdFromToken
+        const response = await fetch('/api/user', {
+          method: 'GET',
+          headers: {
+            'Authorization': userIdFromToken, // Pass the userId as the Authorization header
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to fetch user details');
+        }
+  
+        // Parse the response JSON
+        const data = await response.json();
+  
+        // Store the first_name in localStorage under the key "Fname"
+        if (data.first_name) {
+          localStorage.setItem('Fname', data.first_name);
+          setFname(data.first_name);
+          console.log('First name stored in localStorage:', data.first_name);
+        } else {
+          console.error('No first_name found in the response');
+        }
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+      }
+    };
+  
+    fetchUserData();
+  }, []);
+
+
   useEffect(() => {
     const fname = localStorage.getItem("Fname");
     if (fname) {
