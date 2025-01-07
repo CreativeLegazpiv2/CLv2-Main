@@ -33,7 +33,6 @@ export default function LandingPage() {
       <Malikhain />
       <Transcribed />
       <Infinite />
-      <Subscribe />
     </main>
   );
 }

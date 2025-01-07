@@ -11,7 +11,7 @@ export default function RegistrationBuyer() {
             <SignupBuyer />
             <Transcribed />
             <Infinite />
-            <Subscribe />
+         
         </>
     )
 }

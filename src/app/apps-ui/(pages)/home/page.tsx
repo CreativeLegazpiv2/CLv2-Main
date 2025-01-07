@@ -29,8 +29,7 @@ export default function PofconLandingPage() {
         <Malikhain />
       </ScrollAnimationSection>
         <Transcribed />
-        <Infinite />
-        <Subscribe />
+        <Infinite />   
 
       {showPofconModal && (
         <PofconModal setShowPofconModal={setShowPofconModal} />

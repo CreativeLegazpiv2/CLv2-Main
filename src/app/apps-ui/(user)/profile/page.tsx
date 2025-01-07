@@ -19,8 +19,7 @@ function Profile({ userDetail }: ProfileProps) {
   return (
     <div className="min-h-dvh w-full">
       <UserProfile userDetail={userDetail} />
-      <Infinite />
-      <Subscribe />
+      <Infinite />      
     </div>
   );
 }

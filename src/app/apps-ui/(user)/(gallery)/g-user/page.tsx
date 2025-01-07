@@ -15,8 +15,7 @@ export default function GalleryVisitorPage() {
             <div className="pt-[10dvh] flex flex-col w-full max-w-full">
                 <CollectionsCarousel />
                 <FeaturedCollections />
-                <Infinite />
-                <Subscribe />
+                <Infinite />                
             </div>
         </main>
     );

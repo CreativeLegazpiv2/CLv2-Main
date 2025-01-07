@@ -14,7 +14,7 @@ export default function GalleryVisitorPage() {
                 <StatisticsBanner />
                 <IndividualWorks />
                 <Infinite />
-                <Subscribe />
+                
             </div>
         </main>
     )
