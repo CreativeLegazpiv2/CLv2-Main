@@ -38,11 +38,10 @@ interface TabButtonProps {
 const TabButton: React.FC<TabButtonProps> = ({ label, isActive, onClick }) => (
   <button
     onClick={onClick}
-    className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
-      isActive 
-        ? 'bg-primary-2 text-white shadow-md' 
+    className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${isActive
+        ? 'bg-primary-2 text-white shadow-md'
         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-    }`}
+      }`}
   >
     {label}
   </button>
@@ -149,13 +148,12 @@ export const Events = () => {
             {events.map((event) => (
               <div
                 key={event.id}
-                className={`${
-                  cardsPerPage === 1
+                className={`${cardsPerPage === 1
                     ? "w-full"
                     : cardsPerPage === 2
-                    ? "w-1/2"
-                    : "w-1/3"
-                } p-4 flex-shrink-0 box-border`}
+                      ? "w-1/2"
+                      : "w-1/3"
+                  } p-4 flex-shrink-0 box-border`}
               >
                 <Cards {...event} onRegisterClick={() => handleRegisterClick(event)} />
               </div>
@@ -203,28 +201,28 @@ export const Events = () => {
       </div>
 
       {/* Content Section */}
-      <div className="p-4 md:p-8">
+      <div className="p-4 md:p-8 flex flex-col h-[calc(90vh-300px)] md:h-[calc(80vh-280px)]">
         {/* Tabs */}
         <div className="flex gap-2 mb-4 md:mb-6 overflow-x-auto pb-2">
-          <TabButton 
-            label="Details" 
-            isActive={activeTab === 'details'} 
-            onClick={() => setActiveTab('details')} 
+          <TabButton
+            label="Details"
+            isActive={activeTab === 'details'}
+            onClick={() => setActiveTab('details')}
           />
-          <TabButton 
-            label="About" 
-            isActive={activeTab === 'about'} 
-            onClick={() => setActiveTab('about')} 
+          <TabButton
+            label="About"
+            isActive={activeTab === 'about'}
+            onClick={() => setActiveTab('about')}
           />
-          <TabButton 
-            label="Contact" 
-            isActive={activeTab === 'contact'} 
-            onClick={() => setActiveTab('contact')} 
+          <TabButton
+            label="Contact"
+            isActive={activeTab === 'contact'}
+            onClick={() => setActiveTab('contact')}
           />
         </div>
 
         {/* Tab Content */}
-        <div className="h-[calc(90vh-300px)] md:h-[calc(80vh-400px)] overflow-y-auto custom-scrollbar">
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
           {activeTab === 'details' && (
             <div className="space-y-4 md:space-y-6">
               <div className="flex items-center gap-4">
@@ -279,28 +277,34 @@ export const Events = () => {
           {activeTab === 'contact' && (
             <div className="space-y-4 md:space-y-6">
               {selectedEvent.contact && (
-                <div className="flex items-center gap-4">
-                  <Icon icon="mdi:contact" className="text-xl md:text-2xl text-gray-600" />
-                  <div>
-                    <p className="font-medium text-gray-800">Contact Information</p>
-                    <p className="text-gray-600">{selectedEvent.contact}</p>
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <Icon icon="mdi:contact" className="text-xl md:text-2xl text-gray-600" />
+                    <p className="ml-2 font-medium text-gray-800">Contact Information</p>
+                  </div>
+                  <div className="text-gray-600">
+                    {selectedEvent.contact.split(',').map((contactItem, index) => (
+                      <span key={index} className="block">
+                        - {contactItem.trim()}
+                      </span>
+                    ))}
                   </div>
                 </div>
               )}
               {selectedEvent.website && (
-                <div className="flex items-center gap-4">
-                  <Icon icon="mdi:web" className="text-xl md:text-2xl text-gray-600" />
-                  <div>
-                    <p className="font-medium text-gray-800">Website</p>
-                    <a 
-                      href={selectedEvent.website} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-primary-2 hover:underline"
-                    >
-                      {selectedEvent.website}
-                    </a>
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <Icon icon="mdi:web" className="text-xl md:text-2xl text-gray-600" />
+                    <p className="ml-2 font-medium text-gray-800">Website</p>
                   </div>
+                  <a
+                    href={selectedEvent.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary-2 hover:underline"
+                  >
+                    {selectedEvent.website}
+                  </a>
                 </div>
               )}
             </div>
@@ -308,7 +312,7 @@ export const Events = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-white border-t">
+        <div className="mt-auto pt-4 border-t">
           <div className="flex justify-between items-center">
             <button
               onClick={() => setShowEventDetails(false)}
@@ -347,6 +351,7 @@ export const Events = () => {
             eventLocation={selectedEvent.location}
             eventStartTime={selectedEvent.start_time}
             eventEndTime={selectedEvent.end_time}
+            contact={selectedEvent.contact} // Pass contact information
             onSuccess={() => {
               toast.success("Successfully Registered!", {
                 position: "bottom-right", // Position of the toast

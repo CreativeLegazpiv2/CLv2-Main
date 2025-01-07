@@ -48,7 +48,6 @@ export default function Home() {
       <Malikhain />
       <Transcribed />
       <Infinite />
-      <Subscribe />
       <Footer />
 
       {showPofconModal && (

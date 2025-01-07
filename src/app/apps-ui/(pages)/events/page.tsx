@@ -11,7 +11,7 @@ export default function EventsPage() {
             <EventHeroPage />
             <UpcomingEvents />
             <CalendarEvent />
-            <Subscribe />
+            
         </main>
     );
 }
