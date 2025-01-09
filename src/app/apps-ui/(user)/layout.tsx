@@ -22,7 +22,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
     const checkAuthAndRedirect = async () => {
       try {
         const session = await getSession();
-        
+
         if (session) {
           // User is logged in
           setIsShowChat(true);
@@ -38,7 +38,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
     };
 
     checkAuthAndRedirect();
-  }, []); 
+  }, []);
 
   const handleOpenSideBar = () => {
     setIsSidebarOpen(true);

@@ -68,6 +68,7 @@ export default function MainLayout({
         buttonName="Log in"
         onOpenSidebar={handleOpenSideBar}
       />
+      
       <main className="flex-grow w-full">{children}</main>
       <Footer />
       <AnimatePresence>
