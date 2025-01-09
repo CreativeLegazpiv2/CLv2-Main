@@ -7,16 +7,11 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Link from "next/link";
 import { getSession, logoutUser } from "@/services/authservice";
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from "next/navigation";
 
 interface MenuItemProps {
   name: string;
   link: string;
-}
-
-interface HeaderProps {
-  // ... existing props
-  onOpenSidebar?: () => void;
 }
 
 interface HeaderProps {
@@ -27,6 +22,7 @@ interface HeaderProps {
   roundedCustom?: string;
   paddingLeftCustom?: string;
   menuItems?: MenuItemProps[];
+  onOpenSidebar?: () => void;
 }
 
 const MenuItem = ({ name, link }: MenuItemProps) => {
@@ -37,7 +33,7 @@ const MenuItem = ({ name, link }: MenuItemProps) => {
     <motion.a
       href={link}
       className={`text-base uppercase font-semibold whitespace-nowrap relative duration-300
-        ${isActive ? 'text-shade-1 font-bold text-lg' : 'text-primary-2'}
+        ${isActive ? "text-shade-1 font-bold text-lg" : "text-primary-2"}
         group-hover:text-primary-2 hover:!text-primary-3`}
       whileHover={{ scale: 1.1 }}
       initial={{ opacity: 0, y: -20 }}
@@ -55,7 +51,7 @@ export const Header = ({
   paddingLeftCustom = "pl-14",
   roundedCustom = "rounded-bl-3xl",
   linkName = "/apps-ui/signin",
-  onOpenSidebar
+  onOpenSidebar,
 }: HeaderProps) => {
   const headerRef = useRef<HTMLDivElement | null>(null);
   const gsapAnimationRef = useRef<gsap.core.Timeline | null>(null);
@@ -65,7 +61,11 @@ export const Header = ({
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
 
-  const handleOpenSideBar = () => {};
+  const handleOpenSideBar = () => {
+    if (onOpenSidebar) {
+      onOpenSidebar();
+    }
+  };
 
   const checkAuth = async () => {
     try {
@@ -91,24 +91,22 @@ export const Header = ({
         ]);
       }
     } catch (error) {
-      console.error('Auth check failed:', error);
+      console.error("Auth check failed:", error);
     }
   };
 
   useEffect(() => {
-    // Initialize GSAP animation
     if (headerRef.current && !gsapAnimationRef.current) {
-      gsapAnimationRef.current = gsap.timeline()
-        .fromTo(
-          headerRef.current,
-          { y: -100, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 1.2,
-            ease: "power3.out",
-          }
-        );
+      gsapAnimationRef.current = gsap.timeline().fromTo(
+        headerRef.current,
+        { y: -100, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: "power3.out",
+        }
+      );
     }
 
     const handleScroll = () => {
@@ -130,30 +128,20 @@ export const Header = ({
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
+      window.dispatchEvent(new Event("logoutStart"));
 
-      // Notify layout about logout
-      window.dispatchEvent(new Event('logoutStart'));
-
-      // Kill GSAP animations
       if (gsapAnimationRef.current) {
         gsapAnimationRef.current.kill();
         gsapAnimationRef.current = null;
       }
 
-      // Perform logout
       await logoutUser();
-
-      // Clean up states
       setIsLoggedIn(false);
       setMenuItems([]);
-      
-      // Small delay to ensure cleanup
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      // Navigate using replace
-      router.replace('/apps-ui/signin');
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      router.replace("/apps-ui/signin");
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
       setIsLoggingOut(false);
     }
   };
@@ -209,20 +197,28 @@ export const Header = ({
                   onClick={handleLogout}
                   disabled={isLoggingOut}
                   className={`uppercase w-44 py-1.5 font-semibold rounded-full bg-shade-1 text-secondary-1
-                    ${isLoggingOut ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  whileHover={{ scale: 1.1, backgroundColor: "#B6E3CE", color: "#403737" }}
+                    ${isLoggingOut ? "opacity-50 cursor-not-allowed" : ""}`}
+                  whileHover={{
+                    scale: 1.1,
+                    backgroundColor: "#B6E3CE",
+                    color: "#403737",
+                  }}
                   whileTap={{ scale: 0.95 }}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  {isLoggingOut ? 'Logging out...' : 'Logout'}
+                  {isLoggingOut ? "Logging out..." : "Logout"}
                 </motion.button>
               ) : (
                 <Link href={linkName}>
                   <motion.button
                     className="uppercase w-44 py-1.5 font-semibold rounded-full bg-shade-2"
-                    whileHover={{ scale: 1.1, backgroundColor: "#403737", color: "#fff" }}
+                    whileHover={{
+                      scale: 1.1,
+                      backgroundColor: "#403737",
+                      color: "#fff",
+                    }}
                     whileTap={{ scale: 0.95 }}
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -240,10 +236,9 @@ export const Header = ({
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.8, duration: 0.8 }}
             >
-              <button onClick={onOpenSidebar}>
+              <button className="z-[500]" onClick={handleOpenSideBar}>
                 <Icon icon="eva:menu-fill" width="35" height="35" />
               </button>
-            
             </motion.div>
           </div>
         </motion.div>
