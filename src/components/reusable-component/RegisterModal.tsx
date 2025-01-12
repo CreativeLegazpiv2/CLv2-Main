@@ -391,16 +391,17 @@
                 </div>
   
                 <div className="md:col-span-3 col-span-2">
-                  {/* Animation Experience */}
-                  <InputField
-                    icon="icon-park-solid:edit-name"
-                    placeholder="Animation experience"
-                    type="textarea"
-                    name="animationExp"
-                    value={formData.animationExp}
-                    onChange={handleInputChange}
-                  />
-                </div>
+  <InputField
+    icon="icon-park-solid:edit-name"
+    placeholder={`Please share your experience related to ${eventTitle}`}
+    type="textarea"
+    name="eventExp" // Changed from animationExp to eventExp
+    value={formData.eventExp}
+    onChange={handleInputChange}
+    label="Relevant Experience"
+    helperText="Tell us about your background, skills, or experience relevant to this event"
+  />
+</div>
   
                 {/* Commitment */}
                 <div className="flex items-start col-span-2">
