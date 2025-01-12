@@ -18,7 +18,7 @@ export const EventHeroPage = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("/api/admin-events");
+        const response = await fetch("/api/events-admin");
         if (!response.ok) {
           throw new Error("Failed to fetch events");
         }
