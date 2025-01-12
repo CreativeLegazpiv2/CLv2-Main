@@ -400,7 +400,6 @@
                     value={formData.animationExp}
                     onChange={handleInputChange}
                   />
-                </div>
 </div>
   
                 {/* Commitment */}
