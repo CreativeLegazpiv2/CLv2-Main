@@ -36,8 +36,6 @@ export const Services = () => {
     loadUserDetails();
   }, [dynamic]);
 
-
-
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -102,7 +100,35 @@ export const CreativeCards: React.FC<UserDetail> = ({
   const age = calculateAge(bday || "");
   const [liked, setLiked] = useState<boolean>(false);
   const [totaluserLike, setTotaluserLike] = useState<number>(0);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
+  useEffect(() => {
+    const checkUserLoggedIn = async () => {
+      const token = getSession();
+      if (token) {
+        try {
+          // Verify the JWT token
+          const { payload } = await jwtVerify(
+            token,
+            new TextEncoder().encode(process.env.JWT_SECRET || "your-secret")
+          );
+          
+          if(payload.id){
+            setIsLoggedIn(true);
+          }else{
+            setIsLoggedIn(false);
+          }
+        } catch (error) {
+          console.error("Error verifying token:", error);
+          setIsLoggedIn(false); // Token is invalid or expired
+        }
+      } else {
+        setIsLoggedIn(false); // No token found
+      }
+    };
+  
+    checkUserLoggedIn(); // Call the function to check login status
+  }, []);
 
 
   useEffect(() => {
@@ -192,9 +218,6 @@ export const CreativeCards: React.FC<UserDetail> = ({
           console.error("Error verifying token:", error);
         }
       } else {
-
-
-
         await fetchLikes(null);
         setLiked(guests.includes(detailsid));
       }
@@ -221,7 +244,6 @@ export const CreativeCards: React.FC<UserDetail> = ({
       supabase.removeChannel(subscription);
     };
   }, [detailsid]);
-
 
   const handleLike = async (detailsid: string) => {
     const token = getSession();
@@ -336,8 +358,6 @@ export const CreativeCards: React.FC<UserDetail> = ({
     }
   };
 
-
-
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
@@ -362,21 +382,23 @@ export const CreativeCards: React.FC<UserDetail> = ({
               <h4 className="text-xl font-bold text-center sm:text-left">
                 {first_name}
               </h4>
-              <div className="flex gap-2">
-                <motion.span
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Icon
-                    className="cursor-pointer text-red-400"
-                    icon={liked ? "jam:heart-f" : "jam:heart"}
-                    width="25"
-                    height="25"
-                    onClick={() => handleLike(detailsid)}
-                  />
-                </motion.span>
-                {totaluserLike}
-              </div>
+              {isLoggedIn && (
+                <div className="flex gap-2">
+                  <motion.span
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Icon
+                      className="cursor-pointer text-red-400"
+                      icon={liked ? "jam:heart-f" : "jam:heart"}
+                      width="25"
+                      height="25"
+                      onClick={() => handleLike(detailsid)}
+                    />
+                  </motion.span>
+                  {totaluserLike}
+                </div>
+              )}
             </div>
             <div className="w-full flex flex-col sm:flex-row justify-between items-center sm:items-start gap-2 sm:gap-0">
               <p
@@ -403,8 +425,6 @@ export const CreativeCards: React.FC<UserDetail> = ({
     </motion.div>
   );
 };
-
-
 
 const CreativeButton: React.FC<{ detailsid: string }> = ({ detailsid }) => {
   const [gettSession, setSession] = useState<string | null>(null);
@@ -464,7 +484,6 @@ const CreativeButton: React.FC<{ detailsid: string }> = ({ detailsid }) => {
 
   return (
     <>
-
       <motion.div
         whileTap={{ scale: 0.95 }}
         whileHover={{ scale: 1.05 }}
@@ -477,9 +496,6 @@ const CreativeButton: React.FC<{ detailsid: string }> = ({ detailsid }) => {
         </button>
       </motion.div>
 
-
-
-{/* fix this design @alroMercado */}
       {gettSession && (
         <motion.div
           whileTap={{ scale: 0.95 }}
@@ -492,11 +508,7 @@ const CreativeButton: React.FC<{ detailsid: string }> = ({ detailsid }) => {
             view Profile
           </button>
         </motion.div>
-
       )}
-
     </>
-
-
   );
 };
