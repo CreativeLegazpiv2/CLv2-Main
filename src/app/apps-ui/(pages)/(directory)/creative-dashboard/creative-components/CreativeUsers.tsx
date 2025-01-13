@@ -17,6 +17,7 @@ interface CreativeArrayProps {
   profile_pic: string;
   imageBg: string;
 }
+
 export const CreativeUsers = () => {
   const [creativeUsers, setCreativeUsers] = useState<CreativeArrayProps[]>([]);
   const [loading, setLoading] = useState(true);
@@ -89,6 +90,35 @@ const UserCard = ({
   const isInView = useInView(ref, { once: true, amount: 0.2 });
   const [liked, setLiked] = useState<boolean>(false);
   const [totaluserLike, setTotaluserLike] = useState<number>(0);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkUserLoggedIn = async () => {
+      const token = getSession();
+      if (token) {
+        try {
+          // Verify the JWT token
+          const { payload } = await jwtVerify(
+            token,
+            new TextEncoder().encode(process.env.JWT_SECRET || "your-secret")
+          );
+          
+          if(payload.id){
+            setIsLoggedIn(true);
+          }else{
+            setIsLoggedIn(false);
+          }
+        } catch (error) {
+          console.error("Error verifying token:", error);
+          setIsLoggedIn(false); // Token is invalid or expired
+        }
+      } else {
+        setIsLoggedIn(false); // No token found
+      }
+    };
+  
+    checkUserLoggedIn(); // Call the function to check login status
+  }, []);
 
   useEffect(() => {
     const guestsString = localStorage.getItem("guest");
@@ -337,23 +367,25 @@ const UserCard = ({
           />
         </div>
         <div className="w-full h-full max-h-28 -mt-8 flex justify-center items-center relative">
-          <div className="w-fit flex items-center justify-center gap-1.5 cursor-pointer absolute left-0 -translate-y-1/2 mt-6">
-            <motion.span
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className=""
-            >
-              {" "}
-              <Icon
-                className="cursor-pointer text-red-400"
-                icon={liked ? "jam:heart-f" : "jam:heart"}
-                width="35"
-                height="35"
-                onClick={() => handleLike(detailsid)}
-              />
-            </motion.span>
-            {totaluserLike}
-          </div>
+          {isLoggedIn && (
+            <div className="w-fit flex items-center justify-center gap-1.5 cursor-pointer absolute left-0 -translate-y-1/2 mt-6">
+              <motion.span
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className=""
+              >
+                {" "}
+                <Icon
+                  className="cursor-pointer text-red-400"
+                  icon={liked ? "jam:heart-f" : "jam:heart"}
+                  width="35"
+                  height="35"
+                  onClick={() => handleLike(detailsid)}
+                />
+              </motion.span>
+              {totaluserLike}
+            </div>
+          )}
 
           <img
             className="h-28 w-28 z-50 rounded-full object-cover"
