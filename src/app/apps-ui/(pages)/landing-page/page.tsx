@@ -9,6 +9,7 @@ import { Events } from "./landing-page/EventsCarousel";
 import { HeroPage } from "./landing-page/HeroPage";
 import { Malikhain } from "./landing-page/Malikhain";
 import { GallerySection } from "./landing-page/GallerySection";
+import { CreativeDirectory } from "./landing-page/CreativeDirectory";
 
 export default function LandingPage() {
   const [showPofconModal, setShowPofconModal] = useState(false); // Modal state
@@ -24,7 +25,7 @@ export default function LandingPage() {
           <PofconModal setShowPofconModal={setShowPofconModal} />
         </div>
       )}
-
+      <CreativeDirectory />
       {/* Events Section */}
       <Events />
 

@@ -41,6 +41,15 @@ const config: Config = {
           8: "#FFE3BF", //brown-shade
           9: "#FAEFD3", //brown-shade scoll-bar tracking line
         },
+        palette:{
+          1: "#6E352C", //maroon
+          2: "#CE5230", //scarlet
+          3: "#F49A44", //orange
+          4: "#E4C597", //cream
+          5: "#FAF3E1", //white
+          6: "#6E602F", //olive
+          7: "#222222", //black
+        },
 
         new: {
           /* SCSS HEX */
