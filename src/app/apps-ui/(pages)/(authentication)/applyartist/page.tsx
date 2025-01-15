@@ -370,7 +370,7 @@ export default function RegisterForm() {
             setTimeout(() => {
                 router.push("/apps-ui/signin");
             }, 2000);
-        } catch (err) {
+        } catch (err:any) {
             // Handle specific error for email already existing
             if (err.message === "Failed to signup: Email already exists.") {
                 setError('Signup failed: Email already exists.');

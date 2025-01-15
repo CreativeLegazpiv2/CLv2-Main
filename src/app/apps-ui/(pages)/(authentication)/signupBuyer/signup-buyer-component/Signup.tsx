@@ -196,7 +196,7 @@ export const MultiStepForm = () => {
       setTimeout(() => {
         router.push("/apps-ui/signin");
       }, 2000);
-    } catch (err) {
+    } catch (err:any) {
       // Handle the "email already exists" error
       if ((err as Error).message.includes("Email already exists")) {
         setError("Email already exists. Please use a different email.");
