@@ -84,7 +84,7 @@ export const signupBuyer = async (
   email: string,
   password: string,
   firstName: string,
-  bday:string,
+  bday: string,
   address: string,
   mobileNo: string,
   bio: string,
@@ -95,13 +95,31 @@ export const signupBuyer = async (
 ) => {
   console.log("Attempting signup with:", { username, email });
 
+  // Check if the email already exists in the 'users' table
+  const { data: existingUser, error: emailCheckError } = await supabase
+    .from("users")
+    .select("email")
+    .eq("email", email)
+    .single();
+
+  if (existingUser) {
+    console.log("Signup failed: Email already exists");
+    throw new Error("Signup failed: Email already exists.");
+  }
+
+  if (emailCheckError && emailCheckError.code !== 'PGRST116') { // PGRST116 is the code for no rows found
+    console.log("Error checking email existence:", emailCheckError.message);
+    throw new Error("Signup failed, please try again.");
+  }
+
   // Hash the password before storing it
   const hashedPassword = await bcrypt.hash(password, 10);
   const generatedId = Math.floor(10000 + Math.random() * 90000);
+
   // Insert the new user into the 'users' table
   const { data: userData, error: userError } = await supabase
     .from("users")
-    .insert([{id:generatedId, username, email, password: hashedPassword}])
+    .insert([{ id: generatedId, username, email, password: hashedPassword }])
     .select("id, username")
     .single();
 
@@ -116,7 +134,7 @@ export const signupBuyer = async (
   const { error: detailsError } = await supabase
     .from("userDetails")
     .insert([{
-      detailsid: userData.id, 
+      detailsid: userData.id,
       first_name: firstName,
       bday: bday,
       address: address,
@@ -124,12 +142,12 @@ export const signupBuyer = async (
       bio: bio,
       email: email,
       instagram: instagram,
-      profile_pic:null,
+      profile_pic: null,
       facebook: facebook,
       twitter: twitter,
       portfolioLink: portfolioLink,
-      status:false,
-      role:"buyer"
+      status: false,
+      role: "buyer"
     }]);
 
   if (detailsError) {
@@ -155,14 +173,13 @@ export const signupBuyer = async (
 
 
 
-
 export const signupUser = async (
   username: string,
   email: string,
   password: string,
   firstName: string,
   creativeField: string,
-  bday:string,
+  bday: string,
   address: string,
   mobileNo: string,
   bio: string,
@@ -173,13 +190,31 @@ export const signupUser = async (
 ) => {
   console.log("Attempting signup with:", { username, email });
 
+  // Check if the email already exists in the 'users' table
+  const { data: existingUser, error: emailCheckError } = await supabase
+    .from("users")
+    .select("email")
+    .eq("email", email)
+    .single();
+
+  if (existingUser) {
+    console.log("Signup failed: Email already exists");
+    throw new Error("Failed to signup: Email already exists.");
+  }
+
+  if (emailCheckError && emailCheckError.code !== 'PGRST116') { // PGRST116 is the code for no rows found
+    console.log("Error checking email existence:", emailCheckError.message);
+    throw new Error("Signup failed, please try again.");
+  }
+
   // Hash the password before storing it
   const hashedPassword = await bcrypt.hash(password, 10);
   const generatedId = Math.floor(10000 + Math.random() * 90000);
+
   // Insert the new user into the 'users' table
   const { data: userData, error: userError } = await supabase
     .from("users")
-    .insert([{id:generatedId, username, email, password: hashedPassword}])
+    .insert([{ id: generatedId, username, email, password: hashedPassword }])
     .select("id, username")
     .single();
 
@@ -194,7 +229,7 @@ export const signupUser = async (
   const { error: detailsError } = await supabase
     .from("userDetails")
     .insert([{
-      detailsid: userData.id, 
+      detailsid: userData.id,
       first_name: firstName,
       creative_field: creativeField,
       bday: bday,
@@ -203,11 +238,11 @@ export const signupUser = async (
       bio: bio,
       email: email,
       instagram: instagram,
-      profile_pic:null,
+      profile_pic: null,
       facebook: facebook,
       twitter: twitter,
       portfolioLink: portfolioLink,
-      status:false
+      status: false
     }]);
 
   if (detailsError) {
