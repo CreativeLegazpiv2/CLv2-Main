@@ -330,9 +330,9 @@ export default function RegisterForm() {
 
     const submitForm = async () => {
         if (loading) return; // Prevent multiple submissions
-
+    
         setLoading(true); // Set loading state to true
-
+    
         const userDetails: UserDetail = {
             username: answers.username,
             email: answers.email,
@@ -349,7 +349,7 @@ export default function RegisterForm() {
             twitter: answers.twitter || '',
             portfolioLink: answers.portfolioLink || ''
         };
-
+    
         try {
             await signupUser(
                 userDetails.username,
@@ -371,7 +371,12 @@ export default function RegisterForm() {
                 router.push("/apps-ui/signin");
             }, 2000);
         } catch (err) {
-            setError('Signup failed. Please try again.');
+            // Handle specific error for email already existing
+            if (err.message === "Failed to signup: Email already exists.") {
+                setError('Signup failed: Email already exists.');
+            } else {
+                setError('Signup failed. Please try again.');
+            }
         } finally {
             setLoading(false); // Reset loading state
         }

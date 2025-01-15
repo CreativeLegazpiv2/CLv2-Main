@@ -197,7 +197,12 @@ export const MultiStepForm = () => {
         router.push("/apps-ui/signin");
       }, 2000);
     } catch (err) {
-      setError((err as Error).message || "An error occurred during signup.");
+      // Handle the "email already exists" error
+      if ((err as Error).message.includes("Email already exists")) {
+        setError("Email already exists. Please use a different email.");
+      } else {
+        setError("An error occurred during signup. Please try again.");
+      }
     }
   };
 
@@ -248,9 +253,13 @@ export const MultiStepForm = () => {
         </motion.div>
       </AnimatePresence>
 
+      {/* Display error message */}
       {error && <div className="text-red-500 mt-2 text-sm">{error}</div>}
+
+      {/* Display success message */}
       {success && <div className="text-green-500 mt-2 text-sm">{success}</div>}
 
+      {/* Form navigation buttons */}
       <div className="flex justify-center items-center gap-4 mt-4">
         {step > 1 && (
           <motion.button
@@ -282,6 +291,7 @@ export const MultiStepForm = () => {
         )}
       </div>
 
+      {/* Link to login page */}
       <div className="w-full flex flex-col justify-center items-center mt-2">
         <p className="text-gray-600">Already have an account?</p>
         <Link href="/apps-ui/signin" className="uppercase font-medium text-primary-1 hover:text-primary-2 transition-colors">
