@@ -81,6 +81,10 @@ const imageSet = [
     src: "/images/homepage/cake.png",
     alt: "Cakes",
   },
+  {
+    src: "/images/homepage/sili.png",
+    alt: "Sili",
+  }
 ];
 
 const RightSide = ({
@@ -161,8 +165,8 @@ const Indicator = ({ currentIndex }: { currentIndex: number }) => {
           key={index}
           className={`w-4 h-4 border-2 border-palette-2 rounded-full ${
             index === currentIndex % imageSet.length
-              ? "bg-palette-3"
-              : "bg-transparent"
+              ? "bg-transparent"
+              : "bg-palette-2"
           }`}
         ></div>
       ))}
