@@ -7,7 +7,7 @@ export const Hero = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   return (
-    <div className="w-full h-screen bg-palette-5">
+    <div className="w-full h-screen bg-palette-5 overflow-hidden">
       <div className="w-full h-full flex justify-end items-center relative">
         <img
           className="absolute right-[15%] top-[25%] z-20 "
