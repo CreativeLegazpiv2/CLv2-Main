@@ -49,7 +49,7 @@ const LeftSide = ({ currentIndex }: { currentIndex: number }) => {
 
         {/* Text and Buttons */}
         <div className="space-y-6">
-          <h1 className="w-full max-w-sm md:text-8xl text-6xl uppercase font-bold font-sans text-palette-2">
+          <h1 className="w-full max-w-sm md:text-7xl text-6xl uppercase font-bold font-sans text-palette-2">
             This is creative legazpi
           </h1>
 
