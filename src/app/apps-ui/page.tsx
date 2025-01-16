@@ -49,7 +49,6 @@ export default function Home() {
           <Header
             linkName="/apps-ui/signin"
             roundedCustom="lg:rounded-bl-3xl"
-            backgroundColor="bg-palette-3"
             paddingLeftCustom="lg:pl-14"
             buttonName="Log in"
             onOpenSidebar={handleOpenSideBar}

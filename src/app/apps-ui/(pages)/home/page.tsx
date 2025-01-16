@@ -11,7 +11,6 @@ import { Events } from "../landing-page/landing-page/EventsCarousel";
 import { GallerySection } from "../landing-page/landing-page/GallerySection";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { useEffect, useRef } from "react";
-import { CreativeDirectory } from "../landing-page/landing-page/CreativeDirectory";
 
 export default function PofconLandingPage() {
   const [showPofconModal, setShowPofconModal] = useState(false); // Modal state
@@ -20,9 +19,6 @@ export default function PofconLandingPage() {
     <main className="w-full h-fit text-primary-2">
       <PofconHeroPage setShowPofconModal={setShowPofconModal} />{" "}
       {/* Pass the state setter */}
-
-        <CreativeDirectory />
-
       <ScrollAnimationSection>
         <Events />
       </ScrollAnimationSection>
@@ -32,9 +28,8 @@ export default function PofconLandingPage() {
       <ScrollAnimationSection>
         <Malikhain />
       </ScrollAnimationSection>
-      <Infinite />  
         <Transcribed />
-         
+        <Infinite />   
 
       {showPofconModal && (
         <PofconModal setShowPofconModal={setShowPofconModal} />
