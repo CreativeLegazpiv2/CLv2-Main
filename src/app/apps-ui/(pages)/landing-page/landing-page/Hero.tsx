@@ -27,14 +27,14 @@ export const Hero = () => {
 
 const LeftSide = ({ currentIndex }: { currentIndex: number }) => {
   return (
-    <div className="md:w-[40%] w-full  absolute top-0 md:left-[5%] z-20 h-full ">
+    <div className="md:w-[40%] w-full  absolute top-0 md:left-[5%] left-[2%] z-20 h-full ">
       {/* Content Container */}
       <div className="w-full h-full flex flex-col gap-6 justify-center items-center relative">
         {/* Background and Decorations */}
         <div className="absolute left-[10%] bottom-[20%] z-10 bg-palette-2 rounded-full w-6 h-6"></div>
         <div className="absolute right-[30%] bottom-[20%] z-10 bg-palette-3 rounded-full w-5 h-5"></div>
         <div className="absolute right-[10%] bottom-[10%] z-10 bg-yellow-500 rounded-md w-7 h-7 rotate-[-35deg]"></div>
-        <div className="absolute right-[15%] bottom-[35%] z-10 bg-palette-3 rounded-md w-7 h-7 rotate-45"></div>
+        <div className="absolute right-[15%] md:bottom-[35%]  z-10 bg-palette-3 rounded-md w-7 h-7 rotate-45"></div>
         <div className="absolute left-[38%] top-[22%] z-10 bg-palette-3 rounded-md w-5 h-5"></div>
         <img
           className="absolute right-[0%] bottom-[20%]"
@@ -49,7 +49,7 @@ const LeftSide = ({ currentIndex }: { currentIndex: number }) => {
 
         {/* Text and Buttons */}
         <div className="space-y-6">
-          <h1 className="w-full max-w-sm md:text-7xl text-6xl uppercase font-bold font-sans text-palette-2">
+          <h1 className="w-full max-w-sm md:text-8xl text-6xl font-sans uppercase font-[700]  text-palette-2">
             This is creative legazpi
           </h1>
 
@@ -124,8 +124,8 @@ const RightSide = ({
   return (
     <div className="w-full md:max-w-[65%] h-full overflow-hidden relative">
       {/* Gradient overlay */}
-      <div className="md:block hidden absolute inset-0 bg-gradient-to-r from-palette-5 via-palette-5/20 to-transparent z-10" />
-      <div className="block md:hidden absolute inset-0 bg-gradient-to-r from-palette-5 via-palette-5/40 to-transparent z-10" />
+      <div className="md:block hidden absolute inset-0 bg-gradient-to-r from-palette-5 via-palette-5/10 to-transparent z-10" />
+      <div className="block md:hidden absolute inset-0 bg-gradient-to-r from-palette-5 via-palette-5/70 to-transparent z-10" />
       {/* Image container with sliding effect */}
       <div
         className={`flex w-full h-full ${
@@ -172,11 +172,11 @@ const Indicator = ({ currentIndex }: { currentIndex: number }) => {
 
 const Buttons = () => {
   return (
-    <div className="w-fit flex gap-6 z-20">
-      <button className="w-36 py-2 bg-palette-6 uppercase text-palette-5 rounded-full font-semibold tracking-wider">
+    <div className="w-fit flex gap-6 ">
+      <button className="w-36 py-2 z-20 bg-palette-6 uppercase text-palette-5 rounded-full font-semibold tracking-wider">
         Join
       </button>
-      <button className="w-36 py-2 bg-palette-3 uppercase text-palette-5 rounded-full font-semibold tracking-wider">
+      <button className="w-36 py-2 z-20 bg-palette-3 uppercase text-palette-5 rounded-full font-semibold tracking-wider">
         Explore
       </button>
     </div>
