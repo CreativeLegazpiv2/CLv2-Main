@@ -60,12 +60,13 @@ export default function MainLayout({
   };
 
   return (
-    <main className="w-full flex flex-col min-h-screen">
+    <main className="w-full flex flex-col h-fit">
       <Header
         linkName="/apps-ui/signin"
         roundedCustom="lg:rounded-bl-3xl"
         paddingLeftCustom="lg:pl-14"
         buttonName="Log in"
+        backgroundColor="bg-palette-3"
         onOpenSidebar={handleOpenSideBar}
       />
       

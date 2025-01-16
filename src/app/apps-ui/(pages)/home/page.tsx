@@ -11,14 +11,19 @@ import { Events } from "../landing-page/landing-page/EventsCarousel";
 import { GallerySection } from "../landing-page/landing-page/GallerySection";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { useEffect, useRef } from "react";
+import { CreativeDirectory } from "../landing-page/landing-page/CreativeDirectory";
+import { Hero } from "../landing-page/landing-page/Hero";
 
 export default function PofconLandingPage() {
   const [showPofconModal, setShowPofconModal] = useState(false); // Modal state
 
   return (
     <main className="w-full h-fit text-primary-2">
-      <PofconHeroPage setShowPofconModal={setShowPofconModal} />{" "}
+      {/* <PofconHeroPage setShowPofconModal={setShowPofconModal} />{" "} */}
       {/* Pass the state setter */}
+      <Hero />
+      <CreativeDirectory />
+
       <ScrollAnimationSection>
         <Events />
       </ScrollAnimationSection>
@@ -28,8 +33,8 @@ export default function PofconLandingPage() {
       <ScrollAnimationSection>
         <Malikhain />
       </ScrollAnimationSection>
-        <Transcribed />
-        <Infinite />   
+      <Infinite />
+      <Transcribed />
 
       {showPofconModal && (
         <PofconModal setShowPofconModal={setShowPofconModal} />
@@ -38,7 +43,9 @@ export default function PofconLandingPage() {
   );
 }
 
-const ScrollAnimationSection: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ScrollAnimationSection: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const controls = useAnimation();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });

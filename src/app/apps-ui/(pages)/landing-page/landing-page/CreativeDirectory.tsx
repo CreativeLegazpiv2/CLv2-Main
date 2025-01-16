@@ -72,7 +72,7 @@ export const CreativeDirectory = () => {
     <div className="w-full h-dvh min-h-screen bg-palette-2">
       <motion.div 
         ref={ref}
-        className="w-full h-full flex gap-12 justify-center items-center max-w-[70%] mx-auto"
+        className="w-full h-full flex md:flex-row flex-col gap-12 justify-center items-center max-w-[70%] mx-auto"
         variants={containerVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}

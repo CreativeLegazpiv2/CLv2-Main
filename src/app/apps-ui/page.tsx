@@ -14,6 +14,7 @@ import { Footer } from "@/components/layout/Footer";
 import { PofconHeroPage } from "./(pages)/landing-page/landing-page/PofconHeroPage";
 import { AnimatePresence } from "framer-motion";
 import { SidebarDrawer } from "@/components/layout/SideBarDrawer";
+import { CreativeDirectory } from "./(pages)/landing-page/landing-page/CreativeDirectory";
 
 export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -49,6 +50,7 @@ export default function Home() {
           <Header
             linkName="/apps-ui/signin"
             roundedCustom="lg:rounded-bl-3xl"
+            backgroundColor="bg-palette-3"
             paddingLeftCustom="lg:pl-14"
             buttonName="Log in"
             onOpenSidebar={handleOpenSideBar}
@@ -67,7 +69,7 @@ export default function Home() {
           />
         )}
       </AnimatePresence>
-
+      <CreativeDirectory />
       <Events />
 
       <GallerySection />
