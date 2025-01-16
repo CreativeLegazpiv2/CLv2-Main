@@ -33,8 +33,8 @@ const MenuItem = ({ name, link }: MenuItemProps) => {
     <motion.a
       href={link}
       className={`text-base uppercase font-semibold whitespace-nowrap relative duration-300
-        ${isActive ? "text-palette-5 font-bold text-lg" : "text-primary-2"}
-        group-hover:text-primary-2 hover:!text-palette-5`}
+        ${isActive ? "text-shade-1 font-bold text-lg" : "text-primary-2"}
+        group-hover:text-primary-2 hover:!text-primary-3`}
       whileHover={{ scale: 1.1 }}
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -56,8 +56,6 @@ export const Header = ({
   const headerRef = useRef<HTMLDivElement | null>(null);
   const gsapAnimationRef = useRef<gsap.core.Timeline | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  const lastScrollY = useRef(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [menuItems, setMenuItems] = useState<MenuItemProps[]>([]);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -112,24 +110,10 @@ export const Header = ({
     }
 
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      // Determine if we've scrolled past threshold
-      setIsScrolled(currentScrollY > 50);
-      
-      // Determine scroll direction and visibility
-      if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
-        // Scrolling down
-        setIsVisible(false);
-      } else {
-        // Scrolling up or at the top
-        setIsVisible(true);
-      }
-      
-      lastScrollY.current = currentScrollY;
+      setIsScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll);
     checkAuth();
 
     return () => {
@@ -168,18 +152,12 @@ export const Header = ({
 
   return (
     <AnimatePresence mode="wait">
-      <motion.div
+      <div
         ref={headerRef}
-        className={`w-full h-[10dvh] fixed top-0 z-[1000] ${paddingLeftCustom} transition-all duration-300`}
-        initial={{ y: 0 }}
-        animate={{ 
-          y: isVisible ? 0 : -100,
-          
-        }}
-        transition={{ duration: 0.0 }}
+        className={`w-full h-[10dvh] fixed top-0 z-[1000] ${paddingLeftCustom} transition-colors duration-500`}
       >
         <motion.div
-          className={`w-full h-full ${roundedCustom} ${textColor} ${backgroundColor} `}
+          className={`w-full h-full ${roundedCustom} ${textColor} ${backgroundColor}`}
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}
@@ -192,7 +170,7 @@ export const Header = ({
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 1 }}
             >
-              <Logo width="auto" height="auto" color="text-palette-1" />
+              <Logo width="auto" height="auto" color="text-secondary-2" />
             </motion.div>
 
             <motion.div
@@ -235,11 +213,11 @@ export const Header = ({
               ) : (
                 <Link href={linkName}>
                   <motion.button
-                    className="uppercase w-44 py-1.5 font-semibold rounded-full bg-palette-1 text-palette-5"
+                    className="uppercase w-44 py-1.5 font-semibold rounded-full bg-shade-2"
                     whileHover={{
                       scale: 1.1,
                       backgroundColor: "#403737",
-                      color: "#ffff",
+                      color: "#fff",
                     }}
                     whileTap={{ scale: 0.95 }}
                     initial={{ opacity: 0, y: -20 }}
@@ -264,7 +242,7 @@ export const Header = ({
             </motion.div>
           </div>
         </motion.div>
-      </motion.div>
+      </div>
     </AnimatePresence>
   );
 };
