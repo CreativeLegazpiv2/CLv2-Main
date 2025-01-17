@@ -72,7 +72,7 @@ const RegisterButton = () => {
     const router = useRouter();
 
     const navigateToSignin = () => {
-        router.push('/apps-ui/signin')
+        router.push('/signin')
     }
     return (
         <motion.button

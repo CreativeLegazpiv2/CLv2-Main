@@ -33,7 +33,7 @@ const MenuItem = ({ name, link }: MenuItemProps) => {
     <motion.a
       href={link}
       className={`text-base uppercase font-semibold whitespace-nowrap relative duration-300
-        ${isActive ? "text-palette-5 font-bold text-lg" : "text-primary-2"}
+        ${isActive ? "text-palette-5 text-lg" : "text-palette-7"}
         group-hover:text-primary-2 hover:!text-palette-5`}
       whileHover={{ scale: 1.1 }}
       initial={{ opacity: 0, y: -20 }}
@@ -46,11 +46,11 @@ const MenuItem = ({ name, link }: MenuItemProps) => {
 
 export const Header = ({
   backgroundColor = "bg-primary-1",
-  textColor = "text-primary-2",
+  textColor = "palette-7",
   buttonName = "Log in",
   paddingLeftCustom = "pl-14",
   roundedCustom = "rounded-bl-3xl",
-  linkName = "/apps-ui/signin",
+  linkName = "/signin",
   onOpenSidebar,
 }: HeaderProps) => {
   const headerRef = useRef<HTMLDivElement | null>(null);
@@ -76,20 +76,20 @@ export const Header = ({
 
       if (session) {
         setMenuItems([
-          { name: "Home", link: "/apps-ui/home" },
-          { name: "Directory", link: "/apps-ui/creative-dashboard" },
-          { name: "Gallery", link: "/apps-ui/g-user" },
-          { name: "FAQ", link: "/apps-ui/faqs" },
-          { name: "Events", link: "/apps-ui/events" },
-          { name: "Profile", link: "/apps-ui/profile" },
+          { name: "Home", link: "/home" },
+          { name: "Directory", link: "/creative-directory" },
+          { name: "Gallery", link: "/g-user" },
+          { name: "FAQ", link: "/faqs" },
+          { name: "Events", link: "/events" },
+          { name: "Profile", link: "/profile" },
         ]);
       } else {
         setMenuItems([
-          { name: "Home", link: "/apps-ui/home" },
-          { name: "Directory", link: "/apps-ui/creative-dashboard" },
-          { name: "Gallery", link: "/apps-ui/g-visitor" },
-          { name: "FAQ", link: "/apps-ui/faqs" },
-          { name: "Events", link: "/apps-ui/events" },
+          { name: "Home", link: "/home" },
+          { name: "Directory", link: "/creative-directory" },
+          { name: "Gallery", link: "/gallery" },
+          { name: "FAQ", link: "/faqs" },
+          { name: "Events", link: "/events" },
         ]);
       }
     } catch (error) {
@@ -155,7 +155,7 @@ export const Header = ({
       setIsLoggedIn(false);
       setMenuItems([]);
       await new Promise((resolve) => setTimeout(resolve, 100));
-      router.replace("/apps-ui/signin");
+      router.replace("/signin");
     } catch (error) {
       console.error("Logout failed:", error);
       setIsLoggingOut(false);
@@ -192,7 +192,7 @@ export const Header = ({
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 1 }}
             >
-              <Logo width="auto" height="auto" color="text-palette-1" />
+              <Logo width="auto" height="auto" color="text-palette-7" />
             </motion.div>
 
             <motion.div
@@ -218,12 +218,12 @@ export const Header = ({
                 <motion.button
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className={`uppercase w-44 py-1.5 font-semibold rounded-full bg-shade-1 text-secondary-1
+                  className={`uppercase w-44 py-1.5 font-semibold rounded-full bg-palette-2 text-secondary-1
                     ${isLoggingOut ? "opacity-50 cursor-not-allowed" : ""}`}
                   whileHover={{
                     scale: 1.1,
-                    backgroundColor: "#B6E3CE",
-                    color: "#403737",
+                    backgroundColor: "#6E352C",
+                    color: "#ffff",
                   }}
                   whileTap={{ scale: 0.95 }}
                   initial={{ opacity: 0, y: -20 }}

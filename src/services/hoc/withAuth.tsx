@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation'; 
 import { decryptToken } from '@/services/authservice'; 
 import { supabase } from '@/services/supabaseClient';
+import ProfileDetailsSkeleton from '@/components/Skeletal/profileSkeleton';
 
 // Define the UserDetail interface again here or import it
 interface UserDetail {
@@ -33,7 +34,7 @@ const withAuth = (WrappedComponent: React.ComponentType<{ userDetail: UserDetail
             const checkAuthentication = async () => {
                 if (!token) {
                     console.log("No token found. Redirecting to login.");
-                    router.push('/apps-ui/signup');
+                    router.push('/signup');
                     return;
                 }
 
@@ -60,7 +61,7 @@ const withAuth = (WrappedComponent: React.ComponentType<{ userDetail: UserDetail
                     setIsAuthenticated(true); 
                 } catch (error) {
                     console.error("Token verification or data fetching failed:", error);
-                    router.push('/apps-ui/signup');
+                    router.push('/signup');
                 } finally {
                     setLoading(false); 
                 }
@@ -102,7 +103,9 @@ const withAuth = (WrappedComponent: React.ComponentType<{ userDetail: UserDetail
         };
 
         if (loading) {
-            return <div>Loading...</div>; 
+            return   <div className="w-full min-h-screen flex justify-center items-center">
+                    <ProfileDetailsSkeleton />
+                  </div>; 
         }
 
         if (!isAuthenticated) {

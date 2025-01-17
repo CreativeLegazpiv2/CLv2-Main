@@ -16,7 +16,7 @@ const useAuthRedirect = () => {
             const token = getSession();
 
             if (!token) {
-                router.push("/apps-ui/signin");
+                router.push("/signin");
                 return;
             }
 
@@ -25,11 +25,11 @@ const useAuthRedirect = () => {
                 const userId = payload.id; // Extract userId from token payload
 
                 if (!userId) {
-                    router.push("/apps-ui/signin"); 
+                    router.push("/signin"); 
                 }
             } catch (error) {
                 console.error("Token verification failed:", error);
-                router.push("/apps-ui/signin");
+                router.push("/signin");
             }
         };
 

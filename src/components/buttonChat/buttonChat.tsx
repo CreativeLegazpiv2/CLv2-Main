@@ -1,6 +1,7 @@
 "use client";
 
-import { Interested } from "@/app/apps-ui/(user)/(gallery)/g-user/collections/[slug]/(collectionModal)/Interested";
+
+import { Interested } from "@/app/(apps-ui)/(user)/(gallery)/g-user/collections/[slug]/(collectionModal)/Interested";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { AnimatePresence, motion } from "framer-motion";
 

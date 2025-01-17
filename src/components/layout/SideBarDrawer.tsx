@@ -30,7 +30,7 @@ const BREAKPOINTS = { sm: 0, md: 768, lg: 1024 };
 export function SidebarDrawer({
   isOpen,
   onClose,
-  linkName = "/apps-ui/signin",
+  linkName = "/signin",
   buttonName = "Log in",
   backgroundColor = "bg-white",
   textColor = "text-gray-400",
@@ -56,20 +56,20 @@ export function SidebarDrawer({
 
       if (session) {
         setMenuItems([
-          { name: "Home", link: "/apps-ui/home" },
-          { name: "Directory", link: "/apps-ui/creative-dashboard" },
-          { name: "Gallery", link: "/apps-ui/g-user" },
-          { name: "FAQ", link: "/apps-ui/faqs" },
-          { name: "Events", link: "/apps-ui/events" },
-          { name: "Profile", link: "/apps-ui/profile" },
+          { name: "Home", link: "/home" },
+          { name: "Directory", link: "/creative-dashboard" },
+          { name: "Gallery", link: "/g-user" },
+          { name: "FAQ", link: "/faqs" },
+          { name: "Events", link: "/events" },
+          { name: "Profile", link: "/profile" },
         ]);
       } else {
         setMenuItems([
-          { name: "Home", link: "/apps-ui/home" },
-          { name: "Directory", link: "/apps-ui/creative-dashboard" },
-          { name: "Gallery", link: "/apps-ui/g-visitor" },
-          { name: "FAQ", link: "/apps-ui/faqs" },
-          { name: "Events", link: "/apps-ui/events" },
+          { name: "Home", link: "/home" },
+          { name: "Directory", link: "/creative-dashboard" },
+          { name: "Gallery", link: "/g-visitor" },
+          { name: "FAQ", link: "/faqs" },
+          { name: "Events", link: "/events" },
         ]);
       }
     } catch (error) {
@@ -101,7 +101,7 @@ export function SidebarDrawer({
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       // Navigate using replace
-      router.replace("/apps-ui/signin");
+      router.replace("/signin");
     } catch (error) {
       console.error("Logout failed:", error);
       setIsLoggingOut(false);
@@ -183,8 +183,8 @@ export function SidebarDrawer({
                 ${isLoggingOut ? "opacity-50 cursor-not-allowed" : ""}`}
                   whileHover={{
                     scale: 1.1,
-                    backgroundColor: "#B6E3CE",
-                    color: "#403737",
+                    backgroundColor: "#6E352C",
+                    color: "#ffff",
                   }}
                   whileTap={{ scale: 0.95 }}
                 >
