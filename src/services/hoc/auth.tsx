@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation"; // Make sure to use the correct import for Next.js 13
 import { getSession } from "../authservice"; // Adjust the import path as necessary
 import { jwtVerify } from "jose";
+import { checkTokenExpiration, logoutAndRedirect } from "../jwt";
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret';
 
@@ -15,10 +16,16 @@ const useAuthRedirect = () => {
         const checkToken = async () => {
             const token = getSession();
 
-            if (!token) {
-                router.push("/apps-ui/signin");
-                return;
-            }
+                 if (!token) {
+                   logoutAndRedirect();
+                   return;
+                 }
+                 const isTokenExpired = await checkTokenExpiration(token);
+           
+                 if (isTokenExpired) {
+                   logoutAndRedirect();
+                   return;
+                 }
 
             try {
                 const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
