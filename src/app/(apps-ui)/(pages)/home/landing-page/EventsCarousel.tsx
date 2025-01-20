@@ -72,38 +72,52 @@ export const Events = () => {
     console.log("Registration successful!");
   };
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch("/api/admin-events");
-        if (!response.ok) {
-          throw new Error("Failed to fetch events");
-        }
-        const data = await response.json();
-        setEvents(data);
-      } catch (err: any) {
-        setError(err.message || "An error occurred while fetching events");
-      } finally {
-        setLoading(false);
+useEffect(() => {
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch("/api/admin-events");
+      if (!response.ok) {
+        throw new Error("Failed to fetch events");
       }
-    };
+      const data = await response.json();
 
-    fetchEvents();
+      // Get the current date and set time to the start of the day
+      const currentDateObj = new Date();
+      currentDateObj.setHours(0, 0, 0, 0); // Strip time component
 
-    const handleResize = () => {
-      if (window.innerWidth >= 1280) {
-        setCardsPerPage(3);
-      } else if (window.innerWidth >= 640) {
-        setCardsPerPage(2);
-      } else {
-        setCardsPerPage(1);
-      }
-    };
+      // Filter events to show only those on or after the current date
+      const upcomingEvents = data.filter((event: ExtendedEventProps) => {
+        const eventDate = new Date(event.date);
+        eventDate.setHours(0, 0, 0, 0); // Strip time component from event date
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+        // Only include events on or after the current date
+        return eventDate >= currentDateObj;
+      });
+
+      setEvents(upcomingEvents);
+    } catch (err: any) {
+      setError(err.message || "An error occurred while fetching events");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchEvents();
+
+  const handleResize = () => {
+    if (window.innerWidth >= 1280) {
+      setCardsPerPage(3);
+    } else if (window.innerWidth >= 640) {
+      setCardsPerPage(2);
+    } else {
+      setCardsPerPage(1);
+    }
+  };
+
+  handleResize();
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
 
   const totalPages = Math.ceil(events.length / cardsPerPage);
 
