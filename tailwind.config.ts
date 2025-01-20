@@ -74,7 +74,7 @@ const config: Config = {
         "customShadow3": '5px 5px 10px 15px rgba(0, 0, 0, 0.3)',
       },
       dropShadow: {
-        'custom': '5px 0px 20px rgba(0, 0, 0, 0.50)',
+        'custom': '5px 0px 20px rgba(0, 0, 0, 0.80)',
         
       }
 
