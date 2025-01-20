@@ -38,10 +38,11 @@ interface TabButtonProps {
 const TabButton: React.FC<TabButtonProps> = ({ label, isActive, onClick }) => (
   <button
     onClick={onClick}
-    className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${isActive
-        ? 'bg-primary-2 text-white shadow-md'
-        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-      }`}
+    className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
+      isActive
+        ? "bg-primary-2 text-white shadow-md"
+        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+    }`}
   >
     {label}
   </button>
@@ -54,9 +55,11 @@ export const Events = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<ExtendedEventProps | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<ExtendedEventProps | null>(
+    null
+  );
   const [showEventDetails, setShowEventDetails] = useState(false);
-  const [activeTab, setActiveTab] = useState('details');
+  const [activeTab, setActiveTab] = useState("details");
 
   const handleRegisterClick = (event: ExtendedEventProps) => {
     setSelectedEvent(event);
@@ -72,52 +75,52 @@ export const Events = () => {
     console.log("Registration successful!");
   };
 
-useEffect(() => {
-  const fetchEvents = async () => {
-    try {
-      const response = await fetch("/api/admin-events");
-      if (!response.ok) {
-        throw new Error("Failed to fetch events");
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("/api/admin-events");
+        if (!response.ok) {
+          throw new Error("Failed to fetch events");
+        }
+        const data = await response.json();
+
+        // Get the current date and set time to the start of the day
+        const currentDateObj = new Date();
+        currentDateObj.setHours(0, 0, 0, 0); // Strip time component
+
+        // Filter events to show only those on or after the current date
+        const upcomingEvents = data.filter((event: ExtendedEventProps) => {
+          const eventDate = new Date(event.date);
+          eventDate.setHours(0, 0, 0, 0); // Strip time component from event date
+
+          // Only include events on or after the current date
+          return eventDate >= currentDateObj;
+        });
+
+        setEvents(upcomingEvents);
+      } catch (err: any) {
+        setError(err.message || "An error occurred while fetching events");
+      } finally {
+        setLoading(false);
       }
-      const data = await response.json();
+    };
 
-      // Get the current date and set time to the start of the day
-      const currentDateObj = new Date();
-      currentDateObj.setHours(0, 0, 0, 0); // Strip time component
+    fetchEvents();
 
-      // Filter events to show only those on or after the current date
-      const upcomingEvents = data.filter((event: ExtendedEventProps) => {
-        const eventDate = new Date(event.date);
-        eventDate.setHours(0, 0, 0, 0); // Strip time component from event date
+    const handleResize = () => {
+      if (window.innerWidth >= 1280) {
+        setCardsPerPage(3);
+      } else if (window.innerWidth >= 640) {
+        setCardsPerPage(2);
+      } else {
+        setCardsPerPage(1);
+      }
+    };
 
-        // Only include events on or after the current date
-        return eventDate >= currentDateObj;
-      });
-
-      setEvents(upcomingEvents);
-    } catch (err: any) {
-      setError(err.message || "An error occurred while fetching events");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchEvents();
-
-  const handleResize = () => {
-    if (window.innerWidth >= 1280) {
-      setCardsPerPage(3);
-    } else if (window.innerWidth >= 640) {
-      setCardsPerPage(2);
-    } else {
-      setCardsPerPage(1);
-    }
-  };
-
-  handleResize();
-  window.addEventListener("resize", handleResize);
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const totalPages = Math.ceil(events.length / cardsPerPage);
 
@@ -130,11 +133,19 @@ useEffect(() => {
   };
 
   if (loading) {
-    return <div className="text-center text-2xl font-semibold">Loading events...</div>;
+    return (
+      <div className="text-center text-2xl font-semibold">
+        Loading events...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center text-2xl font-semibold text-red-500">Error: {error}</div>;
+    return (
+      <div className="text-center text-2xl font-semibold text-red-500">
+        Error: {error}
+      </div>
+    );
   }
 
   return (
@@ -151,7 +162,7 @@ useEffect(() => {
       </div>
 
       {/* Carousel */}
-      <div className="w-full h-fit relative">
+      <div className="w-full h-fit relative flex flex-col justify-center items-center gap-10">
         <div className="overflow-hidden w-[90%] mx-auto">
           <motion.div
             className="flex"
@@ -162,198 +173,247 @@ useEffect(() => {
             {events.map((event) => (
               <div
                 key={event.id}
-                className={`${cardsPerPage === 1
+                className={`${
+                  cardsPerPage === 1
                     ? "w-full"
                     : cardsPerPage === 2
-                      ? "w-1/2"
-                      : "w-1/3"
-                  } p-4 flex-shrink-0 box-border`}
+                    ? "w-1/2"
+                    : "w-1/3"
+                } p-4 flex-shrink-0 box-border`}
               >
-                <Cards {...event} onRegisterClick={() => handleRegisterClick(event)} />
+                <Cards
+                  {...event}
+                  onRegisterClick={() => handleRegisterClick(event)}
+                />
               </div>
             ))}
           </motion.div>
         </div>
 
         {/* Navigation buttons */}
-        <button
-          onClick={prev}
-          className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white/80 p-3 rounded-full shadow-lg hover:bg-white transition-colors"
-          disabled={currentPage === 0}
-        >
-          <Icon icon="ep:arrow-left" width="30" height="30" />
-        </button>
-        <button
-          onClick={next}
-          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white/80 p-3 rounded-full shadow-lg hover:bg-white transition-colors"
-          disabled={currentPage === totalPages - 1}
-        >
-          <Icon icon="ep:arrow-left" width="30" height="30" className="rotate-180" />
-        </button>
+        <div className="flex gap-10">
+          <button
+            onClick={prev}
+            className={`md:absolute left-0 top-1/2 transform -translate-y-1/2 bg-white/80 p-3 rounded-full shadow-lg hover:bg-white transition-colors
+            ${currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+            disabled={currentPage === 0}
+          >
+            <Icon icon="ep:arrow-left" width="30" height="30" />
+          </button>
+          <button
+            onClick={next}
+            className={
+              `md:absolute right-0 top-1/2 transform -translate-y-1/2 bg-white/80 p-3 rounded-full shadow-lg hover:bg-white transition-colors
+              ${currentPage === totalPages - 1 ? "opacity-50 cursor-not-allowed" : ""}`
+            }
+            disabled={currentPage === totalPages - 1}
+          >
+            <Icon
+              icon="ep:arrow-left"
+              width="30"
+              height="30"
+              className="rotate-180"
+            />
+          </button>
+        </div>
       </div>
 
       {/* Enhanced Event Details Modal */}
       {showEventDetails && selectedEvent && (
-  <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-    <motion.div
-      className="relative w-full max-w-5xl h-[90vh] md:h-[80vh] bg-white rounded-2xl overflow-hidden shadow-2xl"
-      initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 0.3 }}
-    >
-      {/* Hero Section */}
-      <div className="relative h-48 md:h-64">
-        <img
-          src={selectedEvent.image_path}
-          alt={selectedEvent.title}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-        <h1 className="absolute bottom-4 left-4 md:bottom-6 md:left-8 text-2xl md:text-4xl font-bold text-white">
-          {selectedEvent.title}
-        </h1>
-      </div>
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+          <motion.div
+            className="relative w-full max-w-5xl h-[90vh] md:h-[80vh] bg-white rounded-2xl overflow-hidden shadow-2xl"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Hero Section */}
+            <div className="relative h-48 md:h-64">
+              <img
+                src={selectedEvent.image_path}
+                alt={selectedEvent.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+              <h1 className="absolute bottom-4 left-4 md:bottom-6 md:left-8 text-2xl md:text-4xl font-bold text-white">
+                {selectedEvent.title}
+              </h1>
+            </div>
 
-      {/* Content Section */}
-      <div className="p-4 md:p-8 flex flex-col h-[calc(90vh-300px)] md:h-[calc(80vh-280px)]">
-        {/* Tabs */}
-        <div className="flex gap-2 mb-4 md:mb-6 overflow-x-auto pb-2">
-          <TabButton
-            label="Details"
-            isActive={activeTab === 'details'}
-            onClick={() => setActiveTab('details')}
-          />
-          <TabButton
-            label="About"
-            isActive={activeTab === 'about'}
-            onClick={() => setActiveTab('about')}
-          />
-          <TabButton
-            label="Contact"
-            isActive={activeTab === 'contact'}
-            onClick={() => setActiveTab('contact')}
-          />
-        </div>
+            {/* Content Section */}
+            <div className="p-4 md:p-8 flex flex-col h-[calc(90vh-300px)] md:h-[calc(80vh-280px)]">
+              {/* Tabs */}
+              <div className="flex gap-2 mb-4 md:mb-6 overflow-x-auto pb-2">
+                <TabButton
+                  label="Details"
+                  isActive={activeTab === "details"}
+                  onClick={() => setActiveTab("details")}
+                />
+                <TabButton
+                  label="About"
+                  isActive={activeTab === "about"}
+                  onClick={() => setActiveTab("about")}
+                />
+                <TabButton
+                  label="Contact"
+                  isActive={activeTab === "contact"}
+                  onClick={() => setActiveTab("contact")}
+                />
+              </div>
 
-        {/* Tab Content */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar">
-          {activeTab === 'details' && (
-            <div className="space-y-4 md:space-y-6">
-              <div className="flex items-center gap-4">
-                <Icon icon="mdi:calendar" className="text-xl md:text-2xl text-gray-600" />
-                <div>
-                  <p className="font-medium text-gray-800">Date & Time</p>
-                  <p className="text-gray-600">
-                    {selectedEvent.date} • {selectedEvent.start_time} - {selectedEvent.end_time}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <Icon icon="mdi:map-marker" className="text-xl md:text-2xl text-gray-600" />
-                <div>
-                  <p className="font-medium text-gray-800">Location</p>
-                  <p className="text-gray-600">{selectedEvent.location}</p>
-                </div>
-              </div>
-              {selectedEvent.columns && (
-                <div className="grid md:grid-cols-2 gap-4 mt-4 md:mt-6">
-                  {selectedEvent.columns.map((column, index) => (
-                    <div key={index} className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-gray-600">{column}</p>
+              {/* Tab Content */}
+              <div className="flex-1 overflow-y-auto custom-scrollbar">
+                {activeTab === "details" && (
+                  <div className="space-y-4 md:space-y-6">
+                    <div className="flex items-center gap-4">
+                      <Icon
+                        icon="mdi:calendar"
+                        className="text-xl md:text-2xl text-gray-600"
+                      />
+                      <div>
+                        <p className="font-medium text-gray-800">Date & Time</p>
+                        <p className="text-gray-600">
+                          {selectedEvent.date} • {selectedEvent.start_time} -{" "}
+                          {selectedEvent.end_time}
+                        </p>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+                    <div className="flex items-center gap-4">
+                      <Icon
+                        icon="mdi:map-marker"
+                        className="text-xl md:text-2xl text-gray-600"
+                      />
+                      <div>
+                        <p className="font-medium text-gray-800">Location</p>
+                        <p className="text-gray-600">
+                          {selectedEvent.location}
+                        </p>
+                      </div>
+                    </div>
+                    {selectedEvent.columns && (
+                      <div className="grid md:grid-cols-2 gap-4 mt-4 md:mt-6">
+                        {selectedEvent.columns.map((column, index) => (
+                          <div
+                            key={index}
+                            className="bg-gray-50 p-4 rounded-lg"
+                          >
+                            <p className="text-gray-600">{column}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
 
-          {activeTab === 'about' && (
-            <div className="space-y-4 md:space-y-6">
-              {selectedEvent.objective && (
-                <div>
-                  <h3 className="text-lg md:text-xl font-semibold mb-2">Objective</h3>
-                  <p className="text-gray-600">{selectedEvent.objective}</p>
+                {activeTab === "about" && (
+                  <div className="space-y-4 md:space-y-6">
+                    {selectedEvent.objective && (
+                      <div>
+                        <h3 className="text-lg md:text-xl font-semibold mb-2">
+                          Objective
+                        </h3>
+                        <p className="text-gray-600">
+                          {selectedEvent.objective}
+                        </p>
+                      </div>
+                    )}
+                    {selectedEvent.announcement && (
+                      <div>
+                        <h3 className="text-lg md:text-xl font-semibold mb-2">
+                          Announcement
+                        </h3>
+                        <p className="text-gray-600">
+                          {selectedEvent.announcement}
+                        </p>
+                      </div>
+                    )}
+                    <div>
+                      <h3 className="text-lg md:text-xl font-semibold mb-2">
+                        Description
+                      </h3>
+                      <p className="text-gray-600">{selectedEvent.desc}</p>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "contact" && (
+                  <div className="space-y-4 md:space-y-6">
+                    {selectedEvent.contact && (
+                      <div className="space-y-2">
+                        <div className="flex items-center">
+                          <Icon
+                            icon="mdi:contact"
+                            className="text-xl md:text-2xl text-gray-600"
+                          />
+                          <p className="ml-2 font-medium text-gray-800">
+                            Contact Information
+                          </p>
+                        </div>
+                        <div className="text-gray-600">
+                          {selectedEvent.contact
+                            .split(",")
+                            .map((contactItem, index) => (
+                              <span key={index} className="block">
+                                - {contactItem.trim()}
+                              </span>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+                    {selectedEvent.website && (
+                      <div className="space-y-2">
+                        <div className="flex items-center">
+                          <Icon
+                            icon="mdi:web"
+                            className="text-xl md:text-2xl text-gray-600"
+                          />
+                          <p className="ml-2 font-medium text-gray-800">
+                            Website
+                          </p>
+                        </div>
+                        <a
+                          href={selectedEvent.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary-2 hover:underline"
+                        >
+                          {selectedEvent.website}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="mt-auto pt-4 border-t">
+                <div className="flex justify-between items-center">
+                  <button
+                    onClick={() => setShowEventDetails(false)}
+                    className="px-4 py-2 md:px-6 md:py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    Close
+                  </button>
+                  <button
+                    onClick={handleInterestClick}
+                    className="px-4 py-2 md:px-6 md:py-2 bg-primary-2 text-white rounded-lg font-medium hover:bg-primary-1 transition-colors"
+                  >
+                    Register Now
+                  </button>
                 </div>
-              )}
-              {selectedEvent.announcement && (
-                <div>
-                  <h3 className="text-lg md:text-xl font-semibold mb-2">Announcement</h3>
-                  <p className="text-gray-600">{selectedEvent.announcement}</p>
-                </div>
-              )}
-              <div>
-                <h3 className="text-lg md:text-xl font-semibold mb-2">Description</h3>
-                <p className="text-gray-600">{selectedEvent.desc}</p>
               </div>
             </div>
-          )}
 
-          {activeTab === 'contact' && (
-            <div className="space-y-4 md:space-y-6">
-              {selectedEvent.contact && (
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <Icon icon="mdi:contact" className="text-xl md:text-2xl text-gray-600" />
-                    <p className="ml-2 font-medium text-gray-800">Contact Information</p>
-                  </div>
-                  <div className="text-gray-600">
-                    {selectedEvent.contact.split(',').map((contactItem, index) => (
-                      <span key={index} className="block">
-                        - {contactItem.trim()}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {selectedEvent.website && (
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <Icon icon="mdi:web" className="text-xl md:text-2xl text-gray-600" />
-                    <p className="ml-2 font-medium text-gray-800">Website</p>
-                  </div>
-                  <a
-                    href={selectedEvent.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary-2 hover:underline"
-                  >
-                    {selectedEvent.website}
-                  </a>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Action Buttons */}
-        <div className="mt-auto pt-4 border-t">
-          <div className="flex justify-between items-center">
+            {/* Close button */}
             <button
               onClick={() => setShowEventDetails(false)}
-              className="px-4 py-2 md:px-6 md:py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg transition-colors"
+              className="absolute top-2 right-2 md:top-4 md:right-4 p-2 bg-white/80 rounded-full hover:bg-white transition-colors"
             >
-              Close
+              <Icon icon="mdi:close" width="20" height="20" />
             </button>
-            <button
-              onClick={handleInterestClick}
-              className="px-4 py-2 md:px-6 md:py-2 bg-primary-2 text-white rounded-lg font-medium hover:bg-primary-1 transition-colors"
-            >
-              Register Now
-            </button>
-          </div>
+          </motion.div>
         </div>
-      </div>
-
-      {/* Close button */}
-      <button
-        onClick={() => setShowEventDetails(false)}
-        className="absolute top-2 right-2 md:top-4 md:right-4 p-2 bg-white/80 rounded-full hover:bg-white transition-colors"
-      >
-        <Icon icon="mdi:close" width="20" height="20" />
-      </button>
-    </motion.div>
-  </div>
-)}
+      )}
 
       {/* Register Modal */}
       {showModal && selectedEvent && (
@@ -394,7 +454,7 @@ const Cards: React.FC<ExtendedEventProps & { onRegisterClick: () => void }> = ({
     <motion.div
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.2 }}
-      className="w-full h-[500px] flex flex-col bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+      className="w-full h-fit flex flex-col bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
     >
       {/* Fixed height container for image */}
       <div className="w-full h-48 flex-shrink-0 overflow-hidden rounded-t-xl">
