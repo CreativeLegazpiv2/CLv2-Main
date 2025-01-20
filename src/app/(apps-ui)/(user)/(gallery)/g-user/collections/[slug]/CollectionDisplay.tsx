@@ -39,14 +39,13 @@ interface UserDetails {
   detailsid: string;
   first_name: string;
   profile_pic: string;
-  // Add other user details properties here if needed
 }
 
 interface Subcomment {
   comment: string;
   userid: string;
   created_at: string;
-  userDetails?: UserDetails; // Add userDetails property
+  userDetails?: UserDetails;
 }
 
 const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
@@ -59,12 +58,10 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [isInterestModalOpen, setInterestModalOpen] = useState(false);
-
   const [imageToDelete, setImageToDelete] = useState<{
     generatedId: string;
     image_path: string;
   } | null>(null);
-
   const [commentInput, setCommentInput] = useState("");
   const [comments, setComments] = useState<any[]>([]);
   const [liked, setLike] = useState<boolean>(false);
@@ -79,15 +76,25 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
   const [replyLoading, setReplyLoading] = useState<{ [key: string]: boolean }>(
     {}
   );
-
   const [chat, setChat] = useState(false);
-  const [isLoadingComments, setIsLoadingComments] = useState(true); // State for loading comments
+  const [isLoadingComments, setIsLoadingComments] = useState(true);
+
+  // Redirect to /apps-ui/g-user if images array becomes empty
+  useEffect(() => {
+    if (images.length === 0) {
+      toast.info("No images found. Redirecting...", { position: "bottom-right" });
+      setTimeout(() => {
+        router.push("/apps-ui/g-user");
+      }, 2000); // Redirect after 2 seconds
+    }
+  }, [images, router]);
+
   useEffect(() => {
     fetchComments();
   }, [selectedImage]);
 
   useEffect(() => {
-    setIsLoadingComments(true); // Set loading state to true
+    setIsLoadingComments(true);
   }, []);
 
   const fetchComments = async () => {
@@ -148,13 +155,10 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
       console.error("Error fetching comments:", error);
       toast.error("Failed to fetch comments.", { position: "bottom-right" });
     } finally {
-      setIsLoadingComments(false); // Set loading state to false
+      setIsLoadingComments(false);
     }
   };
 
-  // likes
-
-  // Utility function to format like count
   const formatLikeCount = (count: number): any => {
     if (count < 1000) return count.toString();
     if (count < 1000000) {
@@ -183,10 +187,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
         if (response.ok) {
           const data = await response.json();
           setLike(data.userLiked?.includes(getID) ?? false);
-
-          // Use the formatLikeCount function to set the like count
-          setLikeCount(
-            formatLikeCount(data.likeCount || 0));
+          setLikeCount(formatLikeCount(data.likeCount || 0));
         } else {
           const errorData = await response.json().catch(() => ({}));
           console.error(
@@ -201,9 +202,6 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
 
     fetchLikeStatus();
   }, [selectedImage?.generatedId, getID, likeCount]);
-
-  // When rendering
-  <span className="ml-2 text-gray-600">{likeCount} likes</span>;
 
   const handleReplyClick = (commentId: string) => {
     setShowReplyInput({
@@ -227,7 +225,6 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
       );
       const userId = payload.id as string;
 
-      // Set loading state for the reply
       setReplyLoading({ ...replyLoading, [commentId]: true });
 
       const response = await fetch("/api/collections/subcomment", {
@@ -237,14 +234,14 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
           x_galleryid: commentId,
           x_userid: userId,
           x_comment: replyInput[commentId],
-          x_commentid: commentId, // Include the comment ID here
+          x_commentid: commentId,
         },
       });
 
       if (response.ok) {
         setReplyInput({ ...replyInput, [commentId]: "" });
         setShowReplyInput({ ...showReplyInput, [commentId]: false });
-        setShowMoreReplies({ ...showMoreReplies, [commentId]: true }); // Show all replies for this comment
+        setShowMoreReplies({ ...showMoreReplies, [commentId]: true });
         fetchComments();
       } else {
         const data = await response.json();
@@ -256,7 +253,6 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
       console.error("Error submitting reply:", error);
       toast.error("Failed to add reply.", { position: "bottom-right" });
     } finally {
-      // Reset loading state
       setTimeout(() => {
         setReplyLoading({ ...replyLoading, [commentId]: false });
       }, 2000);
@@ -288,7 +284,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
 
       if (response.ok) {
         setCommentInput("");
-        fetchComments(); // Fetch updated comments after submission
+        fetchComments();
       } else {
         const data = await response.json();
         toast.error(`Failed to add comment: ${data.error}`, {
@@ -305,7 +301,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
     setSelectedImage(image);
   };
 
-  useAuthRedirect(); // authguard
+  useAuthRedirect();
 
   useEffect(() => {
     if (collection.images.length > 0) {
@@ -363,11 +359,6 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
         );
       }
 
-      if (updatedImages.length === 0) {
-        router.push("/g-user");
-      }
-
-      // Close the modal after deletion
       setDeleteModalOpen(false);
       setImageToDelete(null);
     } catch (error) {
@@ -397,26 +388,23 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
         position: "bottom-right",
       });
 
-      // Ensure image_path is not null, provide a fallback value if needed
       const updatedImages = images.map((img) =>
         img.generatedId === selectedImage.generatedId
           ? {
               ...img,
               ...updatedData,
-              image_path: updatedData.image_path || "/images/default.jpg", // Fallback value
+              image_path: updatedData.image_path || "/images/default.jpg",
             }
           : img
       );
       setImages(updatedImages);
 
-      // Update the selected image with new values
       setSelectedImage({
         ...selectedImage,
         ...updatedData,
-        image_path: updatedData.image_path || "/images/default.jpg", // Fallback value
+        image_path: updatedData.image_path || "/images/default.jpg",
       });
 
-      // Close the modal after editing
       setEditModalOpen(false);
     } catch (error) {
       console.error("Error editing the collection:", error);
@@ -468,15 +456,10 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
     const [timeAgo, setTimeAgo] = useState(formatTimeAgo(timestamp));
 
     useEffect(() => {
-      // Update the time immediately
       setTimeAgo(formatTimeAgo(timestamp));
-
-      // Set up an interval to update every minute
       const intervalId = setInterval(() => {
         setTimeAgo(formatTimeAgo(timestamp));
-      }, 60000); // 60000 ms = 1 minute
-
-      // Cleanup interval on component unmount
+      }, 60000);
       return () => clearInterval(intervalId);
     }, [timestamp]);
 
@@ -485,9 +468,8 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
 
   const toggleLike = async () => {
     if (!selectedImage || !getID) return;
-  
+
     try {
-      // Step 1: Toggle the like status
       const toggleResponse = await fetch(`/api/collections/like-collections`, {
         method: "PUT",
         headers: {
@@ -496,10 +478,10 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
         body: JSON.stringify({
           userId: getID,
           galleryId: selectedImage.generatedId,
-          fetchOnly: false, // This ensures the like status is toggled
+          fetchOnly: false,
         }),
       });
-  
+
       if (!toggleResponse.ok) {
         const errorData = await toggleResponse.json();
         toast.error(`Failed to toggle like: ${errorData.error}`, {
@@ -507,8 +489,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
         });
         return;
       }
-  
-      // Step 2: Fetch the updated like count
+
       const fetchResponse = await fetch(`/api/collections/like-collections`, {
         method: "PUT",
         headers: {
@@ -516,10 +497,10 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
         },
         body: JSON.stringify({
           galleryId: selectedImage.generatedId,
-          fetchOnly: true, // This ensures only the like count is fetched
+          fetchOnly: true,
         }),
       });
-  
+
       if (!fetchResponse.ok) {
         const errorData = await fetchResponse.json();
         toast.error(`Failed to fetch updated like count: ${errorData.error}`, {
@@ -527,8 +508,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
         });
         return;
       }
-  
-      // Step 3: Update the UI with the new like count and userLiked status
+
       const { userLiked, likeCount } = await fetchResponse.json();
       setLike(userLiked.includes(getID));
       setLikeCount(likeCount);
@@ -587,7 +567,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                 src={image.image_path}
                 alt={`Image ${index + 1}`}
                 fill
-                priority // Add this prop if the image is above the fold
+                priority
                 className="transition-transform duration-300 hover:scale-105 object-cover"
               />
               <motion.div
@@ -641,7 +621,6 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                   </>
                 )}
 
-                {/* Interested? for buyers and other artists */}
                 {image.childid != getID && (
                   <>
                     <motion.button
@@ -671,9 +650,8 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
 
         <div className="w-full h-fit flex gap-12">
           {/* Collection Details */}
-
           {selectedImage && (
-            <div className="bg-gray-200  p-6 rounded-lg mb-8 w-full h-fit max-w-[24.5rem]">
+            <div className="bg-gray-200 p-6 rounded-lg mb-8 w-full h-fit max-w-[24.5rem]">
               <div className="flex justify-between items-start">
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">
                   Collection Details
@@ -683,7 +661,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                   onClick={toggleLike}
                 >
                   <Icon
-                    className=" text-red-400"
+                    className="text-red-400"
                     icon={liked ? "jam:heart-f" : "jam:heart"}
                     width="30"
                     height="30"
@@ -702,7 +680,6 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
 
           <div className="max-h-[32rem] min-h-40 w-full border border-gray-300 rounded-lg p-4 overflow-hidden">
             {/* Comment Section */}
-
             <div className="h-full flex flex-col max-h-[32rem] min-h-40">
               <h2 className="h-fit text-xl font-semibold text-gray-900 mb-4">
                 Comments
@@ -732,7 +709,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                       >
                         <div className="w-full flex gap-2.5 items-start justify-start">
                           <Link
-                            href={`/g-user/view-profile/${comment.detailsid}`} // Use Link for client-side navigation
+                            href={`/apps-ui/g-user/view-profile/${comment.detailsid}`}
                             passHref
                           >
                             <div className="w-10 h-10">
@@ -750,7 +727,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                           </Link>
                           <div className="w-full flex flex-col gap-1 justify-start items-start">
                             <div className="w-full flex flex-col gap-0.5 bg-gray-200 p-2.5 rounded-md">
-                              <p className="text-base  text-gray-700 font-semibold">
+                              <p className="text-base text-gray-700 font-semibold">
                                 {comment.first_name}
                               </p>
                               <p className="text-gray-600">{comment.comment}</p>
@@ -788,18 +765,6 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                                 onSubmit={(e) => handleReplySubmit(e, comment.id)}
                                 className="mt-2 pl-4 w-full flex gap-2"
                               >
-                                {/* <div className="w-10 h-10">
-                                <Image
-                                  src={
-                                    comment.profile_pic ||
-                                    "/images/creative-directory/profile.jpg"
-                                  }
-                                  className="w-full h-full rounded-full bg-cover object-cover"
-                                  width={100}
-                                  height={100}
-                                  alt={`Comment ${index + 1}`}
-                                />
-                              </div> */}
                                 <input
                                   type="text"
                                   value={replyInput[comment.id] || ""}
@@ -825,16 +790,15 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                           </div>
                         </div>
 
-                        {/* subcomment */}
                         {displayedSubcomments.map(
                           (subcomment: Subcomment, subIndex: number) => (
                             <div
                               key={subIndex}
-                              className=" p-2 rounded-lg ml-12 mt-2"
+                              className="p-2 rounded-lg ml-12 mt-2"
                             >
                               <div className="w-full flex gap-2.5 items-start justify-start">
                                 <Link
-                                  href={`/g-user/view-profile/${subcomment.userDetails?.detailsid}`} // Use Link for client-side navigation
+                                  href={`/apps-ui/g-user/view-profile/${subcomment.userDetails?.detailsid}`}
                                   passHref
                                 >
                                   <div className="w-10 h-10 ">
@@ -852,7 +816,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                                 </Link>
                                 <div className="w-full flex flex-col gap-1 justify-start items-start">
                                   <div className="w-full flex flex-col gap-0.5 bg-gray-200 p-2.5 rounded-md">
-                                    <p className="text-base  text-gray-700 font-semibold">
+                                    <p className="text-base text-gray-700 font-semibold">
                                       {subcomment.userDetails?.first_name}
                                     </p>
                                     <p className="text-gray-600">
@@ -894,22 +858,20 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                   })
                 )}
               </div>
-              {/* Comment */}
               <form
                 onSubmit={handleCommentSubmit}
                 className="bg-white flex gap-2 w-full p-4 mb-4 items-center"
               >
-                {/* Add here the image of the current user logged in base on session */}
                 <input
                   type="text"
                   value={commentInput}
                   onChange={(e) => setCommentInput(e.target.value)}
-                  className="border-[1.5px] border-gray-300 py-2 rounded-full h-fit  px-4 w-full"
+                  className="border-[1.5px] border-gray-300 py-2 rounded-full h-fit px-4 w-full"
                   placeholder="Add a comment..."
                 />
-                <button type="submit" className=" p-2 rounded">
+                <button type="submit" className="p-2 rounded">
                   <SendHorizontal
-                    className=" text-blue-500 text-xl"
+                    className="text-blue-500 text-xl"
                     size={36}
                     strokeWidth={2}
                   />
@@ -946,32 +908,30 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
       </AnimatePresence>
 
       <AnimatePresence>
-          {/* Edit Modal */}
-          {isEditModalOpen && selectedImage && (
-            <motion.div
-              className="fixed top-0 left-0 w-full h-full bg-black/50 z-[1000] flex justify-center items-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => setDeleteModalOpen(false)}
-            >
-              <EditCollection
+        {/* Edit Modal */}
+        {isEditModalOpen && selectedImage && (
+          <motion.div
+            className="fixed top-0 left-0 w-full h-full bg-black/50 z-[1000] flex justify-center items-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={() => setDeleteModalOpen(false)}
+          >
+            <EditCollection
               generatedId={selectedImage.generatedId}
-                created_at={selectedImage.created_at}
-                artist={selectedImage.artist}
-                image={selectedImage.image_path}
-                title={selectedImage.title}
-                desc={selectedImage.desc}
-                year={selectedImage.year}
-                onEdit={handleEdit}
-                onCancel={() => setEditModalOpen(false)}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-
+              created_at={selectedImage.created_at}
+              artist={selectedImage.artist}
+              image={selectedImage.image_path}
+              title={selectedImage.title}
+              desc={selectedImage.desc}
+              year={selectedImage.year}
+              onEdit={handleEdit}
+              onCancel={() => setEditModalOpen(false)}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {isInterestModalOpen && selectedImage && (
         <div className="fixed -bottom-2 -right-1 z-[550] p-4">

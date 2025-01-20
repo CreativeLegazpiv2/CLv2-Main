@@ -4,11 +4,14 @@ import { supabase } from '@/services/supabaseClient';
 export async function PUT(req: Request) {
     console.log("PUT request received");
 
-    const userId = req.headers.get('Authorization')?.split(' ')[1];
-    if (!userId) {
-        console.log("No Authorization header found");
-        return NextResponse.json({ message: 'No token provided' }, { status: 401 });
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return NextResponse.json(
+            { message: 'No token provided' },
+            { status: 401, headers: { 'Cache-Control': 'no-store' } }
+        );
     }
+    const userId = authHeader.split(' ')[1];
 
     try {
         console.log("UserId from Authorization:", userId);
@@ -16,17 +19,25 @@ export async function PUT(req: Request) {
         console.log("Request form data:", formData);
 
         const detailsid = formData.get('detailsid') as string;
-        const userDetails = JSON.parse(formData.get('userDetails') as string);
-
-        if (!userId) {
-            console.log("Authorization mismatch");
-            return NextResponse.json({ message: 'You are not authorized to update these details.' }, { status: 403 });
+        if (detailsid !== userId) {
+            return NextResponse.json(
+                { message: 'You are not authorized to update these details.' },
+                { status: 403, headers: { 'Cache-Control': 'no-store' } }
+            );
         }
 
-        // Check if profile_pic is provided in the request
+        const userDetails = JSON.parse(formData.get('userDetails') as string);
         const profilePicFile = formData.get('profile_pic') as File;
+
         if (profilePicFile) {
-            // Fetch the current profile picture URL from the database
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/tiff', 'image/bmp'];
+            if (!allowedTypes.includes(profilePicFile.type)) {
+                return NextResponse.json(
+                    { message: 'Invalid file type. Only images are allowed.' },
+                    { status: 400, headers: { 'Cache-Control': 'no-store' } }
+                );
+            }
+
             const { data: currentUserDetails, error: fetchError } = await supabase
                 .from('userDetails')
                 .select('profile_pic')
@@ -35,61 +46,63 @@ export async function PUT(req: Request) {
 
             if (fetchError) {
                 console.error('Supabase fetch user details error:', fetchError);
-                return NextResponse.json({ message: 'Failed to fetch user details', error: fetchError.message }, { status: 500 });
+                return NextResponse.json(
+                    { message: 'Failed to fetch user details', error: fetchError.message },
+                    { status: 500, headers: { 'Cache-Control': 'no-store' } }
+                );
             }
 
             const currentProfilePicUrl = currentUserDetails?.profile_pic;
-
-            // Delete the old profile picture from Supabase storage
             if (currentProfilePicUrl) {
-                // Extract the file path from the public URL
                 const urlParts = currentProfilePicUrl.split('/');
-                const filePath = urlParts.slice(8).join('/'); // Extract from index 7 to the end
-
-                console.log("File path to delete:", filePath);
+                const bucketName = urlParts[3];
+                const filePath = urlParts.slice(4).join('/');
 
                 const { error: deleteError } = await supabase
                     .storage
-                    .from('profile_image')
+                    .from(bucketName)
                     .remove([filePath]);
+
                 if (deleteError) {
                     console.error('Supabase profile image delete error:', deleteError);
-                    return NextResponse.json({ message: 'Failed to delete old profile image', error: deleteError.message }, { status: 500 });
+                    return NextResponse.json(
+                        { message: 'Failed to delete old profile image', error: deleteError.message },
+                        { status: 500, headers: { 'Cache-Control': 'no-store' } }
+                    );
                 }
-
-                console.log("Old profile picture deleted successfully");
             }
 
-            // Upload the new profile picture to Supabase bucket
+            const fileExtension = profilePicFile.name.split('.').pop();
+            const fileName = `${userId}/${Date.now()}.${fileExtension}`;
+
             const { data: uploadData, error: uploadError } = await supabase
                 .storage
                 .from('profile_image')
-                .upload(`${userId}/${Date.now()}.jpg`, profilePicFile, {
-                    contentType: 'image/jpeg',
+                .upload(fileName, profilePicFile, {
+                    contentType: profilePicFile.type,
                 });
 
             if (uploadError) {
                 console.error('Supabase profile image upload error:', uploadError);
-                return NextResponse.json({ message: 'Failed to upload profile image', error: uploadError.message }, { status: 500 });
+                return NextResponse.json(
+                    { message: 'Failed to upload profile image', error: uploadError.message },
+                    { status: 500, headers: { 'Cache-Control': 'no-store' } }
+                );
             }
 
-            console.log("New profile picture uploaded successfully");
-
-            // Get the public URL of the uploaded image
             const { data: { publicUrl } } = supabase
                 .storage
                 .from('profile_image')
                 .getPublicUrl(uploadData.path);
 
-            // Update the profile_pic with the public URL
             userDetails.profile_pic = publicUrl;
         }
 
-        // Merge the userDetails object without profile picture URL
         const updatedUserDetails = { ...userDetails };
-        console.log("Updated user details:", updatedUserDetails);
+        if (!profilePicFile) {
+            delete updatedUserDetails.profile_pic;
+        }
 
-        // Update user details in Supabase
         const { data: updatedData, error: userDetailsError } = await supabase
             .from('userDetails')
             .update(updatedUserDetails)
@@ -98,46 +111,43 @@ export async function PUT(req: Request) {
 
         if (userDetailsError) {
             console.error('Supabase userDetails update error:', userDetailsError);
-            return NextResponse.json({ message: 'Failed to update user details', error: userDetailsError.message }, { status: 500 });
+            return NextResponse.json(
+                { message: 'Failed to update user details', error: userDetailsError.message },
+                { status: 500, headers: { 'Cache-Control': 'no-store' } }
+            );
         }
 
-        console.log("User details updated successfully:", updatedData);
-
-        // Update related collections if first_name exists
         if (userDetails.first_name) {
-            console.log("Updating related collections");
-
             const { error: childCollectionError } = await supabase
                 .from('child_collection')
                 .update({ artist: userDetails.first_name })
-                .eq('childid', userId);
-
-            if (childCollectionError) {
-                console.error('Supabase child_collection update error:', childCollectionError);
-            }
+                .eq('user_id', userId);
 
             const { error: imageCollectionError } = await supabase
                 .from('image_collections')
                 .update({ artist: userDetails.first_name })
-                .eq('id', userId);
+                .eq('user_id', userId);
 
             const { error: messageError } = await supabase
                 .from('messages')
                 .update({ first_name: userDetails.first_name })
-                .eq('id', userId);
+                .eq('user_id', userId);
 
-            if (imageCollectionError) {
-                console.error('Supabase image_collection update error:', imageCollectionError);
-            }
-            if (messageError) {
-                console.error('Supabase message update error:', messageError);
+            if (childCollectionError || imageCollectionError || messageError) {
+                console.error('Error updating related collections:', { childCollectionError, imageCollectionError, messageError });
             }
         }
 
-        return NextResponse.json({ message: 'User details updated successfully', updatedData }, { status: 200 });
+        return NextResponse.json(
+            { message: 'User details updated successfully', updatedData },
+            { status: 200, headers: { 'Cache-Control': 'no-store' } }
+        );
 
     } catch (error: any) {
         console.error('Error in PUT method:', error);
-        return NextResponse.json({ message: 'Error processing the request', error: error.message }, { status: 500 });
+        return NextResponse.json(
+            { message: 'Error processing the request', error: error.message || 'Unknown error' },
+            { status: 500, headers: { 'Cache-Control': 'no-store' } }
+        );
     }
 }

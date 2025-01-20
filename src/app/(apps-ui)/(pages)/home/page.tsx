@@ -4,17 +4,37 @@ import { Infinite } from "@/components/reusable-component/Infinite";
 import { Subscribe } from "@/components/reusable-component/Subscribe";
 import { Transcribed } from "@/components/reusable-component/Transcribed";
 import { PofconModal } from "@/components/reusable-component/PofconModal";
-import { useEffect, useRef, useState } from "react";
-import { useAnimation, useInView, motion } from "framer-motion";
-import { CreativeDirectory } from "./landing-page/CreativeDirectory";
-import { Events } from "./landing-page/EventsCarousel";
-import { GallerySection } from "./landing-page/GallerySection";
-import { Hero } from "./landing-page/Hero";
-import { Malikhain } from "./landing-page/Malikhain";
-
+import { useState, useEffect } from "react";
+import { Malikhain } from "../landing-page/landing-page/Malikhain";
+import { PofconHeroPage } from "../landing-page/landing-page/PofconHeroPage";
+import { Events } from "../landing-page/landing-page/EventsCarousel";
+import { GallerySection } from "../landing-page/landing-page/GallerySection";
+import { motion, useAnimation, useInView } from "framer-motion";
+import { useRef } from "react";
+import { checkTokenExpiration, logoutAndRedirect } from "@/services/jwt";
+import { getSession } from "@/services/authservice";
 
 export default function PofconLandingPage() {
   const [showPofconModal, setShowPofconModal] = useState(false); // Modal state
+
+  // Token validation logic inside useEffect
+  useEffect(() => {
+    const validateToken = async () => {
+      const token = getSession();
+      if (!token) {
+        logoutAndRedirect();
+        return;
+      }
+
+      const isTokenExpired = await checkTokenExpiration(token);
+      if (isTokenExpired) {
+        logoutAndRedirect();
+        return;
+      }
+    };
+
+    validateToken();
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   return (
     <main className="w-full h-fit text-primary-2">
