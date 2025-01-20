@@ -10,8 +10,9 @@ const NoCollectionsSkeleton = () => {
             <div className="h-[500px] md:h-[300px]">
               <div className="absolute top-0 left-0 w-full h-full flex flex-col md:flex-row ">
                 {/* Image Skeleton */}
-                <div className="w-full md:w-1/2 h-64 md:h-full relative bg-gray-200  flex justify-center items-center">
+                <div className="w-full md:w-1/2 h-64 md:h-full relative bg-gray-200  flex flex-col gap-2 justify-center items-center">
                  <h1 className="z-10">No collections found</h1>
+                 <span className="text-gray-400 text-sm">(Your collections will appear here )</span>
                 </div>
   
                 {/* Content Skeleton */}

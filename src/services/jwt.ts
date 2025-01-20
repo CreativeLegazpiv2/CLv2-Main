@@ -59,5 +59,5 @@ export const checkTokenExpiration = async (token: string): Promise<boolean> => {
 export const logoutAndRedirect = () => {
   localStorage.removeItem('token'); // Remove the token from local storage
   localStorage.removeItem('Fname'); // Optionally remove other user-related data
-  window.location.href = '/apps-ui/signin'; // Redirect to the sign-in page
+  window.location.href = '/signin'; // Redirect to the sign-in page
 };

@@ -26,7 +26,7 @@ export const StillHaveQue = () => {
 const QueButton = () => {
   return (
     <div className="flex gap-8 lg:justify-end justify-center items-center text-primary-2">
-      <Link href="/apps-ui/signup">
+      <Link href="/signup">
         <button className="capitalize w-48 rounded-full py-3 font-semibold bg-secondary-1 ">
           get started
         </button>

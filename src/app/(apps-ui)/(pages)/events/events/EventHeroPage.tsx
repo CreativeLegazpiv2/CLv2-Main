@@ -1,15 +1,14 @@
 "use client";
-
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 interface Event {
   id: number;
   title: string;
-  date: string; // Format: YYYY-MM-DD
-  start_time: string; // Format: HH:mm:ss
-  end_time: string; // Format: HH:mm:ss
-  image_path: string; // Event hero background image URL
+  date: string;
+  start_time: string;
+  end_time: string;
+  image_path: string;
 }
 
 export const EventHeroPage = () => {
@@ -26,19 +25,16 @@ export const EventHeroPage = () => {
         const events: Event[] = await response.json();
 
         const now = new Date();
-
-        // Filter only future events (including today)
         const futureEvents = events.filter((event) => {
           const eventDate = new Date(event.date);
           return eventDate >= now;
         });
 
         if (futureEvents.length === 0) {
-          setUpcomingEvent(null); // No upcoming events
+          setUpcomingEvent(null);
           return;
         }
 
-        // Find the event with the nearest date
         const closestEvent = futureEvents.reduce((prev, curr) => {
           const prevDate = new Date(prev.date);
           const currDate = new Date(curr.date);
@@ -56,17 +52,18 @@ export const EventHeroPage = () => {
   }, []);
 
   if (!upcomingEvent) {
-    return null; // Do not render anything if no upcoming event
+    return null;
   }
 
   return (
-    <div
-      className="relative w-full h-dvh bg-cover bg-no-repeat bg-center"
-      style={{
-        backgroundImage: `url('${upcomingEvent.image_path || "/images/events/hero.jpg"}')`,
-      }}
-    >
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20"></div>
+    <div className="relative w-full h-dvh">
+      <div
+        className="absolute inset-0 bg-cover bg-no-repeat bg-center"
+        style={{
+          backgroundImage: `url('${upcomingEvent.image_path || "/images/events/hero.jpg"}')`,
+        }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-black/20" />
 
       <div className="relative z-10 w-full h-full flex flex-col justify-center items-center px-4">
         <div className="w-full max-w-4xl text-center">
@@ -89,6 +86,22 @@ export const EventHeroPage = () => {
           </motion.div>
         </div>
       </div>
+
+      {/* Wave SVG at the bottom */}
+      <div className="absolute -bottom-[6rem] left-0 w-full overflow-hidden leading-none">
+        <svg
+          className="relative block w-full h-16 sm:h-24"
+          data-name="Layer 1"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+            className="fill-black/50"
+          />
+        </svg>
+      </div>
     </div>
   );
 };
@@ -104,7 +117,7 @@ const HeroButton = ({ event }: { event: Event }) => {
       {`${new Date(event.date).toLocaleDateString("en-US", {
         month: "long",
         day: "numeric",
-        year: "numeric", // Include the year
+        year: "numeric",
       })}`}
     </motion.button>
   );

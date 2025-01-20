@@ -5,14 +5,16 @@ import { Subscribe } from "@/components/reusable-component/Subscribe";
 import { Transcribed } from "@/components/reusable-component/Transcribed";
 import { PofconModal } from "@/components/reusable-component/PofconModal";
 import { useState, useEffect } from "react";
-import { Malikhain } from "../landing-page/landing-page/Malikhain";
-import { PofconHeroPage } from "../landing-page/landing-page/PofconHeroPage";
-import { Events } from "../landing-page/landing-page/EventsCarousel";
-import { GallerySection } from "../landing-page/landing-page/GallerySection";
+
 import { motion, useAnimation, useInView } from "framer-motion";
 import { useRef } from "react";
 import { checkTokenExpiration, logoutAndRedirect } from "@/services/jwt";
 import { getSession } from "@/services/authservice";
+import { Hero } from "./landing-page/Hero";
+import { CreativeDirectory } from "./landing-page/CreativeDirectory";
+import { Events } from "./landing-page/EventsCarousel";
+import { GallerySection } from "./landing-page/GallerySection";
+import { Malikhain } from "./landing-page/Malikhain";
 
 export default function PofconLandingPage() {
   const [showPofconModal, setShowPofconModal] = useState(false); // Modal state

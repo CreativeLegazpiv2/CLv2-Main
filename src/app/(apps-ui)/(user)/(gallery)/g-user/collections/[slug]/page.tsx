@@ -57,9 +57,9 @@ async function getCollection(slug: string): Promise<CollectionProps | null> {
 export default async function ViewCollectionPage({ params }: { params: { slug: string } }) {
   const collectionData = await getCollection(params.slug);
 
-  // If collectionData is null (empty data), redirect to /apps-ui/g-user
+  // If collectionData is null (empty data), redirect to /g-user
   if (!collectionData) {
-    redirect('/apps-ui/g-user');
+    redirect('/g-user');
   }
 
   return (
