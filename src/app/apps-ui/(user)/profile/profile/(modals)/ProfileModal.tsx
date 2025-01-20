@@ -44,8 +44,19 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
       const file = e.target.files[0];
       const fileType = file.type;
 
-      if (fileType !== "image/jpeg") {
-        setErrorMessage("Invalid image format. Only JPG files are allowed.");
+      // List of allowed file types
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/tiff",
+        "image/bmp",
+      ];
+
+      if (!allowedTypes.includes(fileType)) {
+        setErrorMessage(
+          "Invalid image format. Only JPG, PNG, GIF, TIFF, and BMP files are allowed."
+        );
         return;
       }
 
@@ -75,31 +86,28 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 
   const handleSave = async () => {
     const token = getSession();
-
-    // Check if the token exists
+  
     if (!token) {
       console.error("No token found, user may not be logged in.");
-      return; // Optionally handle unauthorized state here
+      setErrorMessage("You must be logged in to save changes.");
+      return;
     }
+  
     try {
-      // Verify the token and handle it appropriately
       const { payload } = await jwtVerify(
         token,
         new TextEncoder().encode(JWT_SECRET)
       );
-
-      // Log the payload for debugging
-      console.log("Retrieved token payload:", payload.id);
-
+  
       const userId = payload.id as string;
-
+  
       const formDataToSend = new FormData();
-      formDataToSend.append('detailsid', userId);
-      formDataToSend.append('userDetails', JSON.stringify(formData));
+      formDataToSend.append("detailsid", userId);
+      formDataToSend.append("userDetails", JSON.stringify(formData));
       if (profilePicFile) {
-        formDataToSend.append('profile_pic', profilePicFile);
+        formDataToSend.append("profile_pic", profilePicFile);
       }
-
+  
       const response = await fetch("/api/creatives", {
         method: "PUT",
         headers: {
@@ -107,23 +115,28 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
         },
         body: formDataToSend,
       });
-
+  
       if (!response.ok) {
-        const errorData = await response.json(); // Get the error message
-        console.error("Error response:", errorData);
+        const errorData = await response.json();
+        setErrorMessage(errorData.message || "Failed to update user details.");
         throw new Error(errorData.message);
       }
-
-      // Assuming your API responds with the updated user details
-      const updatedUserDetail: UserDetail = await response.json(); // Fetch the updated user details
+  
+      const updatedUserDetail: UserDetail = await response.json();
       setFormData(updatedUserDetail); // Update formData with the new data
       console.log("User details updated successfully");
-      setIsEditing(false); // Exit edit mode
+      setIsEditing(false);
+  
+      // Close the modal after successful save
+      setOpenModal(false);
+  
+      // Refresh the page to reflect the updated data
+      window.location.reload();
     } catch (error) {
       console.error("Error updating user details:", error);
+      setErrorMessage("An error occurred while saving your changes.");
     }
   };
-
   const handleClose = () => {
     setIsClosing(true);
     setTimeout(() => {
@@ -168,7 +181,10 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
               </div>
 
               {/* div left */}
-              <form className="w-full h-fit flex flex-col gap-8 overflow-y-auto">
+              <form
+                className="w-full h-fit flex flex-col gap-8 overflow-y-auto"
+                onSubmit={(e) => e.preventDefault()} // Prevent default form submission
+              >
                 <div className="w-full h-fit flex flex-col gap-8 overflow-y-auto scroll-none">
                   <div className="w-full flex md:flex-row flex-col gap-10 ">
                     <div className="flex md:w-fit w-full items-center">
@@ -196,7 +212,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                             {/* Hidden file input for image upload */}
                             <input
                               type="file"
-                              accept="image/jpeg"
+                              accept="image/jpeg, image/png, image/gif, image/tiff, image/bmp"
                               className="hidden"
                               onChange={handleFileChange}
                               id="file-upload"
@@ -316,7 +332,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                           </div>
                           {/* bottom form*/}
                           <div className="w-full flex md:flex-row flex-col justify-center items-center gap-4 text-base h-fit">
-                            {formData.role != 'buyer' && (
+                            {formData.role != "buyer" && (
                               <>
                                 <div className="w-full flex flex-col gap-1">
                                   <label
@@ -409,7 +425,9 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
               </form>
               {/* Display error message */}
               {errorMessage && (
-                <div className="text-red-500 text-center mt-4">{errorMessage}</div>
+                <div className="text-red-500 text-center mt-4">
+                  {errorMessage}
+                </div>
               )}
               {/* Add your form components here */}
             </motion.div>
