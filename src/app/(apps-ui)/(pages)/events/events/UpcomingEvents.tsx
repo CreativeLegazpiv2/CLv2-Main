@@ -77,15 +77,17 @@ export const UpcomingEvents = () => {
       if (!response.ok) throw new Error("Error fetching events");
       const fetchedEvents: AdminEvent[] = await response.json();
 
-      // Filter events to show only those in the selected month
-      const selectedMonth = currentDate.getMonth();
-      const selectedYear = currentDate.getFullYear();
+      // Get the current date and set time to the start of the day
+      const currentDateObj = new Date();
+      currentDateObj.setHours(0, 0, 0, 0); // Strip time component
+
+      // Filter events to show only those on or after the current date
       const upcomingEvents = fetchedEvents.filter((event) => {
         const eventDate = new Date(event.date);
-        return (
-          eventDate.getMonth() === selectedMonth &&
-          eventDate.getFullYear() === selectedYear
-        );
+        eventDate.setHours(0, 0, 0, 0); // Strip time component from event date
+
+        // Only include events on or after the current date
+        return eventDate >= currentDateObj;
       });
 
       setEvents(upcomingEvents);
@@ -192,74 +194,72 @@ const EventGrid: React.FC<{
   setShowPofconModal,
   setSelectedEvent,
 }) => {
-  // Filter events to show only those in the selected month
-  const filteredEvents = events.filter((event) => {
-    const eventDate = new Date(event.date);
-    const selectedMonth = currentDate.getMonth();
-    const selectedYear = currentDate.getFullYear();
-    return (
-      eventDate.getMonth() === selectedMonth &&
-      eventDate.getFullYear() === selectedYear
+    // Filter events to show only those in the selected month
+    const filteredEvents = events.filter((event) => {
+      const eventDate = new Date(event.date);
+      const selectedMonth = currentDate.getMonth();
+      const selectedYear = currentDate.getFullYear();
+      return (
+        eventDate.getMonth() === selectedMonth &&
+        eventDate.getFullYear() === selectedYear
+      );
+    });
+
+    // Group events by date
+    const groupedEvents = groupEventsByDate(filteredEvents);
+    const sortedDates = Object.keys(groupedEvents).sort(
+      (a, b) => new Date(a).getTime() - new Date(b).getTime()
     );
-  });
 
-  // Group events by date
-  const groupedEvents = groupEventsByDate(filteredEvents);
-  const sortedDates = Object.keys(groupedEvents).sort(
-    (a, b) => new Date(a).getTime() - new Date(b).getTime()
-  );
-
-  return (
-    <div className="w-full h-fit flex flex-col gap-12 relative">
-      <div className="w-full flex justify-end items-center">
-        <ListButton list={list} setList={setList} />
-      </div>
-      {sortedDates.length > 0 ? (
-        sortedDates.map((date, groupIndex) => (
-          <div key={date}>
-            <h1 className="font-bold text-3xl sm:text-4xl uppercase pb-8 text-center md:text-left">
-              {(() => {
-                const dateObject = new Date(date);
-                const day = dateObject.getDate().toString().padStart(2, "0");
-                const weekday = dateObject.toLocaleDateString("en-US", {
-                  weekday: "long",
-                });
-                return `${day} - ${weekday}`;
-              })()}
-            </h1>
-            <div
-              className={`w-full h-fit ${
-                list
-                  ? "flex flex-col gap-4"
-                  : "grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-8"
-              }`}
-            >
-              {groupedEvents[date].map((event) => (
-                <EventCard
-                  event={event}
-                  key={event.id}
-                  groupIndex={groupIndex}
-                  list={list}
-                  setShowPofconModal={setShowPofconModal}
-                  setSelectedEvent={setSelectedEvent}
-                />
-              ))}
+    return (
+      <div className="w-full h-fit flex flex-col gap-12 relative">
+        <div className="w-full flex justify-end items-center">
+          <ListButton list={list} setList={setList} />
+        </div>
+        {sortedDates.length > 0 ? (
+          sortedDates.map((date, groupIndex) => (
+            <div key={date}>
+              <h1 className="font-bold text-3xl sm:text-4xl uppercase pb-8 text-center md:text-left">
+                {(() => {
+                  const dateObject = new Date(date);
+                  const day = dateObject.getDate().toString().padStart(2, "0");
+                  const weekday = dateObject.toLocaleDateString("en-US", {
+                    weekday: "long",
+                  });
+                  return `${day} - ${weekday}`;
+                })()}
+              </h1>
+              <div
+                className={`w-full h-fit ${list
+                    ? "flex flex-col gap-4"
+                    : "grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-8"
+                  }`}
+              >
+                {groupedEvents[date].map((event) => (
+                  <EventCard
+                    event={event}
+                    key={event.id}
+                    groupIndex={groupIndex}
+                    list={list}
+                    setShowPofconModal={setShowPofconModal}
+                    setSelectedEvent={setSelectedEvent}
+                  />
+                ))}
+              </div>
+              <div
+                className={`w-full h-[1px] bg-primary-1 mt-12 ${list ? "hidden" : ""
+                  }`}
+              ></div>
             </div>
-            <div
-              className={`w-full h-[1px] bg-primary-1 mt-12 ${
-                list ? "hidden" : ""
-              }`}
-            ></div>
-          </div>
-        ))
-      ) : (
-        <p className="text-center text-2xl font-semibold mt-12">
-          No events available for this month
-        </p>
-      )}
-    </div>
-  );
-};
+          ))
+        ) : (
+          <p className="text-center text-2xl font-semibold mt-12">
+            No events available for this month
+          </p>
+        )}
+      </div>
+    );
+  };
 
 const EventCard: React.FC<{
   event: AdminEvent;
@@ -273,13 +273,13 @@ const EventCard: React.FC<{
   const formatTimeTo12Hour = (time: string): string => {
     // Split the time string into hours and minutes
     const [hours, minutes] = time.split(":").map(Number);
-  
+
     // Determine AM or PM
     const period = hours >= 12 ? "PM" : "AM";
-  
+
     // Convert to 12-hour format
     const formattedHours = hours % 12 || 12; // Handle midnight (0 hours)
-  
+
     // Format the time as "H:MM AM/PM"
     return `${formattedHours}:${minutes.toString().padStart(2, "0")} ${period}`;
   };
@@ -288,13 +288,11 @@ const EventCard: React.FC<{
     <motion.div
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.2 }}
-      className={`w-full ${
-        list
+      className={`w-full ${list
           ? "flex flex-row gap-6 items-center p-6 rounded-lg shadow-md"
           : "flex flex-col gap-4 p-6 rounded-lg shadow-md"
-      } ${colorClasses.bgColor} border-2 ${
-        colorClasses.border
-      } transition-all duration-300`}
+        } ${colorClasses.bgColor} border-2 ${colorClasses.border
+        } transition-all duration-300`}
     >
       <div className={`${list ? "h-24 w-44" : "h-48 w-full"}`}>
         <img
@@ -307,15 +305,14 @@ const EventCard: React.FC<{
         <div className="w-full flex justify-between items-center">
           <div className="w-fit flex flex-col leading-3 gap-2">
             <p className={`font-bold ${colorClasses.textColor}`}>
-            {formatTimeTo12Hour(event.start_time)} - {formatTimeTo12Hour(event.end_time)}
+              {formatTimeTo12Hour(event.start_time)} - {formatTimeTo12Hour(event.end_time)}
             </p>
             <p className="text-sm capitalize font-medium">{event.location}</p>
           </div>
           <motion.div whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.05 }}>
             <Icon
-              className={`rotate-180 -mt-4 cursor-pointer ${
-                colorClasses.textColor
-              } ${list ? "hidden" : "block"}`}
+              className={`rotate-180 -mt-4 cursor-pointer ${colorClasses.textColor
+                } ${list ? "hidden" : "block"}`}
               icon="ph:arrow-left-bold"
               width="25"
               height="25"
@@ -324,9 +321,8 @@ const EventCard: React.FC<{
         </div>
         <div className="w-full">
           <h1
-            className={`w-full text-xl font-semibold ${
-              colorClasses.textColor
-            } ${list ? "max-w-full" : "max-w-56"}`}
+            className={`w-full text-xl font-semibold ${colorClasses.textColor
+              } ${list ? "max-w-full" : "max-w-56"}`}
           >
             {event.title}
           </h1>
