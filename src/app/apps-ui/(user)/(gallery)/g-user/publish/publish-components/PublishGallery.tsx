@@ -8,7 +8,9 @@ import { getSession } from "@/services/authservice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { checkTokenExpiration, logoutAndRedirect} from "@/services/jwt";
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
+
 
 export default function PublishGallery() {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -37,7 +39,14 @@ export default function PublishGallery() {
   
         // Check if the token exists
         if (!token) {
-          throw new Error('No session token found');
+          logoutAndRedirect();
+          return;
+        }
+        const isTokenExpired = await checkTokenExpiration(token);
+  
+        if (isTokenExpired) {
+          logoutAndRedirect();
+          return;
         }
   
         // Verify and decode the token
