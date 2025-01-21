@@ -67,7 +67,7 @@ export const decryptToken = async (token: string) => {
     // Use the correct secret for verification
     const payload = await verifyJWT(token);
     return payload;
-  } catch (error:any) {
+  } catch (error: any) {
     // If the token has expired, remove it from localStorage
     if (error.message === 'Token expired') {
       console.log('Token expired, removing from localStorage');
@@ -78,6 +78,32 @@ export const decryptToken = async (token: string) => {
   }
 };
 
+const generateUniqueId = async (): Promise<number> => {
+  let generatedId: number;
+  let isUnique: boolean = false;
+
+  do {
+    generatedId = Math.floor(10000 + Math.random() * 90000); // Generate a random ID
+
+    // Check if the generated ID already exists in the 'users' table
+    const { data: existingUser, error } = await supabase
+      .from("users")
+      .select("id")
+      .eq("id", generatedId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') { // PGRST116 is the code for no rows found
+      console.error("Error checking for existing user:", error.message);
+      throw new Error("Failed to generate unique ID.");
+    }
+
+    if (!existingUser) {
+      isUnique = true; // ID is unique
+    }
+  } while (!isUnique);
+
+  return generatedId; // At this point, generatedId is guaranteed to be unique
+};
 
 export const signupBuyer = async (
   username: string,
@@ -114,7 +140,7 @@ export const signupBuyer = async (
 
   // Hash the password before storing it
   const hashedPassword = await bcrypt.hash(password, 10);
-  const generatedId = Math.floor(10000 + Math.random() * 90000);
+  const generatedId = await generateUniqueId();
 
   // Insert the new user into the 'users' table
   const { data: userData, error: userError } = await supabase
@@ -172,7 +198,6 @@ export const signupBuyer = async (
 };
 
 
-
 export const signupUser = async (
   username: string,
   email: string,
@@ -209,7 +234,7 @@ export const signupUser = async (
 
   // Hash the password before storing it
   const hashedPassword = await bcrypt.hash(password, 10);
-  const generatedId = Math.floor(10000 + Math.random() * 90000);
+  const generatedId = await generateUniqueId();
 
   // Insert the new user into the 'users' table
   const { data: userData, error: userError } = await supabase
@@ -266,42 +291,6 @@ export const signupUser = async (
   return { id: userData.id, username: userData.username, token };
 };
 
-
-
-
-export const getUserDetailsFromToken = async () => {
-  try {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      throw new Error("No token found in local storage");
-    }
-
-    const payload = await verifyJWT(token);
-    const userId = payload.id;
-
-    const { data, error } = await supabase
-      .from('userDetails')
-      .select('*')
-      .eq('detailsid', userId)
-      .single();
-
-    if (error || !data) {
-      throw new Error(error ? error.message : "Failed to fetch user details");
-    }
-
-    return data;
-  } catch (error) {
-    // Cast the error to 'Error' to safely access the 'message' property
-    if (error instanceof Error) {
-      console.error("Failed to retrieve user details:", error.message);
-    } else {
-      console.error("An unknown error occurred:", error);
-    }
-
-    throw new Error("Failed to retrieve user details");
-  }
-};
-
 export const getSession = () => {
   if (typeof window !== 'undefined') {
     return localStorage.getItem("token");
@@ -325,7 +314,7 @@ export const getRole = () => {
 
 export const getUserName = () => {
   if (typeof window !== "undefined") {
-      return localStorage.getItem("user");
+    return localStorage.getItem("user");
   }
   return null; // Return null or a default value if not in the browser
 };
@@ -351,9 +340,9 @@ export const logoutUser = () => {
 };
 export const getFname = () => {
   if (typeof window !== "undefined") {
-      return localStorage.getItem("Fname");
+    return localStorage.getItem("Fname");
   }
-  return null; 
+  return null;
 };
 
 
