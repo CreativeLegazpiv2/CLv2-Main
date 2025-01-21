@@ -323,7 +323,10 @@ export default function PublishGallery() {
                         <h3 className="text-lg font-bold text-white">
                           {formData.title || "Title"}
                         </h3>
+                        <div className="flex w-full justify-between items-center">
                         <p className="text-gray-200">by {getFname}</p>
+                        <p className="text-gray-200 mr-0">{formData.year || "Year"}</p>
+                        </div>
                       </div>
                     </div>
                     <div className="p-4">

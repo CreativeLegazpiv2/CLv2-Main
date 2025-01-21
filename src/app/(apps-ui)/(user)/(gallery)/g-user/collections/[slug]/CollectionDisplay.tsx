@@ -17,6 +17,7 @@ import { SendHorizontal } from "lucide-react";
 import Link from "next/link";
 import CommentSkeleton from "@/components/Skeletal/commentSkeleton";
 import SubcommentSkeleton from "@/components/Skeletal/subcommentSkeleton";
+import { ViewCollection } from "./(collectionModal)/viewCollection";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
 
@@ -78,6 +79,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
   );
   const [chat, setChat] = useState(false);
   const [isLoadingComments, setIsLoadingComments] = useState(true);
+  const [isViewModalOpen, setViewModalOpen] = useState(false);
 
   // Redirect to /g-user if images array becomes empty
   useEffect(() => {
@@ -299,6 +301,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
 
   const handleImageClick = (image: typeof selectedImage) => {
     setSelectedImage(image);
+    setViewModalOpen(true);
   };
 
   useAuthRedirect();
@@ -391,10 +394,10 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
       const updatedImages = images.map((img) =>
         img.generatedId === selectedImage.generatedId
           ? {
-              ...img,
-              ...updatedData,
-              image_path: updatedData.image_path || "/images/default.jpg",
-            }
+            ...img,
+            ...updatedData,
+            image_path: updatedData.image_path || "/images/default.jpg",
+          }
           : img
       );
       setImages(updatedImages);
@@ -556,11 +559,10 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.1 }}
-              className={`relative h-64 rounded-lg overflow-hidden shadow-lg cursor-pointer ${
-                selectedImage?.generatedId === image.generatedId
+              className={`relative h-64 rounded-lg overflow-hidden shadow-lg cursor-pointer ${selectedImage?.generatedId === image.generatedId
                   ? "border-2 border-sky-500"
                   : ""
-              }`}
+                }`}
               onClick={() => handleImageClick(image)}
             >
               <Image
@@ -947,6 +949,28 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
             chat={chat}
           />
         </div>
+      )}
+
+      {isViewModalOpen && selectedImage && (
+        <motion.div
+          className="fixed top-0 left-0 w-full h-full bg-black/50 z-[1000] flex justify-center items-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          onClick={() => setViewModalOpen(false)} // Close modal when clicking outside
+        >
+          <ViewCollection
+            generatedId={selectedImage.generatedId}
+            created_at={selectedImage.created_at}
+            image={selectedImage.image_path}
+            title={selectedImage.title}
+            desc={selectedImage.desc}
+            year={selectedImage.year}
+            artist={selectedImage.artist}
+            onClose={() => setViewModalOpen(false)} // Close modal
+          />
+        </motion.div>
       )}
       <ToastContainer />
     </div>
