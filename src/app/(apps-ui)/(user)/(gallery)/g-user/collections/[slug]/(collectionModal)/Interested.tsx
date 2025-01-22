@@ -246,11 +246,9 @@ export const Interested = ({
         setSessions(data); // The data should already include user details
         setIsLoading(false);
       } else {
-        console.error("No sessions found.");
         setIsLoading(false);
       }
     } catch (error) {
-      console.error("Error fetching session data:", error);
       setIsLoading(false); // Ensure loading state is reset on error
     }
   };
@@ -355,7 +353,7 @@ export const Interested = ({
           setMsgLoading(false);
         }
       } catch (error: any) {
-        console.error("Error fetching messages:", error.message);
+        console.log("Error fetching messages:", error.message);
       }
     } else {
       try {
@@ -381,7 +379,7 @@ export const Interested = ({
           setMsgLoading(false);
         }
       } catch (error: any) {
-        console.error("Error fetching messages:", error.message);
+        console.log("Error fetching messages:", error.message);
       }
     }
   };
@@ -543,7 +541,7 @@ export const Interested = ({
       setMessages(data.message);
       fetchMessages();
     } catch (error: any) {
-      console.error("Error fetching messages:", error.message);
+      console.log("Error fetching messages:", error.message);
     }
   };
 
