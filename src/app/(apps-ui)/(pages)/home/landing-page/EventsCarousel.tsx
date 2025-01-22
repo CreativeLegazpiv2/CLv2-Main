@@ -149,8 +149,8 @@ export const Events = () => {
   return (
     <div className="w-dvw md:h-dvh h-fit bg-palette-5">
       <div className="w-full h-full md:py-0 py-24 gap-12 flex flex-col justify-center items-center mx-auto relative">
-        <div className="md:block hidden absolute -top-[8%] right-[25%] w-32 h-32 rounded-xl bg-shade-2 -rotate-[20deg]"></div>
-        <div className="md:block hidden absolute top-[10%] right-[20%] w-12 h-12 rounded-full bg-shade-4"></div>
+        <div className="md:block hidden absolute -top-[8%] right-[25%] w-32 h-32 rounded-xl bg-palette-3 -rotate-[20deg]"></div>
+        <div className="md:block hidden absolute top-[10%] right-[20%] w-12 h-12 rounded-full bg-palette-2"></div>
         <div className="w-full px-8 md:w-[90%] max-w-[98%] mx-auto flex flex-row justify-between items-center z-10">
           <motion.h1
             initial={{ opacity: 0, y: -50 }}
@@ -535,7 +535,7 @@ const EventButton: React.FC<{ onClick: () => void; image_path: string }> = ({
   return (
     <div className="w-full h-14 relative overflow-hidden ">
       {/* Sliding and fading background */}
-      <div className="w-full h-full absolute inset-0 z-10 bg-palette-2 group-hover:bg-transparent duration-700 ease-in-out group-hover:translate-x-[100%] group-hover:opacity-0"></div>
+      <div className="w-full h-full absolute inset-0 z-10 bg-palette-1 group-hover:bg-transparent duration-700 ease-in-out group-hover:translate-x-[100%] group-hover:opacity-0"></div>
 
       {/* Background image */}
       <motion.div
