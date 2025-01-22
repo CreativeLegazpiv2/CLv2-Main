@@ -143,7 +143,7 @@ export const signupBuyer = async (
 
   // Hash the password before storing it
   const hashedPassword = await bcrypt.hash(password, 10);
-  const generatedId = Math.floor(10000 + Math.random() * 90000);
+  const generatedId = await generateUniqueId();
 
   // Insert the new user into the 'users' table
   const { data: userData, error: userError } = await supabase
@@ -201,7 +201,6 @@ export const signupBuyer = async (
 };
 
 
-
 export const signupUser = async (
   username: string,
   email: string,
@@ -238,7 +237,7 @@ export const signupUser = async (
 
   // Hash the password before storing it
   const hashedPassword = await bcrypt.hash(password, 10);
-  const generatedId = Math.floor(10000 + Math.random() * 90000);
+  const generatedId = await generateUniqueId();
 
   // Insert the new user into the 'users' table
   const { data: userData, error: userError } = await supabase
@@ -294,7 +293,6 @@ export const signupUser = async (
 
   return { id: userData.id, username: userData.username, token };
 };
-
 
 
 
