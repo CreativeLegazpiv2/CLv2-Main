@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/services/supabaseClient';
 
-export async function GET(req: Request, { params }: { params: { field: string } }) {
+export async function GET(req: Request) {
     try {
-        const { field } = params; // Extract the field parameter from the URL path
+        // Extract the 'field' parameter from the URL path using the request URL
+        const url = new URL(req.url);
+        const field = url.pathname.split('/')[4];
 
         if (!field) {
             return NextResponse.json({ error: 'Field parameter is required in the URL path' }, { status: 400 });
@@ -44,7 +46,7 @@ export async function GET(req: Request, { params }: { params: { field: string } 
             .from('userDetails')
             .select('*')
             .in('detailsid', topGalleryLikedIds)
-            .eq('creative_field', field);
+            .eq('creative_field', field);  // Use the extracted 'field'
 
         if (userDetailsError) {
             console.error('userDetailsError:', userDetailsError);  // Log the error
