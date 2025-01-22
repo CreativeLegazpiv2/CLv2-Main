@@ -52,10 +52,11 @@ export async function PUT(req: Request) {
 
     const publicUrl = publicUrlData.publicUrl;
 
-    // Fetch the oldest record in the child_collection
+    // Fetch the oldest record in the child_collection for the user
     const { data: oldestChildData, error: oldestChildError } = await supabase
       .from('child_collection')
-      .select('created_at')
+      .select('*') // Select all fields to get the full record
+      .eq('childid', token) // Ensure the record belongs to the user
       .order('created_at', { ascending: true })
       .limit(1);
 
@@ -63,12 +64,16 @@ export async function PUT(req: Request) {
       return NextResponse.json({ error: 'Error fetching the oldest child collection record' }, { status: 500 });
     }
 
-    const oldestCreatedAt = oldestChildData[0].created_at;
+    const oldestRecord = oldestChildData[0];
+    const oldestCreatedAt = oldestRecord.created_at;
 
-    // Extract the date and time up to the seconds
+    // Extract the date and time up to the seconds (ignore milliseconds and timezone)
     const updatedCreatedAt = updatedData.created_at as string;
     const updatedCreatedAtTrimmed = updatedCreatedAt.slice(0, 19); // Extract up to seconds
     const oldestCreatedAtTrimmed = oldestCreatedAt.slice(0, 19); // Extract up to seconds
+
+    console.log('Updated Created At (Trimmed):', updatedCreatedAtTrimmed);
+    console.log('Oldest Created At (Trimmed):', oldestCreatedAtTrimmed);
 
     // Update the child_collection record
     const { data: childData, error: childError } = await supabase
@@ -87,8 +92,9 @@ export async function PUT(req: Request) {
       return NextResponse.json({ error: childError.message }, { status: 500 });
     }
 
-    // Update image_collections if this is the oldest record (ignoring milliseconds)
+    // Update image_collections if this is the oldest record (ignoring milliseconds and timezone)
     if (updatedCreatedAtTrimmed === oldestCreatedAtTrimmed) {
+      console.log('Updating image_collections...');
       const { data: imageData, error: imageError } = await supabase
         .from('image_collections')
         .update({
@@ -98,11 +104,16 @@ export async function PUT(req: Request) {
           artist: updatedData.artist,
           desc: updatedData.desc,
         })
-        .eq('id', token);
+        .eq('id', token); // Use the token to match the image_collections record
 
       if (imageError) {
+        console.error('Error updating image_collections:', imageError);
         return NextResponse.json({ error: imageError.message }, { status: 500 });
+      } else {
+        console.log('image_collections updated successfully:', imageData);
       }
+    } else {
+      console.log('Skipping image_collections update: Not the oldest record or created_at mismatch.');
     }
 
     // Remove the old image from Supabase storage

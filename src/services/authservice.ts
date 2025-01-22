@@ -330,57 +330,40 @@ export const getUserDetailsFromToken = async () => {
 };
 
 export const getSession = () => {
-  if (typeof window !== 'undefined') {
     return localStorage.getItem("token");
-  }
-  return null;
+
 };
 
 export const getMessageId = () => {
-  if (typeof window !== 'undefined') {
     return localStorage.getItem("messageId");
-  }
-  return null;
+
 };
 
 export const getRole = () => {
-  if (typeof window !== 'undefined') {
     return localStorage.getItem("role");
-  }
-  return null;
 };
 
 export const getUserName = () => {
-  if (typeof window !== "undefined") {
       return localStorage.getItem("user");
-  }
-  return null; // Return null or a default value if not in the browser
+
 };
 
 export const removeLocal = () => {
-  if (typeof window !== "undefined") {
     localStorage.removeItem("messageId");
     localStorage.removeItem("user");
-    // localStorage.removeItem("messageTo");
-  }
-  return null; // Return null or a default value if not in the browser
 };
 
 export const logoutUser = () => {
-  if (typeof window !== 'undefined') {
     localStorage.removeItem("token");
     localStorage.removeItem("messageId");
     localStorage.removeItem("user");
     localStorage.removeItem("messageTo");
     localStorage.removeItem("Fname");
     localStorage.removeItem("role");
-  }
 };
 export const getFname = () => {
-  if (typeof window !== "undefined") {
       return localStorage.getItem("Fname");
-  }
-  return null; 
+
 };
 
 

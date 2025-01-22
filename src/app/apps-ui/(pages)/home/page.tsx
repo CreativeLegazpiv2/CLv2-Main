@@ -21,16 +21,13 @@ export default function PofconLandingPage() {
   useEffect(() => {
     const validateToken = async () => {
       const token = getSession();
-      if (!token) {
-        logoutAndRedirect();
-        return;
-      }
-
+      if (token) {
       const isTokenExpired = await checkTokenExpiration(token);
       if (isTokenExpired) {
         logoutAndRedirect();
         return;
       }
+    }
     };
 
     validateToken();

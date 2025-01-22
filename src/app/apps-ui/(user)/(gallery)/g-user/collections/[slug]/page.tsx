@@ -15,7 +15,7 @@ interface CollectionProps {
       artist: string;
       year: number;
       childid: string;
-    }[];
+    }[]; 
   };
 }
 
@@ -54,8 +54,10 @@ async function getCollection(slug: string): Promise<CollectionProps | null> {
   };
 }
 
+// Modify the function to await the params object
 export default async function ViewCollectionPage({ params }: { params: { slug: string } }) {
-  const collectionData = await getCollection(params.slug);
+  const { slug } = await params; // Await params before accessing slug
+  const collectionData = await getCollection(slug);
 
   // If collectionData is null (empty data), redirect to /apps-ui/g-user
   if (!collectionData) {
