@@ -50,7 +50,6 @@ const config: Config = {
           6: "#6E602F", //olive
           7: "#222222", //black
         },
-
         new: {
           /* SCSS HEX */
           1: "#914F1E",
@@ -58,7 +57,6 @@ const config: Config = {
           3: "#403737",
           4: "#F7DCB9",
           5: "#4B5945",
-
            /* SCSS HEX */
           //  1: "#D398A6ff",
           //  2: "#DA8CA2",
@@ -75,9 +73,7 @@ const config: Config = {
       },
       dropShadow: {
         'custom': '5px 0px 20px rgba(0, 0, 0, 0.80)',
-        
       }
-
     },
   },
   plugins: [],

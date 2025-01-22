@@ -19,6 +19,7 @@ function Profile({ userDetail }: ProfileProps) {
 
   return (
     <div className="min-h-dvh w-full">
+      CollectionDisplay
       <UserProfile userDetail={userDetail} />
       <Infinite />      
     </div>
