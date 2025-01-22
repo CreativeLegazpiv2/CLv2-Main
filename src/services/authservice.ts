@@ -79,6 +79,35 @@ export const decryptToken = async (token: string) => {
 };
 
 
+
+const generateUniqueId = async (): Promise<number> => {
+  let generatedId: number;
+  let isUnique: boolean = false;
+
+  do {
+    generatedId = Math.floor(10000 + Math.random() * 90000); // Generate a random ID
+
+    // Check if the generated ID already exists in the 'users' table
+    const { data: existingUser, error } = await supabase
+      .from("users")
+      .select("id")
+      .eq("id", generatedId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') { // PGRST116 is the code for no rows found
+      console.error("Error checking for existing user:", error.message);
+      throw new Error("Failed to generate unique ID.");
+    }
+
+    if (!existingUser) {
+      isUnique = true; // ID is unique
+    }
+  } while (!isUnique);
+
+  return generatedId; // At this point, generatedId is guaranteed to be unique
+};
+
+
 export const signupBuyer = async (
   username: string,
   email: string,
