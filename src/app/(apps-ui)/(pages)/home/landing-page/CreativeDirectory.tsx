@@ -82,7 +82,7 @@ export const CreativeDirectory = () => {
           variants={itemVariants}
         >
           <motion.img
-            className="absolute md:-top-20 md:-right-20 -top-10 -right-10 md:scale-75 h-32 w-32 z-10"
+            className="absolute md:-top-20 md:-right-20 -top-10 -right-10 md:scale-75 md:h-44 md:w-44 h-32 w-32 z-10 animate-bounce"
             src="/images/landing-page/icon.png"
             alt=""
             initial={{ rotate: -10, scale: 0.5 }}
