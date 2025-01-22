@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/services/supabaseClient';
 
+interface Params {
+  sender_a: string;
+}
+
 export async function GET(
   req: Request,
-  { params }: { params: { sender_a: string } }
+  { params }: { params: Params }
 ) {
   try {
     const { sender_a } = params; // Extract the dynamic `sender_a` parameter
