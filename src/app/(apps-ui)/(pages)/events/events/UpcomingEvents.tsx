@@ -75,20 +75,20 @@ export const UpcomingEvents = () => {
       const response = await fetch("/api/admin-events");
       if (!response.ok) throw new Error("Error fetching events");
       const fetchedEvents: AdminEvent[] = await response.json();
-
+  
       // Get the current date and set time to the start of the day
       const currentDateObj = new Date();
       currentDateObj.setHours(0, 0, 0, 0); // Strip time component
-
-      // Filter events to show only those on or after the current date
+  
+      // Filter events to show only those on or after the current date and with status true
       const upcomingEvents = fetchedEvents.filter((event) => {
         const eventDate = new Date(event.date);
         eventDate.setHours(0, 0, 0, 0); // Strip time component from event date
-
-        // Only include events on or after the current date
-        return eventDate >= currentDateObj;
+  
+        // Only include events on or after the current date and with status true
+        return eventDate >= currentDateObj && event.status !== false;
       });
-
+  
       setEvents(upcomingEvents);
     } catch (error) {
       console.error("Error fetching events:", error);

@@ -27,6 +27,7 @@ interface ExtendedEventProps {
   announcement?: string;
   website?: string;
   columns?: string[];
+  status?: boolean;
 }
 
 interface TabButtonProps {
@@ -38,11 +39,10 @@ interface TabButtonProps {
 const TabButton: React.FC<TabButtonProps> = ({ label, isActive, onClick }) => (
   <button
     onClick={onClick}
-    className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
-      isActive
+    className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${isActive
         ? "bg-primary-2 text-white shadow-md"
         : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-    }`}
+      }`}
   >
     {label}
   </button>
@@ -88,13 +88,13 @@ export const Events = () => {
         const currentDateObj = new Date();
         currentDateObj.setHours(0, 0, 0, 0); // Strip time component
 
-        // Filter events to show only those on or after the current date
+        // Filter events to show only those on or after the current date and with status true
         const upcomingEvents = data.filter((event: ExtendedEventProps) => {
           const eventDate = new Date(event.date);
           eventDate.setHours(0, 0, 0, 0); // Strip time component from event date
 
-          // Only include events on or after the current date
-          return eventDate >= currentDateObj;
+          // Only include events on or after the current date and with status true
+          return eventDate >= currentDateObj && event.status !== false;
         });
 
         setEvents(upcomingEvents);
@@ -173,13 +173,12 @@ export const Events = () => {
             {events.map((event) => (
               <div
                 key={event.id}
-                className={`${
-                  cardsPerPage === 1
+                className={`${cardsPerPage === 1
                     ? "w-full"
                     : cardsPerPage === 2
-                    ? "w-1/2"
-                    : "w-1/3"
-                } p-4 flex-shrink-0 box-border`}
+                      ? "w-1/2"
+                      : "w-1/3"
+                  } p-4 flex-shrink-0 box-border`}
               >
                 <Cards
                   {...event}
