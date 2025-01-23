@@ -1,7 +1,6 @@
 "use client";
 
 import { Infinite } from "@/components/reusable-component/Infinite";
-import { Subscribe } from "@/components/reusable-component/Subscribe";
 import { Transcribed } from "@/components/reusable-component/Transcribed";
 import { PofconModal } from "@/components/reusable-component/PofconModal";
 import { useState, useEffect } from "react";
@@ -15,6 +14,7 @@ import { CreativeDirectory } from "./landing-page/CreativeDirectory";
 import { Events } from "./landing-page/EventsCarousel";
 import { GallerySection } from "./landing-page/GallerySection";
 import { Malikhain } from "./landing-page/Malikhain";
+import CreativeLaunchpad from "./landing-page/CreativeLaunchpad";
 
 export default function PofconLandingPage() {
   const [showPofconModal, setShowPofconModal] = useState(false); // Modal state
@@ -24,34 +24,47 @@ export default function PofconLandingPage() {
     const validateToken = async () => {
       const token = getSession();
       if (token) {
-      const isTokenExpired = await checkTokenExpiration(token);
-      if (isTokenExpired) {
-        logoutAndRedirect();
-        return;
+        const isTokenExpired = await checkTokenExpiration(token);
+        if (isTokenExpired) {
+          logoutAndRedirect();
+          return;
+        }
       }
-    }
     };
 
     validateToken();
   }, []); // Empty dependency array ensures this runs only once on mount
 
   return (
-    <main className="w-full h-fit text-primary-2">
+    <main className="w-full h-fit text-primary-2 overflow-hidden">
       {/* <PofconHeroPage setShowPofconModal={setShowPofconModal} />{" "} */}
       {/* Pass the state setter */}
-      <Hero />
-      <CreativeDirectory />
+      <ScrollAnimationSection>
+        <Hero />
+      </ScrollAnimationSection>
+
+      <ScrollAnimationSection>
+        <CreativeDirectory />
+      </ScrollAnimationSection>
 
       <ScrollAnimationSection>
         <Events />
       </ScrollAnimationSection>
+
       <ScrollAnimationSection>
         <GallerySection />
       </ScrollAnimationSection>
+
+      <ScrollAnimationSection>
+        <CreativeLaunchpad />
+      </ScrollAnimationSection>
+
       <ScrollAnimationSection>
         <Malikhain />
       </ScrollAnimationSection>
+
       <Infinite />
+
       <Transcribed />
 
       {showPofconModal && (

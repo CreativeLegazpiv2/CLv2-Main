@@ -37,7 +37,10 @@ export function GallerySection() {
   const router = useRouter(); // Initialize useRouter
 
   const swipeToImage = (swipeDirection: number) => {
-    setImageCount(([prevCount, _]) => [prevCount + swipeDirection, swipeDirection]);
+    setImageCount(([prevCount, _]) => [
+      prevCount + swipeDirection,
+      swipeDirection,
+    ]);
   };
 
   const dragEndHandler = (
@@ -61,33 +64,33 @@ export function GallerySection() {
 
   // Calculate positions including gaps
   const getImagePosition = (offset: number) => {
-    const baseWidth = 'calc(33.333% - 1.33rem)'; // Approximately 1/3 width minus some space for gaps
-    if (offset === -1) return { left: '0' };
-    if (offset === 0) return { left: 'calc(33.333% + 1rem)' };
-    return { left: 'calc(66.666% + 2rem)' };
+    const baseWidth = "calc(33.333% - 1.33rem)"; // Approximately 1/3 width minus some space for gaps
+    if (offset === -1) return { left: "0" };
+    if (offset === 0) return { left: "calc(33.333% + 1rem)" };
+    return { left: "calc(66.666% + 2rem)" };
   };
 
   const desktopSliderVariants = {
     incoming: (direction: number) => ({
-      x: direction > 0 ? '100%' : '-100%',
+      x: direction > 0 ? "100%" : "-100%",
       opacity: 0,
-      height: '80%',
+      height: "80%",
       scale: 0.8,
     }),
     active: (offset: number) => ({
       x: 0,
       opacity: 1,
-      height: offset === 0 ? '100%' : '80%',
+      height: offset === 0 ? "100%" : "80%",
       scale: offset === 0 ? 1 : 0.8,
     }),
     exit: (direction: number) => ({
-      x: direction < 0 ? '100%' : '-100%',
+      x: direction < 0 ? "100%" : "-100%",
       opacity: 0,
-      height: '80%',
+      height: "80%",
       scale: 0.8,
     }),
   };
-  
+
   const sliderTransition = {
     x: { type: "spring", stiffness: 300, damping: 30 },
     opacity: { duration: 0.2 },
@@ -97,12 +100,12 @@ export function GallerySection() {
 
   // Function to handle Learn More button click
   const handleLearnMoreClick = () => {
-    router.push("/g-visitor"); // Redirect to /g-visitor
+    router.push("/gallery"); // Redirect to /g-visitor
   };
 
   return (
-    <div className="w-full min-h-dvh bg-primary-1 flex flex-col gap-16 items-center justify-evenly p-8 pt-[10dvh]">
-      <h1 className="md:text-5xl text-3xl font-extrabold md:text-left text-center">
+    <div className="w-full min-h-dvh bg-palette-4 flex flex-col gap-16 items-center justify-evenly p-8 pt-[10dvh]">
+      <h1 className="font-bold font-sans text-5xl md:text-left text-center uppercase text-palette-1">
         EXPLORE OUR GALLERY
       </h1>
 
@@ -165,7 +168,7 @@ export function GallerySection() {
 
       {/* Desktop layout (three-image slider) */}
       <div className="hidden lg:flex w-full flex-col gap-8 h-full justify-evenly items-center">
-      <div className="relative w-full p-4 md:max-w-screen-xl min-h-96 overflow-hidden">
+        <div className="relative w-full p-4 md:max-w-screen-xl min-h-96 overflow-hidden">
           <AnimatePresence initial={false} mode="popLayout" custom={direction}>
             {[-1, 0, 1].map((offset) => (
               <motion.div
@@ -179,7 +182,7 @@ export function GallerySection() {
                 className="absolute bottom-0 rounded-lg"
                 style={{
                   ...getImagePosition(offset),
-                  width: 'calc(33.333% - 1.33rem)',
+                  width: "calc(33.333% - 1.33rem)",
                   zIndex: offset === 0 ? 10 : 0,
                 }}
               >

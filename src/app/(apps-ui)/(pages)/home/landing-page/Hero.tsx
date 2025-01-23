@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { div } from "framer-motion/client";
 import { useState, useEffect } from "react";
 
@@ -27,40 +28,86 @@ export const Hero = () => {
 
 const LeftSide = ({ currentIndex }: { currentIndex: number }) => {
   return (
-    <div className="md:w-[40%] w-full  absolute top-0 md:left-[5%] left-[2%] z-20 h-full ">
+    <motion.div
+      className="md:w-[40%] w-full absolute top-0 md:left-[5%] left-[2%] z-20 h-full"
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ type: "spring", stiffness: 100, damping: 20 }}
+    >
       {/* Content Container */}
       <div className="w-full h-full flex flex-col gap-6 justify-center items-center relative">
         {/* Background and Decorations */}
-        <div className="absolute left-[10%] bottom-[20%] z-10 bg-palette-2 rounded-full w-6 h-6"></div>
-        <div className="absolute right-[30%] bottom-[20%] z-10 bg-palette-3 rounded-full w-5 h-5"></div>
-        <div className="absolute right-[10%] bottom-[10%] z-10 bg-yellow-500 rounded-md w-7 h-7 rotate-[-35deg]"></div>
-        <div className="absolute right-[15%] md:bottom-[35%]  z-10 bg-palette-3 rounded-md w-7 h-7 rotate-45"></div>
-        <div className="absolute left-[38%] top-[22%] z-10 bg-palette-3 rounded-md w-5 h-5"></div>
-        <img
+        <motion.div
+          className="absolute left-[10%] bottom-[20%] z-10 bg-palette-2 rounded-full w-6 h-6"
+          initial={{ scale: 0 }}
+          animate={{ scale: [1, 2, 1] }}
+          transition={{ delay: 0.2, type: "spring", stiffness: 100,  }}
+        ></motion.div>
+        <motion.div
+          className="absolute right-[30%] bottom-[20%] z-10 bg-palette-3 rounded-full w-5 h-5"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.4, type: "spring", stiffness: 100 }}
+        ></motion.div>
+        <motion.div
+          className="absolute right-[10%] bottom-[10%] z-10 bg-yellow-500 rounded-md w-7 h-7 rotate-[-35deg]"
+          initial={{ scale: 0, rotate: -35 }}
+          animate={{ scale: 1, rotate: -35 }}
+          transition={{ delay: 0.6, type: "spring", stiffness: 100 }}
+        ></motion.div>
+        <motion.div
+          className="absolute right-[15%] md:bottom-[35%] z-10 bg-palette-3 rounded-md w-7 h-7 rotate-45"
+          initial={{ scale: 0, rotate: 45 }}
+          animate={{ scale: 1, rotate: 45 }}
+          transition={{ delay: 0.8, type: "spring", stiffness: 100 }}
+        ></motion.div>
+        <motion.div
+          className="absolute left-[38%] top-[22%] z-10 bg-palette-3 rounded-md w-5 h-5"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 1, type: "spring", stiffness: 100 }}
+        ></motion.div>
+        <motion.img
           className="absolute right-[0%] bottom-[20%]"
           src="/images/homepage/1.png"
           alt=""
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 1.2, type: "spring", stiffness: 100 }}
         />
-        <img
+        <motion.img
           className="absolute left-[45%] top-[15%] z-10"
           src="/images/homepage/2.png"
           alt=""
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.4, type: "spring", stiffness: 100 }}
         />
 
         {/* Text and Buttons */}
-        <div className="space-y-6">
-          <h1 className="w-full max-w-sm md:text-8xl text-6xl font-sans uppercase font-[700]  text-palette-2">
+        <motion.div
+          className="space-y-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.6, type: "spring", stiffness: 100 }}
+        >
+          <motion.h1
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.7, type: "spring", stiffness: 100 }}
+            className="w-full max-w-sm md:text-8xl text-6xl font-sans uppercase font-[700] text-palette-2"
+          >
             This is creative legazpi
-          </h1>
+          </motion.h1>
 
           {/* Buttons */}
           <Buttons />
 
           {/* Indicator */}
           <Indicator currentIndex={currentIndex} />
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -84,7 +131,7 @@ const imageSet = [
   {
     src: "/images/homepage/sili.png",
     alt: "Sili",
-  }
+  },
 ];
 
 const RightSide = ({
