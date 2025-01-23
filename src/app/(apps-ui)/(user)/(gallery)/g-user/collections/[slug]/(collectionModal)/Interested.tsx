@@ -154,10 +154,10 @@ export const Interested = ({
       if (data && data.length > 0) {
         setUsers(data);
       } else {
-        console.error("No user found.");
+        console.log("No user found.");
       }
     } catch (error) {
-      console.error("Error fetching session data:", error);
+      console.log("Error fetching session data:", error);
     }
   };
 
@@ -217,7 +217,7 @@ export const Interested = ({
     const token = getSession(); // Assume getSession retrieves the session token
 
     if (!token) {
-      console.error("No session token found.");
+      console.log("No session token found.");
       return;
     }
 
@@ -238,7 +238,7 @@ export const Interested = ({
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch sessions: ${response.statusText}`);
+       console.log(`Failed to fetch sessions: ${response.statusText}`);
       }
 
       const data = await response.json();
@@ -247,10 +247,10 @@ export const Interested = ({
       if (Array.isArray(data) && data.length > 0) {
         setSessions(data); // Assuming `setSessions` is a state setter
       } else {
-        console.error("No sessions found.");
+        console.log("No sessions found.");
       }
     } catch (error) {
-      console.error("Error fetching session data:", error);
+      console.log("Error fetching session data:", error);
     } finally {
       setIsLoading(false); // Ensure loading state is reset
     }
@@ -313,7 +313,7 @@ export const Interested = ({
         isAutoSendCalled = true;
         fetchSessionData();
       } catch (error: any) {
-        console.error(
+        console.log(
           "Error checking and auto-sending message:",
           error.message
         );
@@ -420,7 +420,7 @@ export const Interested = ({
       setMessage(""); // Clear the message input
       fetchMessages(); // Fetch messages again to update the chat
     } catch (error: any) {
-      console.error("Error sending message:", error.message);
+      console.log("Error sending message:", error.message);
     }
   };
 
@@ -456,7 +456,7 @@ export const Interested = ({
         setMessage(""); // Clear the message input
         fetchMessages(); // Fetch messages again to update the chat
       } catch (error: any) {
-        console.error("Error sending message:", error.message);
+        console.log("Error sending message:", error.message);
       }
     } else {
       try {
@@ -486,7 +486,7 @@ export const Interested = ({
         setMessage(""); // Clear the message input
         fetchMessages(); // Fetch messages again to update the chat
       } catch (error: any) {
-        console.error("Error sending message:", error.message);
+        console.log("Error sending message:", error.message);
       }
     }
   };
@@ -524,7 +524,7 @@ export const Interested = ({
       // Update state to store the selected user details
       setUserDetails([data]); // Set the fetched user details to state (e.g., user details)
     } catch (error: any) {
-      console.error("Error fetching user details:", error.message);
+      console.log("Error fetching user details:", error.message);
     }
 
     // Fetch messages (existing functionality)
@@ -587,7 +587,7 @@ export const Interested = ({
     console.log("clicked id:", id);
     const token = getSession();
     if (!token) {
-      console.error("No session token found");
+      console.log("No session token found");
       return;
     }
     setIsRightColumnVisible(true);
@@ -637,7 +637,7 @@ export const Interested = ({
       setMessages(dataResponse.message);
       fetchMessages();
     } catch (error: any) {
-      console.error("Error sending message:", error.message);
+      console.log("Error sending message:", error.message);
     }
   };
 
