@@ -80,7 +80,6 @@ export default async function ViewCollectionPage({ params }: Props) {
 
   if (!collectionData) {
     redirect('/g-user');
-    redirect('/apps-ui/g-user');
     return null; // This prevents further rendering after redirection.
   }
 
