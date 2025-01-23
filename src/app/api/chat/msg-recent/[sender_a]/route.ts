@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 
     // Fetch user details for each session
     const userDetailsPromises = sessions.map(async (session) => {
-      const otherUserId = session.a === sender_a ? session.b : session.a;
+      const otherUserId = session.a == sender_a ? session.b : session.a;
 
       const { data: userDetails, error: userDetailsError } = await supabase
         .from('userDetails')
