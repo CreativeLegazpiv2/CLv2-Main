@@ -1,9 +1,8 @@
-import { notFound, redirect } from 'next/navigation'; // Import redirect
-import { supabase } from '@/services/supabaseClient'; // Adjust the import path as needed
-import CollectionDisplay from './CollectionDisplay'; // Adjust the import path to your component
-import { Icon } from '@iconify/react/dist/iconify.js';
+import type { Metadata, ResolvingMetadata } from 'next';
+import { redirect } from 'next/navigation';
+import { supabase } from '@/services/supabaseClient';
+import CollectionDisplay from './CollectionDisplay';
 
-// Define the CollectionProps interface
 interface CollectionProps {
   collection: {
     images: {
@@ -19,6 +18,11 @@ interface CollectionProps {
   };
 }
 
+type Props = {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
 async function getCollection(slug: string): Promise<CollectionProps | null> {
   const { data, error } = await supabase
     .from('child_collection')
@@ -30,40 +34,58 @@ async function getCollection(slug: string): Promise<CollectionProps | null> {
     return null;
   }
 
-  // If data is empty, return null
   if (!data || data.length === 0) {
     return null;
   }
 
-  const collection = data[0];
-
-  // Map the images correctly according to the CollectionProps interface
   const images = data.map(item => ({
-    created_at: new Date(item.created_at), // Convert to Date
+    created_at: new Date(item.created_at),
     generatedId: item.generatedId,
-    image_path: item.path, // Assuming 'path' is the correct field for the image URL
+    image_path: item.path,
     title: item.title,
     desc: item.desc,
     artist: item.artist,
-    year: Number(item.year), // Convert to number
-    childid: item.childid
+    year: Number(item.year),
+    childid: item.childid,
   }));
 
   return {
-    collection: { images }, // Return the collection object as expected in CollectionProps
+    collection: { images },
   };
 }
 
-export default async function ViewCollectionPage({ params }: { params: { slug: string } }) {
-  const collectionData = await getCollection(params.slug);
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
+  const collectionData = await getCollection(slug);
 
-  // If collectionData is null (empty data), redirect to /g-user
+  if (!collectionData) {
+    return {
+      title: 'Collection Not Found',
+      description: 'The requested collection could not be found.',
+    };
+  }
+
+  return {
+    title: `Collection: ${slug}`,
+    description: `View details of the collection: ${slug}`,
+  };
+}
+
+export default async function ViewCollectionPage({ params }: Props) {
+  const slug = (await params).slug;
+  const collectionData = await getCollection(slug);
+
   if (!collectionData) {
     redirect('/g-user');
+    redirect('/apps-ui/g-user');
+    return null; // This prevents further rendering after redirection.
   }
 
   return (
-    <div className='h-fit w-full py-[15dvh] mx-auto'>
+    <div className="h-fit w-full py-[15dvh] mx-auto">
       <CollectionDisplay collection={collectionData.collection} />
     </div>
   );

@@ -214,20 +214,22 @@ export const Interested = ({
   };
 
   const fetchSessionData = async () => {
-    const token = getSession();
+    const token = getSession(); // Assume getSession retrieves the session token
+
     if (!token) {
       console.error("No session token found.");
       return;
     }
 
     try {
+      // Decode the token to extract the user ID
       const { payload } = await jwtVerify(
         token,
-        new TextEncoder().encode(JWT_SECRET)
+        new TextEncoder().encode(JWT_SECRET) // Ensure JWT_SECRET is properly configured
       );
       const userIdFromToken = payload.id as string;
 
-      // Use the dynamic route path
+      // Call the API with the userId as a dynamic segment
       const response = await fetch(`/api/chat/msg-recent/${userIdFromToken}`, {
         method: "GET",
         headers: {
@@ -240,18 +242,20 @@ export const Interested = ({
       }
 
       const data = await response.json();
-      console.log("Fetched sessions:", data); // Log the full combined data to inspect it
+      console.log("Fetched sessions:", data);
 
       if (Array.isArray(data) && data.length > 0) {
-        setSessions(data); // The data should already include user details
-        setIsLoading(false);
+        setSessions(data); // Assuming `setSessions` is a state setter
       } else {
-        setIsLoading(false);
+        console.error("No sessions found.");
       }
     } catch (error) {
-      setIsLoading(false); // Ensure loading state is reset on error
+      console.error("Error fetching session data:", error);
+    } finally {
+      setIsLoading(false); // Ensure loading state is reset
     }
   };
+
 
   useEffect(() => {
     setPreviewImage(image);
@@ -665,11 +669,10 @@ export const Interested = ({
                   />
                   <div className="flex flex-col">
                     <p
-                      className={`text-gray-200 font-medium text-base ${
-                        userDetails[0].first_name.length > 10
+                      className={`text-gray-200 font-medium text-base ${userDetails[0].first_name.length > 10
                           ? "line-clamp-1"
                           : ""
-                      }`}
+                        }`}
                     >
                       {userDetails[0].first_name}
                     </p>
@@ -781,11 +784,10 @@ export const Interested = ({
                           onClick={() =>
                             handleClick(session.id, session.a, session.b)
                           }
-                          className={`${
-                            selectedSessionId === session.id
+                          className={`${selectedSessionId === session.id
                               ? "bg-gray-400"
                               : ""
-                          }`}
+                            }`}
                         >
                           <div className="flex flex-row capitalize bg-black/10 rounded-md p-2 gap-4 cursor-pointer">
                             <div className="w-12 h-12 rounded-full overflow-hidden">
@@ -860,18 +862,16 @@ export const Interested = ({
                       return (
                         <div
                           key={msg.id} // Use unique key for each message
-                          className={`p-2 flex flex-col w-full ${
-                            msg.sender === gettokenId
+                          className={`p-2 flex flex-col w-full ${msg.sender === gettokenId
                               ? "items-end"
                               : "items-start"
-                          }`}
+                            }`}
                         >
                           <div
-                            className={`mb-2 p-4 min-w-14 rounded-t-3xl flex flex-col gap-2 max-w-[80%] ${
-                              msg.sender === gettokenId
+                            className={`mb-2 p-4 min-w-14 rounded-t-3xl flex flex-col gap-2 max-w-[80%] ${msg.sender === gettokenId
                                 ? "bg-[skyblue] rounded-bl-3xl"
                                 : "bg-black/10 rounded-br-3xl"
-                            }`}
+                              }`}
                           >
                             <p className="text-sm">{msg.message}</p>
 
@@ -889,11 +889,10 @@ export const Interested = ({
                           </div>
                           <div>
                             <p
-                              className={`text-[10px] ${
-                                msg.sender === gettokenId
+                              className={`text-[10px] ${msg.sender === gettokenId
                                   ? "text-black/80"
                                   : "text-black/70"
-                              }`}
+                                }`}
                             >
                               {formattedDate}, {formattedTime}
                             </p>

@@ -78,6 +78,8 @@ export const decryptToken = async (token: string) => {
   }
 };
 
+
+
 const generateUniqueId = async (): Promise<number> => {
   let generatedId: number;
   let isUnique: boolean = false;
@@ -104,6 +106,7 @@ const generateUniqueId = async (): Promise<number> => {
 
   return generatedId; // At this point, generatedId is guaranteed to be unique
 };
+
 
 export const signupBuyer = async (
   username: string,
@@ -291,58 +294,76 @@ export const signupUser = async (
   return { id: userData.id, username: userData.username, token };
 };
 
-export const getSession = () => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem("token");
+
+
+export const getUserDetailsFromToken = async () => {
+  try {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      throw new Error("No token found in local storage");
+    }
+
+    const payload = await verifyJWT(token);
+    const userId = payload.id;
+
+    const { data, error } = await supabase
+      .from('userDetails')
+      .select('*')
+      .eq('detailsid', userId)
+      .single();
+
+    if (error || !data) {
+      throw new Error(error ? error.message : "Failed to fetch user details");
+    }
+
+    return data;
+  } catch (error) {
+    // Cast the error to 'Error' to safely access the 'message' property
+    if (error instanceof Error) {
+      console.error("Failed to retrieve user details:", error.message);
+    } else {
+      console.error("An unknown error occurred:", error);
+    }
+
+    throw new Error("Failed to retrieve user details");
   }
-  return null;
+};
+
+export const getSession = () => {
+    return localStorage.getItem("token");
+
 };
 
 export const getMessageId = () => {
-  if (typeof window !== 'undefined') {
     return localStorage.getItem("messageId");
-  }
-  return null;
+
 };
 
 export const getRole = () => {
-  if (typeof window !== 'undefined') {
     return localStorage.getItem("role");
-  }
-  return null;
 };
 
 export const getUserName = () => {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("user");
-  }
-  return null; // Return null or a default value if not in the browser
+      return localStorage.getItem("user");
+
 };
 
 export const removeLocal = () => {
-  if (typeof window !== "undefined") {
     localStorage.removeItem("messageId");
     localStorage.removeItem("user");
-    // localStorage.removeItem("messageTo");
-  }
-  return null; // Return null or a default value if not in the browser
 };
 
 export const logoutUser = () => {
-  if (typeof window !== 'undefined') {
     localStorage.removeItem("token");
     localStorage.removeItem("messageId");
     localStorage.removeItem("user");
     localStorage.removeItem("messageTo");
     localStorage.removeItem("Fname");
     localStorage.removeItem("role");
-  }
 };
 export const getFname = () => {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("Fname");
-  }
-  return null;
+      return localStorage.getItem("Fname");
+
 };
 
 

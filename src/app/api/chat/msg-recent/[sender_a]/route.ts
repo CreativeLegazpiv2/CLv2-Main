@@ -1,12 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/services/supabaseClient';
 
-export async function GET(
-  req: Request,
-  { params }: { params: { sender_a: string } }
-) {
+export async function GET(req: NextRequest) {
   try {
-    const { sender_a } = params; // Extract the dynamic `sender_a` parameter
+    // Access the dynamic parameter `sender_a` from the URL
+    const sender_a = req.nextUrl.pathname.split('/')[4]; // Extract sender_a from the URL path
 
     if (!sender_a) {
       return NextResponse.json({ error: 'sender_a is required' }, { status: 400 });
@@ -24,7 +22,7 @@ export async function GET(
 
     // Fetch user details for each session
     const userDetailsPromises = sessions.map(async (session) => {
-      const otherUserId = session.a == sender_a ? session.b : session.a;
+      const otherUserId = session.a === sender_a ? session.b : session.a;
 
       const { data: userDetails, error: userDetailsError } = await supabase
         .from('userDetails')
