@@ -69,7 +69,7 @@ export async function generateMetadata(
   }
 
   return {
-    title: `Collection: ${slug}`,
+    title: `Collections: ${collectionData.collection.images[0].artist}`,
     description: `View details of the collection: ${slug}`,
   };
 }

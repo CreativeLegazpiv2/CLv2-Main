@@ -560,8 +560,8 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.1 }}
               className={`relative h-64 rounded-lg overflow-hidden shadow-lg cursor-pointer ${selectedImage?.generatedId === image.generatedId
-                  ? "border-2 border-sky-500"
-                  : ""
+                ? "border-2 border-sky-500"
+                : ""
                 }`}
               onClick={() => handleImageClick(image)}
             >
@@ -593,7 +593,8 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                       whileTap={{ scale: 0.9 }}
                       transition={{ duration: 0.3, delay: 0.2 }}
                       className="w-32 py-2 rounded-full"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setSelectedImage(image);
                         setEditModalOpen(true);
                       }}
@@ -610,7 +611,8 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                       whileTap={{ scale: 0.9 }}
                       transition={{ duration: 0.3, delay: 0.2 }}
                       className="w-32 py-2 rounded-full"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setImageToDelete({
                           generatedId: image.generatedId,
                           image_path: image.image_path,
@@ -635,7 +637,8 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                       whileTap={{ scale: 0.9 }}
                       transition={{ duration: 0.3, delay: 0.2 }}
                       className="w-32 py-2 rounded-full"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setSelectedImage(image);
                         setInterestModalOpen(true);
                         setChat(false);
