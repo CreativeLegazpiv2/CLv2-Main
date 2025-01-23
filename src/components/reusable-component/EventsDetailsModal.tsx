@@ -82,7 +82,7 @@ export const EventDetailsModal = ({
             {/* Content Section */}
             <div className="p-4 md:p-8 flex flex-col h-full overflow-y-auto">
               {/* Tabs */}
-              <div className="flex gap-2 mb-4 md:mb-6 overflow-x-auto pb-2">
+              <div className="flex gap-2 mb-2 overflow-x-auto pb-2">
                 <TabButton
                   label="Details"
                   isActive={activeTab === "details"}
@@ -101,7 +101,7 @@ export const EventDetailsModal = ({
               </div>
 
               {/* Tab Content */}
-              <div className="flex-1 overflow-y-auto custom-scrollbar">
+              <div className="h-full flex-1 overflow-y-auto custom-scrollbar">
                 {activeTab === "details" && (
                   <div className="space-y-4 md:space-y-6">
                     <div className="flex items-center gap-4">
@@ -226,7 +226,7 @@ export const EventDetailsModal = ({
             </div>
 
             {/* Action Buttons */}
-            <div className="w-full h-20 p-4 flex justify-end gap-12 items-center border-t border-gray-200">
+            <div className="w-full h-fit pb-4 px-4 flex justify-end gap-12 items-center">
               <button
                 onClick={handleInterestClick} 
                 className="px-4 py-2 w-48 md:px-6 md:py-2 bg-palette-1 text-white rounded-lg font-medium hover:bg-[#974234] transition-colors"
