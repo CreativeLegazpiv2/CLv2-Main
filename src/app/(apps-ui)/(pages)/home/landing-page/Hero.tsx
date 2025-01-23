@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { div } from "framer-motion/client";
 import { useState, useEffect } from "react";
 
@@ -31,60 +31,164 @@ const LeftSide = ({ currentIndex }: { currentIndex: number }) => {
     <motion.div
       className="md:w-[40%] w-full absolute top-0 md:left-[5%] left-[2%] z-20 h-full"
       initial={{ opacity: 0, x: -50 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ type: "spring", stiffness: 100, damping: 20 }}
+      whileInView={{
+        opacity: 1,
+        x: 0,
+        transition: {
+          type: "spring",
+          stiffness: 100,
+          damping: 20,
+        },
+      }}
+      viewport={{ once: true }}
     >
-      {/* Content Container */}
       <div className="w-full h-full flex flex-col gap-6 justify-center items-center relative">
-        {/* Background and Decorations */}
-        <motion.div
-          className="absolute left-[10%] bottom-[20%] z-10 bg-palette-2 rounded-full w-6 h-6"
-          initial={{ scale: 0 }}
-          animate={{ scale: [1, 2, 1] }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 100,  }}
-        ></motion.div>
-        <motion.div
-          className="absolute right-[30%] bottom-[20%] z-10 bg-palette-3 rounded-full w-5 h-5"
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.4, type: "spring", stiffness: 100 }}
-        ></motion.div>
-        <motion.div
-          className="absolute right-[10%] bottom-[10%] z-10 bg-yellow-500 rounded-md w-7 h-7 rotate-[-35deg]"
-          initial={{ scale: 0, rotate: -35 }}
-          animate={{ scale: 1, rotate: -35 }}
-          transition={{ delay: 0.6, type: "spring", stiffness: 100 }}
-        ></motion.div>
-        <motion.div
-          className="absolute right-[15%] md:bottom-[35%] z-10 bg-palette-3 rounded-md w-7 h-7 rotate-45"
-          initial={{ scale: 0, rotate: 45 }}
-          animate={{ scale: 1, rotate: 45 }}
-          transition={{ delay: 0.8, type: "spring", stiffness: 100 }}
-        ></motion.div>
-        <motion.div
-          className="absolute left-[38%] top-[22%] z-10 bg-palette-3 rounded-md w-5 h-5"
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 1, type: "spring", stiffness: 100 }}
-        ></motion.div>
-        <motion.img
-          className="absolute right-[0%] bottom-[20%]"
-          src="/images/homepage/1.png"
-          alt=""
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 1.2, type: "spring", stiffness: 100 }}
-        />
-        <motion.img
-          className="absolute left-[45%] top-[15%] z-10"
-          src="/images/homepage/2.png"
-          alt=""
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.4, type: "spring", stiffness: 100 }}
-        />
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.2
+              }
+            }
+          }}
+        >
+          {[
+            {
+              key: "circle-1",
+              className: "absolute left-[10%] bottom-[20%] z-10 bg-palette-2 rounded-full w-6 h-6",
+              initialTransform: { y: 50 },
+              twinkleParams: {
+                opacity: [1, 0.8, 1],
+                scale: [1, 1.2, 1],
+              },
+            },
+            {
+              key: "circle-2",
+              className: "absolute right-[30%] bottom-[20%] z-10 bg-palette-3 rounded-full w-5 h-5",
+              initialTransform: { y: 50 },
+              twinkleParams: {
+                opacity: [1, 0.3, 1],
+                scale: [1, 0.9, 1],
+                rotate: [-35, -35, -35],
+              },
+            },
+            {
+              key: "circle-3",
+              className: "absolute right-[10%] bottom-[10%] z-10 bg-yellow-500 rounded-md w-7 h-7 rotate-[-35deg]",
+              initialTransform: { y: 50 },
+              twinkleParams: {
+                opacity: [1, 0.8, 1],
+                scale: [1, 1.2, 1],
+                rotate: [-35, -35, -35],
+              },
+            },
+            {
+              key: "circle-4",
+              className: "absolute right-[15%] md:bottom-[35%] z-10 bg-palette-3 rounded-md w-7 h-7 rotate-45",
+              initialTransform: { y: 50 },
+              twinkleParams: {
+                opacity: [1, 0.8, 1],
+                scale: [1, 1.1, 1],
+                rotate: [45, 45, 45],
+              },
+            },
+            {
+              key: "circle-5",
+              className: "absolute left-[38%] top-[22%] z-10 bg-palette-3 rounded-md w-5 h-5",
+              initialTransform: { y: 50 },
+              twinkleParams: {
+                opacity: [1, 0.8, 1],
+                scale: [1, 1.2, 1],
+              },
+            },
+          ].map((item) => (
+            <motion.div
+              key={item.key}
+              className={item.className}
+              variants={{
+                hidden: { opacity: 0, scale: 0, y: 50 },
+                visible: {
+                  opacity: 1,
+                  scale: 1,
+                  y: 0,
+                  transition: {
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 10
+                  }
+                }
+              }}
+              animate={{
+                ...item.twinkleParams,
+                transition: {
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1
+                },
+              }}
+            />
+          ))}
 
-        {/* Text and Buttons */}
+          {[
+            {
+              key: "image-1",
+              src: "/images/homepage/1.png",
+              className: "absolute right-[0%] bottom-[20%]",
+              initialTransform: { x: 50 },
+              twinkleParams: {
+                opacity: [1, 0.9, 1],
+                scale: [1, 0.9, 1],
+                rotate: [-35, -35, -35],
+              },
+            },
+            {
+              key: "image-2",
+              src: "/images/homepage/2.png",
+              className: "absolute left-[45%] top-[15%] z-10",
+              initialTransform: { y: 50 },
+              twinkleParams: {
+                opacity: [1, 0.9, 1],
+                scale: [1, 0.9, 1],
+              },
+            },
+          ].map((item) => (
+            <motion.img
+              key={item.key}
+              className={item.className}
+              src={item.src}
+              alt=""
+              variants={{
+                hidden: { opacity: 0, scale: 0, ...item.initialTransform },
+                visible: {
+                  opacity: 1,
+                  scale: 1,
+                  y: 0,
+                  x: 0,
+                  transition: {
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 10
+                  }
+                }
+              }}
+              animate={{
+                ...item.twinkleParams,
+                transition: {
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1
+                },
+              }}
+            />
+          ))}
+        </motion.div>
+
         <motion.div
           className="space-y-6"
           initial={{ opacity: 0 }}
@@ -100,16 +204,14 @@ const LeftSide = ({ currentIndex }: { currentIndex: number }) => {
             This is creative legazpi
           </motion.h1>
 
-          {/* Buttons */}
           <Buttons />
-
-          {/* Indicator */}
           <Indicator currentIndex={currentIndex} />
         </motion.div>
       </div>
     </motion.div>
   );
 };
+
 
 const imageSet = [
   {

@@ -69,7 +69,7 @@ export const CreativeDirectory = () => {
   };
 
   return (
-    <div className="w-full md:h-dvh h-fit md:py-0 py-[10dvh] md:min-h-screen bg-palette-2 overflow-hidden">
+    <div className="w-full md:h-dvh h-fit md:py-0 py-[10dvh] md:min-h-screen bg-palette-2 overflow-x-hidden">
       <motion.div 
         ref={ref}
         className="w-full h-full flex md:flex-row flex-col gap-12 justify-center items-center md:max-w-[70%] max-w-[90%] mx-auto"
@@ -82,7 +82,7 @@ export const CreativeDirectory = () => {
           variants={itemVariants}
         >
           <motion.img
-            className="absolute md:-top-20 md:-right-20 -top-10 -right-10 md:scale-75 md:h-44 md:w-44 h-32 w-32 z-10 animate-bounce"
+            className="absolute md:-top-10 md:-right-20 -top-10 -right-10 md:scale-75 md:h-40 md:w-40 h-32 w-32 z-10 animate-bounce"
             src="/images/landing-page/icon.png"
             alt=""
             initial={{ rotate: -10, scale: 0.5 }}

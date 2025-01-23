@@ -2,7 +2,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 export default function SkeletonHomeEvents() {
   return (
-    <div className="w-dvw md:h-dvh h-fit bg-white/80">
+    <div className="w-full md:h-dvh h-fit bg-white/80">
       <div className="w-full h-full md:py-0 py-24 gap-12 flex flex-col justify-center items-center mx-auto">
         {/* Header with skeleton text and navigation buttons */}
         <div className="w-full md:w-[90%] max-w-[98%] mx-auto flex flex-row justify-between items-center">

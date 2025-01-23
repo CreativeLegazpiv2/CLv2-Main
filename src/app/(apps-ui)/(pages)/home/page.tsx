@@ -11,13 +11,22 @@ import { checkTokenExpiration, logoutAndRedirect } from "@/services/jwt";
 import { getSession } from "@/services/authservice";
 import { Hero } from "./landing-page/Hero";
 import { CreativeDirectory } from "./landing-page/CreativeDirectory";
-import { Events } from "./landing-page/EventsCarousel";
+
 import { GallerySection } from "./landing-page/GallerySection";
 import { Malikhain } from "./landing-page/Malikhain";
 import CreativeLaunchpad from "./landing-page/CreativeLaunchpad";
+import { EventDetailsModal } from "@/components/reusable-component/EventsDetailsModal";
+import { Events, ExtendedEventProps } from "./landing-page/EventsCarousel";
+import { RegisterModal } from "@/components/reusable-component/RegisterModal";
+import { toast } from "react-toastify";
 
 export default function PofconLandingPage() {
   const [showPofconModal, setShowPofconModal] = useState(false); // Modal state
+  const [showEventDetails, setShowEventDetails] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<ExtendedEventProps | null>(
+    null
+  );
+  const [showModal, setShowModal] = useState(false);
 
   // Token validation logic inside useEffect
   useEffect(() => {
@@ -35,28 +44,38 @@ export default function PofconLandingPage() {
     validateToken();
   }, []); // Empty dependency array ensures this runs only once on mount
 
+  const handleEventClick = (event: ExtendedEventProps) => {
+    setSelectedEvent(event);
+    setShowEventDetails(true);
+  };
+
+  const handleRegistrationSuccess = () => {
+    setShowModal(false);
+    console.log("Registration successful!");
+  };
+
+  const handleRegisterClick = () => {
+    setShowModal(true); // Open the RegisterModal
+  };
+
   return (
-    <main className="w-full h-fit text-primary-2 overflow-hidden">
-      {/* <PofconHeroPage setShowPofconModal={setShowPofconModal} />{" "} */}
-      {/* Pass the state setter */}
+    <main className="w-full h-fit text-primary-2 ">
       <ScrollAnimationSection>
         <Hero />
       </ScrollAnimationSection>
 
-      <ScrollAnimationSection>
-        <CreativeDirectory />
-      </ScrollAnimationSection>
+      <CreativeDirectory />
 
       <ScrollAnimationSection>
-        <Events />
-      </ScrollAnimationSection>
-
-      <ScrollAnimationSection>
-        <GallerySection />
+        <Events onEventClick={handleEventClick} />
       </ScrollAnimationSection>
 
       <ScrollAnimationSection>
         <CreativeLaunchpad />
+      </ScrollAnimationSection>
+
+      <ScrollAnimationSection>
+        <GallerySection />
       </ScrollAnimationSection>
 
       <ScrollAnimationSection>
@@ -70,10 +89,36 @@ export default function PofconLandingPage() {
       {showPofconModal && (
         <PofconModal setShowPofconModal={setShowPofconModal} />
       )}
+
+      {showEventDetails && selectedEvent && (
+        <EventDetailsModal
+          setShowEventDetails={setShowEventDetails}
+          eventDetails={selectedEvent}
+          onRegisterClick={handleRegisterClick} // Pass the handler
+        />
+      )}
+
+      {/* Register Modal */}
+      {showModal && selectedEvent && (
+        <RegisterModal
+          setShowPofconModal={setShowModal}
+          eventId={parseInt(selectedEvent.id)}
+          eventTitle={selectedEvent.title}
+          eventLocation={selectedEvent.location}
+          eventStartTime={selectedEvent.start_time}
+          eventEndTime={selectedEvent.end_time}
+          contact={selectedEvent.contact} // Pass contact information
+          onSuccess={() => {
+            toast.success("Successfully Registered!", {
+              position: "bottom-right", // Position of the toast
+              autoClose: 3000, // Auto-close after 3 seconds
+            });
+          }}
+        />
+      )}
     </main>
   );
 }
-
 const ScrollAnimationSection: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -89,11 +134,12 @@ const ScrollAnimationSection: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <motion.div
+      className="w-full h-fit"
       ref={ref}
       initial="hidden"
       animate={controls}
       variants={{
-        hidden: { opacity: 0, y: 50 },
+        hidden: { opacity: 0, y: -20 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
       }}
     >

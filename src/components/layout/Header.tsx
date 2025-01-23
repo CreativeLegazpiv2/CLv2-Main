@@ -33,8 +33,8 @@ const MenuItem = ({ name, link }: MenuItemProps) => {
     <motion.a
       href={link}
       className={`text-base uppercase font-semibold whitespace-nowrap relative duration-300
-        ${isActive ? "text-palette-5 text-lg" : "text-palette-7"}
-        group-hover:text-primary-2 hover:!text-palette-5`}
+        ${isActive ? "text-palette-1 text-lg" : "text-palette-7"}
+        group-hover:text-primary-2 hover:!text-palette-2`}
       whileHover={{ scale: 1.1 }}
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -45,7 +45,7 @@ const MenuItem = ({ name, link }: MenuItemProps) => {
 };
 
 export const Header = ({
-  backgroundColor = "bg-primary-1",
+  backgroundColor = "bg-primary-5",
   textColor = "palette-7",
   buttonName = "Log in",
   paddingLeftCustom = "pl-14",
@@ -218,7 +218,7 @@ export const Header = ({
                 <motion.button
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className={`uppercase w-44 py-1.5 font-semibold rounded-full bg-palette-2 text-secondary-1
+                  className={`uppercase w-44 py-1.5 font-semibold rounded-full bg-palette-1 text-secondary-1
                     ${isLoggingOut ? "opacity-50 cursor-not-allowed" : ""}`}
                   whileHover={{
                     scale: 1.1,
@@ -235,10 +235,10 @@ export const Header = ({
               ) : (
                 <Link href={linkName}>
                   <motion.button
-                    className="uppercase w-44 py-1.5 font-semibold rounded-full bg-palette-2 text-palette-5"
+                    className="uppercase w-44 py-1.5 font-semibold rounded-full bg-palette-1 text-palette-5"
                     whileHover={{
                       scale: 1.1,
-                      backgroundColor: "#403737",
+                      backgroundColor: "#6E352C",
                       color: "#ffff",
                     }}
                     whileTap={{ scale: 0.95 }}
