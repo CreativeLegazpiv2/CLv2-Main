@@ -15,6 +15,18 @@ interface CardProps {
   link: string;
 }
 
+const gradientColors = [
+  { from: "#A845E6", to: "#FAAD37" }, // 1 and 2
+  { from: "#6F82D8", to: "#B5F59A" }, // 3 and 4
+  { from: "#9364E0", to: "#7ECFE1" }, // 5 and 6
+  { from: "#99B20F", to: "#D2E357" }, // 7 and 8
+  { from: "#F99E9F", to: "#8B58E8" }, // 9 and 10
+  { from: "#E25E20", to: "#F2C65E" }, // 11 and 12
+  { from: "#D13977", to: "#F2C65E" }, // 13 and 14
+  { from: "#DB429B", to: "#81CFCB" }, // 15 and 16
+  { from: "#D78E40", to: "#F4EA8E" }, // 17 and 18
+];
+
 export const CreativeCarousel = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [cardsPerPage, setCardsPerPage] = useState(5);
@@ -22,22 +34,16 @@ export const CreativeCarousel = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1536) {
-        // xl screens and up
         setCardsPerPage(5);
       } else if (window.innerWidth >= 1280) {
-        // lg screens
         setCardsPerPage(5);
       } else if (window.innerWidth >= 1024) {
-        // md screens
         setCardsPerPage(4);
       } else if (window.innerWidth >= 768) {
-        // sm screens
         setCardsPerPage(3);
       } else if (window.innerWidth >= 640) {
-        // sm screens
         setCardsPerPage(2);
       } else {
-        // xs screens
         setCardsPerPage(1);
       }
     };
@@ -67,34 +73,41 @@ export const CreativeCarousel = () => {
             animate={{ x: `${-currentPage * 100}%` }}
             transition={{ duration: 0.5 }}
           >
-            {CreativeArray.map((item, id) => (
-              <motion.div
-                key={id}
-                className={`flex-shrink-0 h-full ${
-                  cardsPerPage === 1
-                    ? "w-full"
-                    : cardsPerPage === 2
-                    ? "w-1/2"
-                    : cardsPerPage === 3
-                    ? "w-1/3"
-                    : cardsPerPage === 4
-                    ? "w-1/4"
-                    : "w-1/5"
-                } p-4`}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: id * 0.2 }}
-              >
-                <CreativeCards
-                  title={item.title}
-                  src={item.src}
-                  right={item.right}
-                  left={item.left}
-                  translate={item.translate}
-                  link={item.link!}
-                />
-              </motion.div>
-            ))}
+            {CreativeArray.map((item, id) => {
+              const gradientIndex = id % gradientColors.length;
+              const { from, to } = gradientColors[gradientIndex];
+
+              return (
+                <motion.div
+                  key={id}
+                  className={`flex-shrink-0 h-full ${
+                    cardsPerPage === 1
+                      ? "w-full"
+                      : cardsPerPage === 2
+                      ? "w-1/2"
+                      : cardsPerPage === 3
+                      ? "w-1/3"
+                      : cardsPerPage === 4
+                      ? "w-1/4"
+                      : "w-1/5"
+                  } p-4`}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1, delay: id * 0.2 }}
+                >
+                  <CreativeCards
+                    title={item.title}
+                    src={item.src}
+                    right={item.right}
+                    left={item.left}
+                    translate={item.translate}
+                    link={item.link!}
+                    fromColor={from}
+                    toColor={to}
+                  />
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </div>
@@ -117,19 +130,24 @@ export const CreativeCarousel = () => {
 };
 
 // card details
-const CreativeCards: React.FC<CardProps> = ({
+const CreativeCards: React.FC<CardProps & { fromColor: string; toColor: string }> = ({
   title,
   src,
   right,
   left,
   translate,
   link,
+  fromColor,
+  toColor,
 }) => {
   return (
-    <div className="w-full h-full  ">
+    <div className="w-full h-full">
       <motion.div
         whileHover={{ scale: 1.05 }}
-        className="w-full h-full max-w-60 mx-auto bg-primary-1 overflow-visible relative rounded-3xl shadow-customShadow"
+        className="w-full h-full max-w-60 mx-auto overflow-visible relative rounded-3xl shadow-customShadow"
+        style={{
+          background: `linear-gradient(to right, ${fromColor}, ${toColor})`,
+        }}
       >
         <div className="w-full h-full overflow-visible relative">
           <img
@@ -149,14 +167,14 @@ export const CreativeButton: React.FC<{ title: string; link: string }> = ({
   title,
   link,
 }) => {
-  if (!link) return null; // Return null if `link` is undefined
+  if (!link) return null;
 
   return (
     <Link href={link}>
       <motion.button
         whileTap={{ scale: 0.95 }}
         whileHover={{ scale: 1.05 }}
-        className="absolute z-50 -bottom-5 -left-5 flex flex-col justify-center items-center rounded-full text-secondary-1 bg-quaternary-1 w-56 lg:h-14 md:h-12 h-10"
+        className="absolute z-50 -bottom-5 -left-5 flex flex-col justify-center items-center rounded-full text-secondary-1 bg-palette-3 w-56 lg:h-14 md:h-12 h-10"
       >
         <span className="uppercase text-xs font-semibold text-center w-full max-w-48">
           {title}

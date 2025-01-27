@@ -63,7 +63,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
               roundedCustom="lg:rounded-bl-3xl"
               paddingLeftCustom="lg:pl-14"
               buttonName="Logout"
-              backgroundColor="bg-palette-3"
+              backgroundColor="bg-palette-5"
               onOpenSidebar={handleOpenSideBar}
             />
             

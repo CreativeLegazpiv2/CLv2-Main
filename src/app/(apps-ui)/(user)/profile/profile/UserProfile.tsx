@@ -30,7 +30,7 @@ export interface UserDetail {
   role: string;
 }
 
-interface UserProfileProps {
+interface UserProfileProps {  
   userDetail: UserDetail; // Expecting the userDetail as a prop
 }
 

@@ -203,7 +203,7 @@ export const Header = ({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  {isLoggingOut ? "Logging out..." : "Logout"}
+                  {isLoggingOut ? "Logging out..." : "Log out"}
                 </motion.button>
               ) : (
                 <Link href={linkName}>
