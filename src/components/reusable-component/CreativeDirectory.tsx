@@ -34,7 +34,7 @@ export const CreativeDirectory: React.FC<CreativeDirectoryProps> = ({
 
   // Function to handle Explore button click
   const handleExploreClick = () => {
-    router.push("/creative-dashboard"); // Redirect to /creative-dashboard
+    router.push("/creative-directory"); // Redirect to /creative-directory
   };
 
   return (

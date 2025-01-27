@@ -118,7 +118,6 @@ export const Interested = ({
     }
   };
 
-
   useEffect(() => {
     if (!isMsgLoading && messages.length > 0) {
       scrollToBottom();
@@ -164,7 +163,6 @@ export const Interested = ({
   useEffect(() => {
     fetchusersData();
   }, []);
-
 
   useEffect(() => {
     const subscription = supabase
@@ -238,7 +236,7 @@ export const Interested = ({
       });
 
       if (!response.ok) {
-       console.log(`Failed to fetch sessions: ${response.statusText}`);
+        console.log(`Failed to fetch sessions: ${response.statusText}`);
       }
 
       const data = await response.json();
@@ -255,7 +253,6 @@ export const Interested = ({
       setIsLoading(false); // Ensure loading state is reset
     }
   };
-
 
   useEffect(() => {
     setPreviewImage(image);
@@ -313,10 +310,7 @@ export const Interested = ({
         isAutoSendCalled = true;
         fetchSessionData();
       } catch (error: any) {
-        console.log(
-          "Error checking and auto-sending message:",
-          error.message
-        );
+        console.log("Error checking and auto-sending message:", error.message);
       }
     };
 
@@ -642,7 +636,7 @@ export const Interested = ({
   };
 
   return (
-    <div className="fixed bottom-0 right-0 z-[900] w-full max-w-md min-w-[24rem] h-[70vh] overflow-hidden flex flex-col rounded-xl shadow-customShadow3 bg-gray-200">
+    <div className="poppins fixed bottom-0 right-0 z-[900] w-full max-w-md min-w-[24rem] h-[70vh] overflow-hidden flex flex-col rounded-xl shadow-customShadow3 bg-gray-200">
       <button
         onClick={onCancel}
         className="absolute top-2 right-2 p-2 bg-gray-200 rounded-lg cursor-pointer"
@@ -665,14 +659,15 @@ export const Interested = ({
                       userDetails[0].profile_pic || "/images/emptyProfile.png"
                     }
                     alt={userDetails[0].first_name}
-                    className="w-10 h-10 rounded-full mr-2"
+                    className="w-10 h-10 rounded-full mr-2 object-cover"
                   />
                   <div className="flex flex-col">
                     <p
-                      className={`text-gray-200 font-medium text-base ${userDetails[0].first_name.length > 10
+                      className={`text-gray-200 font-medium text-base ${
+                        userDetails[0].first_name.length > 10
                           ? "line-clamp-1"
                           : ""
-                        }`}
+                      }`}
                     >
                       {userDetails[0].first_name}
                     </p>
@@ -693,8 +688,8 @@ export const Interested = ({
         <div className="w-full h-full flex flex-col">
           {!isRightColumnVisible && (
             // Search user section
-            <div className="bg-white w-full h-full z-[900]">
-              <div className="p-2 relative group">
+            <div className="bg-white w-full h-full z-[900] flex flex-col">
+              <div className="h-fit w-full p-2 relative group">
                 <Search className="absolute top-1/2 left-4 transform -translate-y-1/2 text-primary-3/30 group-focus-within:text-primary-3" />
                 <input
                   type="text"
@@ -714,16 +709,18 @@ export const Interested = ({
 
               {/* Modal for searched users */}
               {showModal && (
-                <div className="inset-0 z-[999] flex items-center justify-center bg-black bg-opacity-50">
-                  <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-md">
+                <div className="w-full h-full ">
+                  <div className="bg-white p-2 shadow-lg w-full h-full max-h-56 flex flex-col max-w-md">
                     <button
                       onClick={() => setShowModal(false)}
                       className="absolute top-2 right-2 p-2 bg-gray-200 rounded-lg cursor-pointer"
                     >
                       <X size={25} />
                     </button>
-                    <h3 className="text-lg font-bold mb-4">Search Results</h3>
-                    <ul className="space-y-2">
+                    <h3 className="font-bold pb-2 text-black/50 text-sm">
+                      Search Results
+                    </h3>
+                    <ul className="space-y-2 h-full overflow-y-auto">
                       {filteredUsers.map((user) => (
                         <li
                           key={user.detailsid}
@@ -745,7 +742,7 @@ export const Interested = ({
                             />
                           </div>
                           <div className="flex flex-col">
-                            <strong>{user.first_name}</strong>
+                            <strong className="text-sm">{user.first_name}</strong>
                             {user.role === "buyer" ? (
                               <span className="text-xs text-black/50">
                                 , {user.role}
@@ -763,11 +760,11 @@ export const Interested = ({
                 </div>
               )}
 
-              <h3 className="text-sm text-black/50 font-bold px-4 pb-2">
-                Recent Messages
-              </h3>
-              <div className="w-full h-full relative flex flex-col border border-black/30 rounded-md p-2 pb-4">
-                <div className="space-y-4 h-full flex flex-col gap-2 overflow-hidden pb-12">
+              <div className="w-full h-full overflow-y-auto relative flex flex-col border border-black/10">
+                <h3 className="h-fit text-sm text-black/50 font-bold px-4 p-2">
+                  Recent Messages
+                </h3>
+                <div className="space-y-4 h-full flex flex-col gap-2 overflow-hidden">
                   {isLoading ? (
                     <div className="w-full h-full flex justify-center items-center">
                       <Loader size={55} className="animate-spin" />
@@ -777,17 +774,18 @@ export const Interested = ({
                       <p>No Recent Messages yet</p>
                     </div>
                   ) : (
-                    <ul className="space-y-2 flex flex-col h-full overflow-y-auto">
+                    <ul className="space-y-2 overflow-y-auto p-2 flex flex-col h-full">
                       {sessions.map((session) => (
                         <li
                           key={session.id}
                           onClick={() =>
                             handleClick(session.id, session.a, session.b)
                           }
-                          className={`${selectedSessionId === session.id
+                          className={`${
+                            selectedSessionId === session.id
                               ? "bg-gray-400"
                               : ""
-                            }`}
+                          }`}
                         >
                           <div className="flex flex-row capitalize bg-black/10 rounded-md p-2 gap-4 cursor-pointer">
                             <div className="w-12 h-12 rounded-full overflow-hidden">
@@ -803,7 +801,7 @@ export const Interested = ({
                               />
                             </div>
                             <div className="flex flex-col">
-                              <strong>{session.userDetails.first_name}</strong>
+                              <strong className="text-sm">{session.userDetails.first_name}</strong>
                               {session.userDetails.role === "buyer" ? (
                                 <span className="text-xs text-black/50">
                                   , {session.userDetails.role}
@@ -862,16 +860,18 @@ export const Interested = ({
                       return (
                         <div
                           key={msg.id} // Use unique key for each message
-                          className={`p-2 flex flex-col w-full ${msg.sender === gettokenId
+                          className={`p-2 flex flex-col w-full ${
+                            msg.sender === gettokenId
                               ? "items-end"
                               : "items-start"
-                            }`}
+                          }`}
                         >
                           <div
-                            className={`mb-2 p-4 min-w-14 rounded-t-3xl flex flex-col gap-2 max-w-[80%] ${msg.sender === gettokenId
+                            className={`mb-2 p-4 min-w-14 rounded-t-3xl flex flex-col gap-2 max-w-[80%] ${
+                              msg.sender === gettokenId
                                 ? "bg-[skyblue] rounded-bl-3xl"
                                 : "bg-black/10 rounded-br-3xl"
-                              }`}
+                            }`}
                           >
                             <p className="text-sm">{msg.message}</p>
 
@@ -889,10 +889,11 @@ export const Interested = ({
                           </div>
                           <div>
                             <p
-                              className={`text-[10px] ${msg.sender === gettokenId
+                              className={`text-[10px] ${
+                                msg.sender === gettokenId
                                   ? "text-black/80"
                                   : "text-black/70"
-                                }`}
+                              }`}
                             >
                               {formattedDate}, {formattedTime}
                             </p>

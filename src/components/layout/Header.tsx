@@ -55,9 +55,6 @@ export const Header = ({
 }: HeaderProps) => {
   const headerRef = useRef<HTMLDivElement | null>(null);
   const gsapAnimationRef = useRef<gsap.core.Timeline | null>(null);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  const lastScrollY = useRef(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [menuItems, setMenuItems] = useState<MenuItemProps[]>([]);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -111,29 +108,9 @@ export const Header = ({
       );
     }
 
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      // Determine if we've scrolled past threshold
-      setIsScrolled(currentScrollY > 50);
-      
-      // Determine scroll direction and visibility
-      if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
-        // Scrolling down
-        setIsVisible(false);
-      } else {
-        // Scrolling up or at the top
-        setIsVisible(true);
-      }
-      
-      lastScrollY.current = currentScrollY;
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
     checkAuth();
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
       if (gsapAnimationRef.current) {
         gsapAnimationRef.current.kill();
         gsapAnimationRef.current = null;
@@ -170,16 +147,12 @@ export const Header = ({
     <AnimatePresence mode="wait">
       <motion.div
         ref={headerRef}
-        className={`w-full h-[10dvh] fixed top-0 z-[1000] ${paddingLeftCustom} transition-all duration-300`}
+        className={`w-full h-[10dvh] fixed top-0 z-[1000] ${paddingLeftCustom}`}
         initial={{ y: 0 }}
-        animate={{ 
-          y: isVisible ? 0 : -100,
-          
-        }}
-        transition={{ duration: 0.0 }}
+        animate={{ y: 0 }} // Always keep the header visible
       >
         <motion.div
-          className={`w-full h-full ${roundedCustom} ${textColor} ${backgroundColor} `}
+          className={`w-full h-full ${roundedCustom} ${textColor} ${backgroundColor}`}
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}

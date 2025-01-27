@@ -85,7 +85,7 @@ const SearchResultsPage = () => {
     const handleNewSearch = (e: React.FormEvent) => {
         e.preventDefault();
         if (searchQuery.trim()) {
-            router.push(`/creative-dashboard/search?q=${encodeURIComponent(searchQuery)}`);
+            router.push(`/creative-directory/search?q=${encodeURIComponent(searchQuery)}`);
         }
     };
 

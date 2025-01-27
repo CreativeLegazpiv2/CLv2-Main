@@ -78,8 +78,6 @@ export default function MainLayout({
             isOpen={isSidebarOpen}
             onClose={handleCloseSideBar}
             linkName="profile"
-            backgroundColor="bg-primary-1"
-            textColor="text-secondary-2/60"
           />
         )}
       </AnimatePresence>

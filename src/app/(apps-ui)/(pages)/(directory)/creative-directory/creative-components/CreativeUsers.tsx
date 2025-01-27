@@ -412,7 +412,7 @@ const UserCard = ({
             </h6>
             <p
               className={`text-center text-xs font-semibold ${
-                bio.length > 100 ? "line-clamp-6" : ""
+                bio.length > 100 ? "line-clamp-5" : ""
               }`}
             >
               {bio}

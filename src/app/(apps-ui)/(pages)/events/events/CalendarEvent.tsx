@@ -85,11 +85,9 @@ export function CalendarEvent() {
           
           const eventStartTime = new Date(`${event.date}T${event.start_time}`)
           const eventEndTime = new Date(`${event.date}T${event.end_time}`)
-          const eventCreatedAt = new Date(event.created_at)
           
           const isPastEvent = eventEndTime < currentPhTime
           const isOngoingEvent = eventStartTime <= currentPhTime && eventEndTime >= currentPhTime
-          const isEventDone = currentPhTime > new Date(eventCreatedAt.getTime() + 24 * 60 * 60 * 1000)
 
           return (
             <div
@@ -104,11 +102,6 @@ export function CalendarEvent() {
               {isOngoingEvent && (
                 <div className="w-full h-full absolute top-0 left-0 bg-green-500/50 flex justify-center items-center">
                   <p className="text-white font-semibold">Event is ongoing</p>
-                </div>
-              )}
-              {isEventDone && !isPastEvent && !isOngoingEvent && (
-                <div className="w-full h-full absolute top-0 left-0 bg-red-500/50 flex justify-center items-center">
-                  <p className="text-white font-semibold">Event is done</p>
                 </div>
               )}
               <div className="w-full flex flex-col gap-2 justify-center items-center">
@@ -147,7 +140,7 @@ export function CalendarEvent() {
       days.push(
         <div
           key={`empty-${i}`}
-          className="calendar-day border border-gray-700 rounded-lg flex items-start justify-start p-2"
+          className="calendar-day border border-gray-700 flex items-start justify-start p-2"
         />
       )
     }
@@ -183,7 +176,6 @@ export function CalendarEvent() {
               <Icon icon="ph:arrow-left" className="rotate-180" width="35" height="35" />
             </button>
           </div>
-          
         </div>
         <div className="w-full grid grid-cols-7 auto-rows-min gap-0 bg-shade-2">
           {daysOfWeek.map((day) => (
