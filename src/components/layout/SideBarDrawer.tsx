@@ -97,7 +97,7 @@ export function SidebarDrawer({
           },
           {
             name: "Gallery",
-            link: "/g-visitor",
+            link: "/gallery",
             icon: <ImageIcon size={20} />,
           },
           { name: "FAQ", link: "/faqs", icon: <HelpCircle size={20} /> },

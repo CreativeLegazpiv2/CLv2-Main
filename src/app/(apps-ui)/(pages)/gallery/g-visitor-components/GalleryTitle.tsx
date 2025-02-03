@@ -40,41 +40,28 @@ export const GalleryTitle = () => {
       transition={pageTransition}
     >
       <div className="w-full lg:max-w-[70%] md:max-w-[80%] max-w-[90%] mx-auto">
-        <motion.div className="w-full flex flex-col gap-6" variants={staggerChildren}>
+        <motion.div className="w-full flex flex-col justify-center items-center gap-6 text-palette-2" variants={staggerChildren}>
           <motion.div
-            className="w-full flex flex-col-reverse md:flex-row gap-4 md:justify-between justify-start items-start"
+            className="w-full flex flex-col-reverse md:flex-row gap-4 md:justify-center justify-start items-start"
             variants={childVariants}
           >
-            <h1 className="md:w-full w-fit text-left text-4xl md:text-5xl font-semibold uppercase">
-              BROWSER GALLERY
+            <h1 className="w-fit text-left text-4xl md:text-5xl font-semibold uppercase">
+              Creative gallery
             </h1>
           </motion.div>
           <motion.div
-            className="w-full flex flex-col gap-8 justify-start items-start"
+            className="w-full flex flex-col gap-8 justify-center items-center"
             variants={childVariants}
           >
-            <TitleDetails />
+            <p className='text-lg font-semibold w-full max-w-2xl text-center'>
+              Creative Legazpi is a vibrant hub of creativity that brings together
+              a diverse range of artistic and cultural disciplines.
+            </p>
           </motion.div>
         </motion.div>
       </div>
     </motion.div>
   );
-};
-
-const TitleDetails = () => {
-  return (
-    <motion.div
-      className="flex flex-col gap-8 items-start justify-start"
-      variants={staggerChildren}
-    >
-      <motion.h1
-        className="w-full text-left max-w-sm text-3xl md:text-5xl font-black uppercase leading-tight"
-        variants={childVariants}
-      >
-        PORTFOLIO
-      </motion.h1>
-    </motion.div>
-  );
-};
+};  
 
 export default GalleryTitle;

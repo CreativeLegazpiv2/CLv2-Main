@@ -44,10 +44,12 @@ export const GeneralFaqs = ({
     );
 };
 
-const LeftSideGen = () => {
+const LeftSideGen = ({
+    backgroundColor = "bg-palette-5",
+}) => {
     return (
         <div
-            className="w-full xl:max-w-xl lg:max-w-md flex flex-col gap-4 sticky px-4 md:pt-0 pt-[12dvh] md:top-[12dvh] top-0 z-50 self-start"
+            className={`w-full xl:max-w-xl lg:max-w-md flex flex-col gap-4 sticky px-4 md:pt-[5dvh] pt-[10dvh] md:top-[12dvh] top-0 z-[60] self-start ${backgroundColor}`}
         >
             <h1 className="xl:text-5xl text-4xl font-extrabold uppercase tracking-tight">General FAQs</h1>
             <p className="font-medium text-lg">
@@ -109,7 +111,7 @@ const AccordionItem = ({
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className={`w-full flex flex-col gap-4 ${backgroundColor} ${textColor}`}>
+        <div className={`w-full flex flex-col gap-4  ${textColor}`}>
             <div className={`w-full flex flex-col md:pl-4 group rounded-lg transition-colors duration-200`}>
                 <hr className={`border w-full border-palette-1/20 ${hidden}`} />
                 <div className={`w-full flex flex-row gap-20 justify-between group items-start p-2 duration-300 ${hoverColor} px-4 rounded-full ${border}`}>

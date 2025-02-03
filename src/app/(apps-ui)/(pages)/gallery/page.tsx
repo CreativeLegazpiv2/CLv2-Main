@@ -7,7 +7,7 @@ import GalleryTitle from "./g-visitor-components/GalleryTitle";
 
 export default function GalleryVisitorPage() {
     return (
-        <main className="w-full h-fit text-primary-2 overflow-x-hidden"> {/* Ensure no horizontal scrolling */}
+        <main className="w-full h-fit text-primary-2 overflow-x-hidden bg-palette-5"> {/* Ensure no horizontal scrolling */}
             <div className="pt-[10dvh] flex flex-col w-full max-w-full"> {/* Ensure full width with no overflow */}
                 <GalleryTitle />
                 <BrowseGallery />

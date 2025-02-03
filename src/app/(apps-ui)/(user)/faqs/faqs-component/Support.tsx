@@ -12,7 +12,7 @@ export const Support = () => {
                     
                     <div className="absolute -top-16 right-28 z-10 bg-yellow-500 rounded-md h-10 w-10"></div>
                     <div className="absolute top-0 right-16 z-10 bg-blue-600 rounded-full h-6 w-6"></div>
-                    <img src="images/faq/2.png" className="absolute -bottom-[30%] -left-[12%] w-48 h-48 z-10" alt="" />
+                    <img src="images/faq/2.png" className="absolute -bottom-[30%] -left-[12%] w-48 h-48 z-[70]" alt="" />
                     <LeftSide />
                     <RightSide />
                 </div>
@@ -23,7 +23,7 @@ export const Support = () => {
 
 const LeftSide = () => {
     return (
-        <div className="w-full h-full flex flex-col lg:gap-2 gap-4 lg:justify-start justify-center lg:items-start items-center z-20">
+        <div className="w-full h-full flex flex-col lg:gap-2 gap-4 lg:justify-start justify-center lg:items-start items-center z-[80]">
             <h2 className="tracking-wider text-3xl font-thin uppercase pb-2 text-shade-8 title">support</h2>
             <h1 className="font-extrabold xl:text-5xl text-4xl uppercase leading-snug w-full xl:max-w-2xl max-w-lg lg:text-left text-center">TOP QUESTIONS ABOUT CREATIVE LEGAZPI </h1>
             <p className="font-semibold w-full max-w-sm text-xl lg:text-left text-center">Need to clear something? Here are frequently asked questions.</p>
