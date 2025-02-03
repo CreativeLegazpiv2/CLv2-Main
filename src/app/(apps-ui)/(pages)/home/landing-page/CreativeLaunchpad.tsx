@@ -6,7 +6,7 @@ export default function CreativeLaunchpad() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null); // Track the hovered image index
   return (
     <div className="w-full min-h-screen bg-palette-6 overflow-x-hidden">
-      <div className="w-full flex md:flex-row flex-col">
+      <div className="w-full flex lg:flex-row flex-col">
         {/* Left side content */}
         <motion.div
           className="w-full flex justify-center items-center z-10"
@@ -15,11 +15,11 @@ export default function CreativeLaunchpad() {
           viewport={{ once: true }}
           transition={{ duration: 1 }}
         >
-          <div className="w-full h-fit flex flex-col md:gap-6 gap-4 md:px-0 px-4 md:py-0 py-[10dvh] max-w-lg text-palette-5 relative">
-            <h1 className="title md:text-6xl text-5xl uppercase font-normal z-20">
+          <div className="w-full h-fit flex flex-col lg:gap-6 gap-4 lg:px-0 px-4 lg:py-0 py-[10dvh] max-w-lg text-palette-5 relative">
+            <h1 className="title lg:text-6xl text-5xl uppercase font-normal z-20">
               Creative Launchpad
             </h1>
-            <h2 className="md:text-7xl text-6xl uppercase">Available soon</h2>
+            <h2 className="lg:text-7xl text-6xl uppercase">Available soon</h2>
             <p className="font-normal text-2xl">
               Highlights local creative professionals by launching a campaign of
               their latest project, exhibits and services
@@ -29,7 +29,7 @@ export default function CreativeLaunchpad() {
               {/* Image */}
               <motion.img
                 key={"1"}
-                className="absolute md:-top-[55%] md:-right-[20%] right-20 top-2 md:w-fit md:h-fit w-24 h-24 "
+                className="absolute lg:-top-[55%] lg:-right-[20%] right-20 top-2 lg:w-fit lg:h-fit w-24 h-24 "
                 src="/images/homepage/4.png"
                 alt=""
                 initial={{ opacity: 0, x: 50 }}
@@ -48,7 +48,7 @@ export default function CreativeLaunchpad() {
               {/* Blue Circle */}
               <motion.div
                 key={"2"}
-                className="absolute md:top-[20%] md:-right-[25%] top-30 right-0 bg-blue-800 rounded-md w-12 h-12"
+                className="absolute lg:top-[20%] lg:-right-[25%] top-30 right-0 bg-blue-800 rounded-md w-12 h-12"
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{
                   opacity: [1, 0.3, 1],
@@ -66,7 +66,7 @@ export default function CreativeLaunchpad() {
               {/* Yellow Circle */}
               <motion.div
                 key={"3"}
-                className="absolute md:top-[50%] md:-right-[15%] top-44 right-10 bg-yellow-600 rounded-md w-7 h-7"
+                className="absolute lg:top-[50%] lg:-right-[15%] top-44 right-10 bg-yellow-600 rounded-md w-7 h-7"
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{
                   opacity: [1, 0.3, 1],

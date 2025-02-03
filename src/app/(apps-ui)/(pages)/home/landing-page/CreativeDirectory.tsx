@@ -69,20 +69,20 @@ export const CreativeDirectory = () => {
   };
 
   return (
-    <div className="w-full md:h-dvh h-fit md:py-0 py-[10dvh] md:min-h-screen bg-palette-2 overflow-x-hidden">
+    <div className="w-full lg:h-dvh h-fit lg:py-0 py-[10dvh] lg:min-h-screen bg-palette-2 overflow-x-hidden">
       <motion.div 
         ref={ref}
-        className="w-full h-full flex md:flex-row flex-col gap-12 justify-center items-center md:max-w-[70%] max-w-[90%] mx-auto"
+        className="w-full h-full flex lg:flex-row flex-col gap-12 justify-center items-center lg:max-w-[70%] max-w-[90%] mx-auto"
         variants={containerVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
       >
         <motion.div 
-          className="w-full h-full md:max-h-[70%] md:max-w-[40%] relative"
+          className="w-full h-full lg:max-h-[70%] lg:max-w-[40%] relative"
           variants={itemVariants}
         >
           <motion.img
-            className="absolute md:-top-10 md:-right-20 -top-10 -right-10 md:scale-75 md:h-40 md:w-40 h-32 w-32 z-10 animate-bounce"
+            className="absolute lg:-top-10 lg:-right-20 -top-10 -right-10 lg:scale-75 lg:h-40 lg:w-40 h-32 w-32 z-10 animate-bounce"
             src="/images/landing-page/icon.png"
             alt=""
             initial={{ rotate: -10, scale: 0.5 }}
@@ -94,7 +94,7 @@ export const CreativeDirectory = () => {
             }}
           />
           <motion.img
-            className="w-full h-full md:min-h-fit min-h-[28rem] object-cover rounded-[2rem]"
+            className="w-full h-full lg:min-h-fit min-h-[28rem] object-cover rounded-[2rem]"
             src="/images/landing-page/creatives.png"
             alt=""
             initial={{ scale: 0.8, opacity: 0 }}
@@ -104,7 +104,7 @@ export const CreativeDirectory = () => {
         </motion.div>
         
         <motion.div 
-          className="w-full h-full max-h-[70%] md:max-w-[40%] flex flex-col px-1 justify-center items-start gap-6 text-palette-5"
+          className="w-full h-full max-h-[70%] lg:max-w-[40%] flex flex-col px-1 justify-center items-start gap-6 text-palette-5"
           variants={itemVariants}
         >
           <motion.div 

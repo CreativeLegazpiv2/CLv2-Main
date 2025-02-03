@@ -9,6 +9,7 @@ import { getSession } from "@/services/authservice";
 import { supabase } from "@/services/supabaseClient";
 import { jwtVerify } from "jose";
 import UserCardSkeleton from "@/components/Skeletal/userCardSkeleton";
+import { Search } from "lucide-react";
 
 
 interface CreativeArrayProps {
@@ -41,13 +42,17 @@ export const CreativeUsers = () => {
   }, []);
 
   return (
-    <div className="w-full h-fit pb-[15dvh]">
+    <div className="w-full h-fit pb-[15dvh] bg-palette-6">
       <ToastContainer />
       <div className="w-full h-full flex flex-col md:max-w-[90%] max-w-[95%] mx-auto">
-        <div className="w-full p-6">
-          <h1 className="md:w-full w-fit mx-auto lg:text-5xl md:text-4xl text-2xl font-semibold uppercase md:text-left text-center leading-tight">
-            meet our creatives
+        <div className="w-full max-w-screen-lg p-6 flex items-center justify-center mx-auto">
+          <h1 className="md:w-full w-fit max-w-sm mx-auto text-palette-5 lg:text-5xl md:text-4xl text-2xl font-semibold uppercase md:text-left text-center leading-tight">
+            our creatives
           </h1>
+          <div className="w-full relative">
+            <input type="text" className="w-full p-3.5 px-8 bg-palette-5 border border-black/20 rounded-full focus:outline-2 focus:outline-palette-2" placeholder="Search for an artist" />
+            <Search className="absolute top-1/2 -translate-y-1/2 right-4  text-black" />
+          </div>
         </div>
         <div className="grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 grid-cols-1 lg:gap-16 md:gap-8 lg:gap-y-24 md:gap-y-12 gap-y-8 p-6">
           {loading

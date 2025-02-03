@@ -151,7 +151,11 @@ export function SidebarDrawer({
           opacity: 0,
         }}
         transition={{ duration: 0.3 }}
-        style={{ backgroundColor }}
+        style={{
+          backgroundColor,
+          right: breakpoint === "md" || breakpoint === "lg" ? 0 : "auto",
+          left: breakpoint === "md" || breakpoint === "lg" ? "auto" : 0,
+        }}
         className="absolute bottom-0 w-full bg-palette-6 text-white md:max-w-md max-w-sm h-full max-h-[90dvh] shadow-2xl"
       >
         <div className="relative flex flex-col h-full">
@@ -231,9 +235,8 @@ const MenuItem = ({ name, link, icon }: MenuItemProps) => {
         whileTap={{ scale: 0.98 }}
       >
         <div
-          className={`flex items-center justify-between p-4 rounded-xl transition-all ${
-            isActive ? "text-white" : "text-white hover:text-palette-2"
-          }`}
+          className={`flex items-center justify-between p-4 rounded-xl transition-all ${isActive ? "text-white" : "text-white hover:text-palette-2"
+            }`}
           style={{
             backgroundColor: isActive ? COLORS.scarlet : "transparent",
           }}
