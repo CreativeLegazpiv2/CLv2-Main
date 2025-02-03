@@ -456,7 +456,7 @@ const CreativeButton: React.FC<{ detailsid: string }> = ({ detailsid }) => {
       if (gettSession) {
         window.location.href = `/g-user/collections/${detailsid}`;
       } else {
-        window.location.href = `/g-visitor/artwork/${detailsid}`;
+        window.location.href = `/gallery/artwork/${detailsid}`;
       }
     } else {
       toast.error("No uploaded works yet!", {

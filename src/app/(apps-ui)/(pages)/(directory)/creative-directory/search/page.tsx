@@ -91,7 +91,7 @@ const SearchResultsPage = () => {
 
     return (
         <motion.div
-            className="w-full min-h-screen pt-[5dvh] pb-20 text-primary-2"
+            className="w-full min-h-screen bg-palette-5 pt-[5dvh] pb-20 text-primary-2"
             initial="initial"
             animate="animate"
             exit="exit"
@@ -173,7 +173,7 @@ const SearchResultsPage = () => {
                     {filteredUsersList.length > 0 && (
                         <motion.div className="mt-8">
                             <h2 className="text-2xl font-semibold mb-4">Artists</h2>
-                            <motion.div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
+                            <motion.div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 pt-[5dvh]">
                                 {filteredUsersList.map((user) => (
                                     <motion.div
                                         key={user.detailsid}
@@ -184,15 +184,15 @@ const SearchResultsPage = () => {
                                         whileHover={{ scale: 1.02 }}
                                         className="w-full border border-gray-400 rounded-xl p-4 bg-secondary-1 shadow-customShadow"
                                     >
-                                        <div className="flex flex-col">
-                                            <div className="w-full h-52 relative">
+                                        <div className="flex flex-col ">
+                                            {/* <div className="w-full h-52 relative">
                                                 <img 
                                                     className="w-full h-full object-cover" 
                                                     src={user.imageBg || "../../images/landing-page/eabab.png"} 
                                                     alt={user.first_name} 
 
                                                 />
-                                            </div>
+                                            </div> */}
                                             <div className="w-full h-full max-h-28 -mt-12 flex justify-center items-center">
                                                 {/* <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                                                     <Icon className="cursor-pointer" icon="jam:heart" width="35" height="35" />

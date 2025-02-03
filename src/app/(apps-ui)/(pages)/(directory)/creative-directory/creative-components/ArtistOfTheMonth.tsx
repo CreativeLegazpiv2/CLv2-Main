@@ -2,10 +2,10 @@ import { ChevronRight } from "lucide-react";
 
 export const ArtistOfTheMonth = () => {
   return (
-    <div className="w-full h-dvh bg-palette-2 text-white">
-      <div className="w-full h-full md:max-w-[75%] max-w-[90%] mx-auto flex flex-row gap-[15dvh]">
-        <div className="w-full h-full flex  justify-start items-center">
-          <div className="h-fit w-full flex flex-col  gap-3">
+    <div className="w-full lg:h-dvh h-fit bg-palette-2 text-white">
+      <div className="w-full h-full md:max-w-[80%] max-w-[90%] mx-auto flex lg:flex-row flex-col lg:py-0 py-[10dvh] lg:gap-[10dvh] gap-12">
+        <div className="w-full lg:h-full h-fit flex md:justify-start justify-center items-center">
+          <div className="h-fit lg:w-fit w-full flex flex-col  gap-3">
             <h1 className="title text-4xl font-normal">ARTIST OF THE MONTH</h1>
             {description.map((item, index) => (
               <div className="h-fit w-full flex flex-col  gap-3">
@@ -14,9 +14,8 @@ export const ArtistOfTheMonth = () => {
                 </span>
                 <span className="text-3xl italic font-bold">{item.field}</span>
                 <p
-                  className={`text-semibold max-w-md ${
-                    item.bio.length > 100 ? "line-clamp-5" : ""
-                  }`}
+                  className={`text-semibold max-w-md ${item.bio.length > 100 ? "line-clamp-5" : ""
+                    }`}
                 >
                   {item.bio}
                 </p>
@@ -33,14 +32,14 @@ export const ArtistOfTheMonth = () => {
             ))}
           </div>
         </div>
-        <div className="w-full h-full flex justify-center items-center">
-          <div className="w-full h-full px-[5dvh] max-h-[70dvh]">
-            <div className="w-full h-full bg-gray-500 rounded-[2rem]">
-              {/* laaga na sana digdi padi */}
-              {/* <img src="" alt="" />  */}
-            </div>
+
+        <div className="w-full h-full flex lg:justify-end justify-center items-center">
+          <div className="w-full h-full bg-gray-500 rounded-[2rem] min-h-[50dvh] max-h-[70dvh] md:max-w-md">
+            {/* laaga na sana digdi padi */}
+            {/* <img src="" alt="" />  */}
           </div>
         </div>
+
       </div>
     </div>
   );

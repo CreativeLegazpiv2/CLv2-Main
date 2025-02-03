@@ -19,6 +19,7 @@ import { EventDetailsModal } from "@/components/reusable-component/EventsDetails
 import { Events, ExtendedEventProps } from "./landing-page/EventsCarousel";
 import { RegisterModal } from "@/components/reusable-component/RegisterModal";
 import { toast } from "react-toastify";
+import { RightSideGen } from "../../(user)/faqs/faqs-component/GeneralFaqs";
 
 export default function PofconLandingPage() {
   const [showPofconModal, setShowPofconModal] = useState(false); // Modal state
@@ -80,6 +81,17 @@ export default function PofconLandingPage() {
 
       <ScrollAnimationSection>
         <Malikhain />
+      </ScrollAnimationSection>
+
+      <ScrollAnimationSection>
+        <div className="w-full mx-auto py-[10dvh] flex flex-col gap-4 bg-palette-5">
+          <div className="w-full max-w-screen-md mx-auto">
+            <div className="w-full lg:max-w-[80%] max-w-[90%] mx-auto">
+              <h1 className="font-bold text-6xl uppercase text-palette-1">Frequently asked question</h1>
+            </div>
+            <RightSideGen />
+          </div>
+        </div>
       </ScrollAnimationSection>
 
       <Infinite />

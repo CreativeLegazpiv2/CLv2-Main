@@ -21,16 +21,22 @@ interface CreativeArrayProps {
   imageBg: string;
 }
 
+const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
 export const CreativeUsers = () => {
   const [creativeUsers, setCreativeUsers] = useState<CreativeArrayProps[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<CreativeArrayProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [visibleUsers, setVisibleUsers] = useState(6);
+  const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const users = await CreativeService.fetchCreativeUsers();
         setCreativeUsers(users);
+        setFilteredUsers(users); // Initially, show all users
       } catch (error) {
         setError("Failed to load creatives.");
       } finally {
@@ -41,25 +47,71 @@ export const CreativeUsers = () => {
     fetchUsers();
   }, []);
 
+  // Function to filter users based on selected letter
+  const handleLetterClick = (letter: string) => {
+    if (selectedLetter === letter) {
+      // If the same letter is clicked again, reset filter
+      setSelectedLetter(null);
+      setFilteredUsers(creativeUsers);
+    } else {
+      setSelectedLetter(letter);
+      setFilteredUsers(
+        creativeUsers.filter(user => user.first_name.toUpperCase().startsWith(letter))
+      );
+    }
+    setVisibleUsers(6); // Reset visible users count
+  };
+
+  const loadMoreUsers = () => {
+    setVisibleUsers(prev => prev + 6);
+  };
+
+  const showLessUsers = () => {
+    setVisibleUsers(6);
+  };
+
   return (
     <div className="w-full h-fit pb-[15dvh] bg-palette-6">
       <ToastContainer />
       <div className="w-full h-full flex flex-col md:max-w-[90%] max-w-[95%] mx-auto">
-        <div className="w-full max-w-screen-lg p-6 flex items-center justify-center mx-auto">
-          <h1 className="md:w-full w-fit max-w-sm mx-auto text-palette-5 lg:text-5xl md:text-4xl text-2xl font-semibold uppercase md:text-left text-center leading-tight">
-            our creatives
-          </h1>
-          <div className="w-full relative">
-            <input type="text" className="w-full p-3.5 px-8 bg-palette-5 border border-black/20 rounded-full focus:outline-2 focus:outline-palette-2" placeholder="Search for an artist" />
-            <Search className="absolute top-1/2 -translate-y-1/2 right-4  text-black" />
+        <div className="w-full max-w-screen-lg p-6 flex flex-col gap-12 items-center justify-center mx-auto">
+          <div className="w-full md:max-w-screen-md flex md:flex-row flex-col items-center gap-4">
+            <h1 className="w-full max-w-screen-lg md:max-w-sm mx-auto text-palette-5 lg:text-5xl text-4xl font-semibold uppercase md:text-left text-center leading-tight">
+              our creatives
+            </h1>
+            <div className="w-full relative">
+              <input
+                type="text"
+                className="w-full p-3.5 px-8 bg-palette-5/80 border border-black/20 rounded-full focus:outline-2 focus:outline-palette-2"
+                placeholder="Search for an artist"
+              />
+              <Search className="absolute top-1/2 -translate-y-1/2 right-4 text-black" />
+            </div>
+          </div>
+
+          {/* Alphabet filter */}
+          <div className="w-full md:flex hidden py-3 pl-6 bg-palette-5/80 border border-black/20 rounded-full">
+            {alphabet.map((letter) => (
+              <motion.div
+                key={letter}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => handleLetterClick(letter)}
+                className={`w-full font-extrabold poppins cursor-pointer text-center ${
+                  selectedLetter === letter ? "text-palette-3" : ""
+                }`}
+              >
+                {letter}
+              </motion.div>
+            ))}
           </div>
         </div>
+
+        {/* User Cards */}
         <div className="grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 grid-cols-1 lg:gap-16 md:gap-8 lg:gap-y-24 md:gap-y-12 gap-y-8 p-6">
           {loading
-            ? Array.from({ length: 6 }).map((_, index) => (
-                <UserCardSkeleton key={index} /> // Render 6 skeleton placeholders
-              ))
-            : creativeUsers.map((user, id) => (
+            ? Array.from({ length: 6 }).map((_, index) => <UserCardSkeleton key={index} />)
+            : filteredUsers.slice(0, visibleUsers).map((user, id) => (
                 <UserCard
                   key={id}
                   detailsid={user.detailsid}
@@ -71,10 +123,31 @@ export const CreativeUsers = () => {
                 />
               ))}
         </div>
+
+        {/* Show More / Show Less Buttons */}
+        <div className="w-full flex justify-end px-6 mt-8 gap-4">
+          {visibleUsers < filteredUsers.length && (
+            <button
+              onClick={loadMoreUsers}
+              className="px-6 py-2 bg-palette-2 text-white rounded-full hover:bg-palette-3 transition-colors"
+            >
+              Show More
+            </button>
+          )}
+          {visibleUsers > 6 && (
+            <button
+              onClick={showLessUsers}
+              className="px-6 py-2 bg-palette-4 text-white rounded-full hover:bg-palette-5 transition-colors"
+            >
+              Show Less
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
 };
+
 
 const calculateAge = (bDay: string | Date) => {
   const dateNow = new Date();
@@ -391,9 +464,8 @@ const UserCard = ({
                 whileTap={{ scale: 0.95 }}
               >
                 <Icon
-                  className={`cursor-pointer text-red-400 ${
-                    loading ? "opacity-50 pointer-events-none" : ""
-                  }`}
+                  className={`cursor-pointer text-red-400 ${loading ? "opacity-50 pointer-events-none" : ""
+                    }`}
                   icon={liked ? "jam:heart-f" : "jam:heart"}
                   width="35"
                   height="35"
@@ -416,9 +488,8 @@ const UserCard = ({
               {first_name}, {age}
             </h6>
             <p
-              className={`text-center text-xs font-semibold ${
-                bio.length > 100 ? "line-clamp-5" : ""
-              }`}
+              className={`text-center text-xs font-semibold ${bio.length > 100 ? "line-clamp-5" : ""
+                }`}
             >
               {bio}
             </p>
@@ -428,3 +499,5 @@ const UserCard = ({
     </motion.div>
   );
 };
+
+
