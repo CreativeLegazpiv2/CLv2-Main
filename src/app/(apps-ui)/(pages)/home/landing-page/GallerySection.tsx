@@ -243,14 +243,14 @@ export function GallerySection() {
       </div>
 
       {/* Learn More Button */}
-      <motion.button
+      {/* <motion.button
         onClick={handleLearnMoreClick} // Redirect to /g-visitor
         className="max-w-60 w-full py-3 bg-white text-primary-2 rounded-full font-semibold shadow-md"
         whileHover={{ scale: 1.05, boxShadow: "0px 5px 15px rgba(0,0,0,0.1)" }}
         whileTap={{ scale: 0.95 }}
       >
         LEARN MORE
-      </motion.button>
+      </motion.button> */}
     </div>
   );
 }

@@ -43,7 +43,7 @@ const LeftSide = ({ currentIndex }: { currentIndex: number }) => {
       viewport={{ once: true }}
     >
       <div className="w-full h-full flex flex-col gap-6 justify-center items-center relative">
-        <motion.div 
+        <motion.div
           initial="hidden"
           animate="visible"
           variants={{
@@ -281,13 +281,11 @@ const RightSide = ({
       <div className="block md:hidden absolute inset-0 bg-gradient-to-r from-palette-5 via-palette-5/70 to-transparent z-10" />
       {/* Image container with sliding effect */}
       <div
-        className={`flex w-full h-full ${
-          isTransitioning ? "transition-transform duration-500 ease-in-out" : ""
-        }`}
+        className={`flex w-full h-full ${isTransitioning ? "transition-transform duration-500 ease-in-out" : ""
+          }`}
         style={{
-          transform: `translateX(-${
-            (currentIndex % (totalSlides + 1)) * 100
-          }%)`,
+          transform: `translateX(-${(currentIndex % (totalSlides + 1)) * 100
+            }%)`,
         }}
         onTransitionEnd={handleTransitionEnd}
       >
@@ -312,11 +310,10 @@ const Indicator = ({ currentIndex }: { currentIndex: number }) => {
       {imageSet.map((_, index) => (
         <div
           key={index}
-          className={`w-4 h-4 border-2 border-palette-2 rounded-full ${
-            index === currentIndex % imageSet.length
-              ? "bg-transparent"
-              : "bg-palette-2"
-          }`}
+          className={`w-4 h-4 border-2 border-palette-2 rounded-full ${index === currentIndex % imageSet.length
+            ? "bg-transparent"
+            : "bg-palette-2"
+            }`}
         ></div>
       ))}
     </div>
@@ -326,12 +323,16 @@ const Indicator = ({ currentIndex }: { currentIndex: number }) => {
 const Buttons = () => {
   return (
     <div className="w-fit flex gap-6 ">
-      <button className="w-36 py-2 z-20 bg-palette-6 uppercase text-palette-5 rounded-full font-semibold tracking-wider">
-        Join
-      </button>
-      <button className="w-36 py-2 z-20 bg-palette-3 uppercase text-palette-5 rounded-full font-semibold tracking-wider">
-        Explore
-      </button>
+      <a href="/signin">
+        <button className="w-36 py-2 z-20 bg-palette-6 uppercase text-palette-5 rounded-full font-semibold tracking-wider">
+          Join
+        </button>
+      </a>
+      <a href="/gallery">
+        <button className="w-36 py-2 z-20 bg-palette-3 uppercase text-palette-5 rounded-full font-semibold tracking-wider">
+          Explore
+        </button>
+      </a>
     </div>
   );
 };

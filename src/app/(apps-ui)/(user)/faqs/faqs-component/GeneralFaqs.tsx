@@ -8,18 +8,20 @@ import { FaqsArray } from "./FaqsArray";
 interface StyleProps {
     backgroundColor?: string;
     textColor?: string;
-    borderColor?: string;
+    texthover?: string;
     hoverColor?: string;
     iconColor?: string;
     containerWidth?: string;
     spacing?: string;
+    border?: string;
+    hidden?: string
 }
 
 export const GeneralFaqs = ({
     backgroundColor = "bg-secondary-1",
     textColor = "text-primary-2",
-    borderColor = "border-primary-2",
-    hoverColor = "hover:bg-gray-100",
+    texthover = "border-primary-2",
+    hoverColor = "",
     iconColor = "text-primary-2",
     containerWidth = "xl:max-w-[75%] lg:max-w-[80%] md:max-w-[90%]",
     spacing = "gap-4"
@@ -28,10 +30,10 @@ export const GeneralFaqs = ({
         <div className="w-full h-auto">
             <div className={`w-full h-full flex md:flex-row flex-col ${containerWidth} mx-auto ${textColor}`}>
                 <LeftSideGen />
-                <RightSideGen 
+                <RightSideGen
                     backgroundColor={backgroundColor}
                     textColor={textColor}
-                    borderColor={borderColor}
+                    texthover={texthover}
                     hoverColor={hoverColor}
                     iconColor={iconColor}
                     containerWidth={containerWidth}
@@ -56,26 +58,30 @@ const LeftSideGen = () => {
 };
 
 export const RightSideGen = ({
-    backgroundColor = "bg-secondary-1",
+    backgroundColor = "bg-palette-5",
     textColor = "text-primary-2",
-    borderColor = "border-primary-2",
-    hoverColor = "hover:bg-gray-100",
+    texthover = "border-primary-2",
+    hoverColor = "",
     iconColor = "text-primary-2",
     containerWidth = "lg:max-w-[80%] max-w-[90%]",
-    spacing = "gap-4"
+    spacing = "gap-4",
+    border = "border border-none",
+    hidden = "flex"
 }: StyleProps = {}) => {
     return (
         <div className={`w-full flex flex-col ${spacing}`}>
             <div className={`w-full flex flex-col ${spacing} ${containerWidth} mx-auto`}>
                 {FaqsArray.map((item, id) => (
-                    <AccordionItem 
-                        key={id} 
+                    <AccordionItem
+                        key={id}
                         item={item}
                         backgroundColor={backgroundColor}
                         textColor={textColor}
-                        borderColor={borderColor}
+                        texthover={texthover}
                         hoverColor={hoverColor}
                         iconColor={iconColor}
+                        border={border}
+                        hidden={hidden}
                     />
                 ))}
             </div>
@@ -90,22 +96,25 @@ interface AccordionItemProps extends StyleProps {
     };
 }
 
-const AccordionItem = ({ 
+const AccordionItem = ({
     item,
-    backgroundColor = "bg-secondary-1",
-    textColor = "text-primary-2",
-    borderColor = "border-primary-2",
-    hoverColor = "hover:bg-gray-100",
-    iconColor = "text-primary-2"
+    backgroundColor = "bg-palette-5",
+    textColor = "text-black/90",
+    texthover = "group-hover:text-palette-1",
+    hoverColor = "",
+    iconColor = "text-primary-2",
+    border = "border border-none",
+    hidden = "flex"
 }: AccordionItemProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
         <div className={`w-full flex flex-col gap-4 ${backgroundColor} ${textColor}`}>
-            <hr className={`w-full border-[-1px] ${borderColor}`} />
-            <div className={`w-full flex flex-col gap-2 md:pl-4 ${hoverColor} rounded-lg transition-colors duration-200`}>
-                <div className="w-full flex flex-row gap-20 justify-between items-start">
-                    <h1 className="text-lg font-bold">{item.question}</h1>
+            <div className={`w-full flex flex-col md:pl-4 group rounded-lg transition-colors duration-200`}>
+                <hr className={`border w-full border-palette-1/20 ${hidden}`} />
+                <div className={`w-full flex flex-row gap-20 justify-between group items-start p-2 duration-300 ${hoverColor} px-4 rounded-full ${border}`}>
+
+                    <h1 className={`text-lg font-bold ${textColor} ${texthover}`}>{item.question}</h1>
                     <motion.div
                         initial={false}
                         animate={{ rotate: isOpen ? 360 : 0 }}
@@ -117,6 +126,7 @@ const AccordionItem = ({
                             icon={isOpen ? "icons8:minus" : "icons8:plus"}
                             width="28"
                             height="28"
+                            className={`${iconColor} ${texthover}`}
                         />
                     </motion.div>
                 </div>
@@ -145,9 +155,9 @@ const AccordionItem = ({
                                     duration: 0.3,
                                     ease: "easeInOut",
                                 }}
-                                className="overflow-hidden"
+                                className="overflow-hidden px-4"
                             >
-                                <p className="text-base font-medium">{item.answer}</p>
+                                <p className={`text-base font-medium pt-2 ${textColor}`}>{item.answer}</p>
                             </motion.div>
                         </motion.div>
                     )}

@@ -85,11 +85,18 @@ export default function PofconLandingPage() {
 
       <ScrollAnimationSection>
         <div className="w-full mx-auto py-[10dvh] flex flex-col gap-4 bg-palette-5">
-          <div className="w-full max-w-screen-md mx-auto">
+          <div className="w-full max-w-screen-lg mx-auto flex flex-col gap-6">
             <div className="w-full lg:max-w-[80%] max-w-[90%] mx-auto">
-              <h1 className="font-bold text-6xl uppercase text-palette-1">Frequently asked question</h1>
+              <h1 className="font-bold text-6xl uppercase text-palette-1 px-4">Frequently asked question</h1>
             </div>
-            <RightSideGen />
+            <RightSideGen
+              border="border border-palette-2"
+              hidden="hidden"
+              textColor="text-palette-2"
+              iconColor="text-palette-2"
+              texthover="group-hover:text-white"
+              hoverColor="hover:bg-palette-2"
+            />
           </div>
         </div>
       </ScrollAnimationSection>
