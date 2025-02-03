@@ -23,7 +23,7 @@ const GalleryItem: React.FC<Artwork> = ({
 
     return (
         <div className="inline-block px-3 max-sm:px-0 w-full max-w-lg"> {/* Remove padding on mobile */}
-        <Link href={`/g-visitor/artwork/${slug}`} passHref>
+        <Link href={`/gallery/artwork/${slug}`} passHref>
             <motion.article 
                 className="relative rounded-lg shadow-lg w-full g-carousel h-auto max-md:max-w-full max-sm:w-[calc(100vw-32px)] bg-white cursor-pointer"
                 initial={{ opacity: 0, y: 50 }}
