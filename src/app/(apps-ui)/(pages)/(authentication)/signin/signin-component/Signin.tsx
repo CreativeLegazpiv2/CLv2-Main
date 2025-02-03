@@ -47,8 +47,8 @@ const AccountCreation = () => {
               <span className="title text-3xl tracking-wider uppercase">Log in</span>
               <h1 className="uppercase text-5xl font-bold poppins">Explore</h1>
             </div>
-            {/* <Form /> */}
-            <ForgotPass />
+            <Form />
+            {/* <ForgotPass /> */}
 
             {/* dapat mawara pagforgot pass */}
             <div className="w-full gap-2">
