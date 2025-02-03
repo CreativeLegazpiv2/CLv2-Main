@@ -42,7 +42,7 @@ export const GalleryTitle = () => {
       <div className="w-full lg:max-w-[70%] md:max-w-[80%] max-w-[90%] mx-auto">
         <motion.div className="w-full flex flex-col justify-center items-center gap-6 text-palette-2" variants={staggerChildren}>
           <motion.div
-            className="w-full border flex flex-col-reverse md:flex-row gap-4 md:justify-center justify-start items-start"
+            className="w-full flex flex-col-reverse md:flex-row gap-4 md:justify-center justify-start items-start"
             variants={childVariants}
           >
             <h1 className="w-fit text-left text-4xl md:text-5xl font-semibold uppercase">
