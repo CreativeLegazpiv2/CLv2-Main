@@ -84,10 +84,26 @@ export default function PofconLandingPage() {
       </ScrollAnimationSection>
 
       <ScrollAnimationSection>
-        <div className="w-full mx-auto py-[10dvh] flex flex-col gap-4 bg-palette-5">
-          <div className="w-full max-w-screen-lg mx-auto flex flex-col gap-6">
+        <div className="w-full mx-auto py-[10dvh] flex flex-col gap-4 bg-palette-5 relative">
+        <img src="/images/homepage/5.png" className="w-fit h-fit absolute bottom-[30%] right-[5%]" alt="" />
+        <div className="w-8 h-8 rounded-full bg-palette-2 absolute bottom-[20%] right-[15%]"></div>
+        <div className="w-6 h-6 rounded-md bg-palette-3 absolute bottom-[10%] right-[10%]"></div>
+          <motion.img
+            className="absolute lg:-top-20 lg:left-44 lg:h-56 lg:w-56 h-32 w-32 z-10 "
+            src="/images/landing-page/icon.png"
+            alt=""
+            initial={{ rotate: -10, scale: 0.5 }}
+            animate={{ rotate: 0, scale: 0.75 }}
+            transition={{
+              type: "spring",
+              bounce: 0.4,
+              duration: 1
+            }}
+          />
+
+          <div className="w-full max-w-screen-lg mx-auto flex flex-col gap-6 z-20">
             <div className="w-full lg:max-w-[80%] max-w-[90%] mx-auto">
-              <h1 className="font-bold text-6xl uppercase text-palette-1 px-4">Frequently asked question</h1>
+              <h1 className="font-bold md:text-6xl text-4xl uppercase text-palette-1 px-4">Frequently asked question</h1>
             </div>
             <RightSideGen
               border="border border-palette-2"
@@ -97,6 +113,7 @@ export default function PofconLandingPage() {
               texthover="group-hover:text-white"
               hoverColor="hover:bg-palette-2"
             />
+
           </div>
         </div>
       </ScrollAnimationSection>

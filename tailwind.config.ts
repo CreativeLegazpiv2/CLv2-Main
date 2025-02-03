@@ -45,7 +45,7 @@ const config: Config = {
           1: "#6E352C", //maroon
           2: "#CE5230", //scarlet
           3: "#F49A44", //orange
-          4: "#E4C597", //cream
+          4: "#E4C597", //cream h
           5: "#FAF3E1", //white
           6: "#6E602F", //olive
           7: "#222222", //black
