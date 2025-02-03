@@ -18,7 +18,7 @@ interface StyleProps {
 }
 
 export const GeneralFaqs = ({
-    backgroundColor = "bg-secondary-1",
+    backgroundColor = "",
     textColor = "text-primary-2",
     texthover = "border-primary-2",
     hoverColor = "",
@@ -28,7 +28,7 @@ export const GeneralFaqs = ({
 }: StyleProps = {}) => {
     return (
         <div className="w-full h-auto">
-            <div className={`w-full h-full flex md:flex-row flex-col ${containerWidth} mx-auto ${textColor}`}>
+            <div className={`w-full h-full flex md:flex-row flex-col gap-6 pt-10 ${containerWidth} mx-auto ${textColor}`}>
                 <LeftSideGen />
                 <RightSideGen
                     backgroundColor={backgroundColor}
@@ -47,7 +47,7 @@ export const GeneralFaqs = ({
 const LeftSideGen = () => {
     return (
         <div
-            className="w-full xl:max-w-xl lg:max-w-md flex flex-col gap-4 sticky p-8 md:pt-0 pt-[12dvh] md:top-[12dvh] top-0 z-50 self-start bg-secondary-1"
+            className="w-full xl:max-w-xl lg:max-w-md flex flex-col gap-4 sticky px-4 md:pt-0 pt-[12dvh] md:top-[12dvh] top-0 z-50 self-start"
         >
             <h1 className="xl:text-5xl text-4xl font-extrabold uppercase tracking-tight">General FAQs</h1>
             <p className="font-medium text-lg">
@@ -69,8 +69,8 @@ export const RightSideGen = ({
     hidden = "flex"
 }: StyleProps = {}) => {
     return (
-        <div className={`w-full flex flex-col ${spacing}`}>
-            <div className={`w-full flex flex-col ${spacing} ${containerWidth} mx-auto`}>
+        <div className={`w-full flex flex-col z-50  ${spacing}`}>
+            <div className={`w-full flex flex-col  ${spacing} ${containerWidth} mx-auto`}>
                 {FaqsArray.map((item, id) => (
                     <AccordionItem
                         key={id}
