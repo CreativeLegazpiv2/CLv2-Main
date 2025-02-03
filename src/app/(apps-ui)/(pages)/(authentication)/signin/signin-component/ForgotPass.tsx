@@ -43,24 +43,8 @@ export const ForgotPass = () => {
 
   return (
     <form className="w-full h-full flex flex-col gap-6" onSubmit={handleSubmit}>
-      {/* Username */}
-      {/* <div className="w-full lg:max-w-sm relative">
-        <input
-          className="w-full border-2 pl-12 h-12 border-palette-2/50 outline-none ring-0 bg-transparent placeholder-palette-1 rounded-full focus:border-palette-2 transition-colors"
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)} // Capture username input
-        />
-        <Icon
-          className="text-palette-1 absolute top-1/2 left-4 -translate-y-1/2"
-          icon="mdi:user-outline"
-          width="25"
-          height="25"
-        />
-      </div> */}
 
-      {/* Password */}
+      {/* EMail */}
       <div className="w-full lg:max-w-sm relative">
         <input
           className="w-full border-2 pl-12 h-12 border-palette-2/50 outline-none ring-0 bg-transparent placeholder-palette-1 rounded-full focus:border-palette-2 transition-colors"
@@ -77,6 +61,22 @@ export const ForgotPass = () => {
         />
       </div>
 
+      {/* <div className="w-full lg:max-w-sm relative">
+        <input
+          className="w-full border-2 pl-12 h-12 border-palette-2/50 outline-none ring-0 bg-transparent placeholder-palette-1 rounded-full focus:border-palette-2 transition-colors"
+          type="text" // Changed to password type
+          placeholder="submit your OTP"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)} // Capture password input
+        />
+        <Icon
+          className="text-palette-1 absolute top-1/2 left-4 -translate-y-1/2"
+          icon="mynaui:key"
+          width="25"
+          height="25"
+        />
+      </div> */}
+
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
       <div className="w-full lg:max-w-sm ">
@@ -91,27 +91,6 @@ export const ForgotPass = () => {
         </motion.button>
       </div>
       <div className="w-full flex flex-col justify-start items-start gap-2">
-        {/* <a href="/">
-          <p className="text-gray-600 px-2">forgot password?</p>
-        </a> */}
-        {/* <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <Link href="/applyartist" className="uppercase font-medium text-primary-1 hover:text-primary-2 transition-colors flex items-center gap-2">
-            <Icon icon="mdi:artist" width="24" height="24" /> 
-            New Artist?
-          </Link>
-        </motion.div>
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <Link href="/signupBuyer" className="uppercase font-medium text-primary-1 hover:text-primary-2 transition-colors flex items-center gap-2">
-            <Icon icon="mdi:cart" width="24" height="24" />
-            Buyer?
-          </Link>
-        </motion.div> */}
       </div>
       <ToastContainer />
     </form>

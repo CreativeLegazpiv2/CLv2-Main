@@ -10,6 +10,7 @@ import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Form } from "./SiginForm";
+import { ForgotPass } from "./ForgotPass";
 
 export const Signin = () => {
   return (
@@ -46,29 +47,14 @@ const AccountCreation = () => {
               <span className="title text-3xl tracking-wider uppercase">Log in</span>
               <h1 className="uppercase text-5xl font-bold poppins">Explore</h1>
             </div>
-            <Form />
-            <div className="w-full flex flex-col justify-start items-start gap-2">
-              <a href="/">
-                <p className="text-gray-600 px-2">forgot password?</p>
-              </a>
-              {/* <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Link href="/applyartist" className="uppercase font-medium text-primary-1 hover:text-primary-2 transition-colors flex items-center gap-2">
-              <Icon icon="mdi:artist" width="24" height="24" /> 
-              New Artist?
-            </Link>
-          </motion.div>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Link href="/signupBuyer" className="uppercase font-medium text-primary-1 hover:text-primary-2 transition-colors flex items-center gap-2">
-              <Icon icon="mdi:cart" width="24" height="24" />
-              Buyer?
-            </Link>
-          </motion.div> */}
+            {/* <Form /> */}
+            <ForgotPass />
+
+            {/* dapat mawara pagforgot pass */}
+            <div className="w-full gap-2">
+              <button type="button" className="border">
+                forgot password?
+              </button>
             </div>
           </div>
         </div>
