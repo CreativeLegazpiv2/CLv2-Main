@@ -132,7 +132,9 @@ export const Form = () => {
         </motion.button>
       </div>
       <div className="w-full flex flex-col justify-center items-center gap-2">
-        <p className="text-gray-600">Not a member?</p>
+        <a href="/">
+          <p className="text-gray-600">forgot password?</p>
+        </a>
         <motion.div
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
