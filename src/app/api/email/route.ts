@@ -5,6 +5,7 @@ import sgMail from '@sendgrid/mail';
 sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 const sendgridVerifiedEmail = process.env.SENDGRID_SENDER as string;
 
+
 export async function POST(req: Request) {
   try {
     const { email } = await req.json();
@@ -104,7 +105,7 @@ export async function POST(req: Request) {
       </head>
       <body>
         <div class="container">
-          <img class="logo" src="/SVG/forhtml.svg" alt="Company Logo">
+          <h1>Creatives Legazpi</h1>
           <h2>Your OTP for Password Reset</h2>
           <p>Use the OTP below to reset your password. You can resend the OTP in 3 minutes.</p>
           <div class="otp">${otp}</div>
