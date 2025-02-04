@@ -133,7 +133,7 @@ export const CollectionsCarousel = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <Link href="/g-user/publish">
+              <Link href="/gallery-display/publish">
                 <motion.button
                   whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.1)" }}
                   whileTap={{ scale: 0.95 }}
@@ -205,7 +205,7 @@ export const CollectionsCarousel = () => {
                     >
                       {collections[currentIndex].desc}
                     </motion.p>
-                    <Link href={`/g-user/collections/${collections[currentIndex].slug}`}>
+                    <Link href={`/gallery-display/collections/${collections[currentIndex].slug}`}>
                       <motion.button
                         whileHover={{ scale: 1.05, backgroundColor: "#1a202c" }}
                         whileTap={{ scale: 0.95 }}
@@ -226,7 +226,7 @@ export const CollectionsCarousel = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <Link href="/g-user/publish">
+            <Link href="/gallery-display/publish">
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.1)" }}
                 whileTap={{ scale: 0.95 }}

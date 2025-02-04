@@ -81,12 +81,12 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
   const [isLoadingComments, setIsLoadingComments] = useState(true);
   const [isViewModalOpen, setViewModalOpen] = useState(false);
 
-  // Redirect to /g-user if images array becomes empty
+  // Redirect to /gallery if images array becomes empty
   useEffect(() => {
     if (images.length === 0) {
       toast.info("No images found. Redirecting...", { position: "bottom-right" });
       setTimeout(() => {
-        router.push("/g-user");
+        router.push("/gallery-display");
       }, 2000); // Redirect after 2 seconds
     }
   }, [images, router]);
@@ -714,7 +714,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                       >
                         <div className="w-full flex gap-2.5 items-start justify-start">
                           <Link
-                            href={`/g-user/view-profile/${comment.detailsid}`}
+                            href={`/gallery/view-profile/${comment.detailsid}`}
                             passHref
                           >
                             <div className="w-10 h-10">
@@ -803,7 +803,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                             >
                               <div className="w-full flex gap-2.5 items-start justify-start">
                                 <Link
-                                  href={`/g-user/view-profile/${subcomment.userDetails?.detailsid}`}
+                                  href={`/gallery/view-profile/${subcomment.userDetails?.detailsid}`}
                                   passHref
                                 >
                                   <div className="w-10 h-10 ">

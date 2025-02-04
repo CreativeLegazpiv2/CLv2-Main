@@ -82,7 +82,7 @@ export function SidebarDrawer({
             link: "/creative-directory",
             icon: <FolderKanban size={20} />,
           },
-          { name: "Gallery", link: "/g-user", icon: <ImageIcon size={20} /> },
+          { name: "Gallery", link: "/gallery-display", icon: <ImageIcon size={20} /> },
           { name: "FAQ", link: "/faqs", icon: <HelpCircle size={20} /> },
           { name: "Events", link: "/events", icon: <Calendar size={20} /> },
           { name: "Profile", link: "/profile", icon: <User size={20} /> },

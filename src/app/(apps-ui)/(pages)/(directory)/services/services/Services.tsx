@@ -454,7 +454,7 @@ const CreativeButton: React.FC<{ detailsid: string }> = ({ detailsid }) => {
     const data = await response.json();
     if (data.exists) {
       if (gettSession) {
-        window.location.href = `/g-user/collections/${detailsid}`;
+        window.location.href = `/gallery/collections/${detailsid}`;
       } else {
         window.location.href = `/gallery/artwork/${detailsid}`;
       }
@@ -467,7 +467,7 @@ const CreativeButton: React.FC<{ detailsid: string }> = ({ detailsid }) => {
 
   const viewProfile = async () => {
     if (gettSession) {
-      window.location.href = `/g-user/view-profile/${detailsid}`;
+      window.location.href = `/gallery/view-profile/${detailsid}`;
     } else {
       toast.error("No uploaded works yet!", {
         position: "bottom-right",

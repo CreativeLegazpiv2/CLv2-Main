@@ -93,10 +93,6 @@ export const Profile = () => {
     profile_pic,
     address,
     mobileNo,
-    instagram,
-    facebook,
-    twitter,
-    portfolioLink,
     email,
     bday,
   } = userDetails;
@@ -124,7 +120,7 @@ export const Profile = () => {
       // Check if the user has uploaded any works
       if (data.exists) {
         // If works exist, navigate to the gallery page
-        window.location.href = `/g-user/collections/${detailsid}`;
+        window.location.href = `/gallery-display/collections/${detailsid}`;
       } else {
         // Show error toast if no works are found
         toast.error("No uploaded works yet!", {
