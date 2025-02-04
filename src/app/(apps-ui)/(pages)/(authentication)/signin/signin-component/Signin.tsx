@@ -57,8 +57,8 @@ const AccountCreation = () => {
 
           <div className="w-full h-fit flex flex-col gap-4 justify-end items-center">
             <div className="w-full h-fit">
-              <span className="title text-3xl tracking-wider uppercase">Log in</span>
-              <h1 className="uppercase text-5xl font-bold poppins">Explore</h1>
+              <span className="title text-3xl tracking-wider uppercase">{forgotPassword ? "Forgot" : "Login"}</span>
+              <h1 className="uppercase text-5xl font-bold poppins">{forgotPassword ? "Password" : "Explore"}</h1>
             </div>
             
             {/* Conditionally render either the login form or forgot password */}

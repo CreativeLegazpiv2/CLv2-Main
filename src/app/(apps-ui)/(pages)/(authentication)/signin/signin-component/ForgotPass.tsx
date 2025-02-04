@@ -142,7 +142,7 @@ export const ForgotPass = ({ handleBackToLogin }: { handleBackToLogin: () => voi
         <div className="w-full lg:max-w-sm">
           <motion.button
             className="w-full py-3 text-lg font-semibold uppercase bg-palette-2 text-white rounded-full hover:bg-palette-1 transition-colors"
-            type="button"
+            type="submit"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleOtpRequest}
