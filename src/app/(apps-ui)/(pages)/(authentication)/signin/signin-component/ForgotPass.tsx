@@ -85,7 +85,11 @@ export const ForgotPass = ({ handleBackToLogin }: { handleBackToLogin: () => voi
   
       if (response.success) {
         toast.success("Password updated successfully!", { position: "bottom-right" });
-        // Handle further actions after successful password reset (e.g., redirect to login)
+  
+        // Redirect to login after a short delay
+        setTimeout(() => {
+          handleBackToLogin();
+        }, 2000); // Adjust delay as needed
       } else {
         toast.error(response.message || "Failed to update password.", { position: "bottom-right" });
       }
@@ -96,6 +100,7 @@ export const ForgotPass = ({ handleBackToLogin }: { handleBackToLogin: () => voi
       setLoading(false);
     }
   };
+  
   
 
   return (
