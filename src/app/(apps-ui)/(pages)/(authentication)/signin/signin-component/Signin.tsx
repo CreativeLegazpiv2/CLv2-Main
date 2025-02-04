@@ -54,7 +54,6 @@ const AccountCreation = () => {
           <Logo color="text-palette-5" width={"auto"} height={"auto"} />
         </div>
         <div className="w-full h-full flex flex-col bg-palette-5 text-palette-1 rounded-r-2xl gap-12 justify-center items-center sm:p-10 p-6">
-
           <div className="w-full h-fit flex flex-col gap-4 justify-end items-center">
             <div className="w-full h-fit">
               <span className="title text-3xl tracking-wider uppercase">{forgotPassword ? "Forgot" : "Login"}</span>
@@ -68,14 +67,29 @@ const AccountCreation = () => {
               <Form />
             )}
 
-            <div className="w-full gap-2">
-              {/* Button to toggle between login and forgot password */}
-              {!forgotPassword && (
-                <button type="button" className="border" onClick={handleForgotPasswordClick}>
-                  Forgot password?
-                </button>
-              )}
-            </div>
+            {/* Footer Links */}
+            {!forgotPassword && (
+              <div className="w-full flex justify-between items-center text-sm">
+                {/* Left: Signup as Buyer */}
+                <button 
+                    type="button" 
+                    className="border border-palette-1 px-2 py-1 rounded-md"
+                    onClick={handleForgotPasswordClick}
+                  >
+                    Forgot password?
+                  </button>
+
+                {/* Right: Forgot password + Apply as Artist */}
+                <div className="flex items-center gap-x-4">
+                <Link href="/signupBuyer" className="text-palette-1 hover:underline">
+                  Signup as Buyer
+                </Link>
+                  <Link href="/applyartist" className="text-palette-1 hover:underline">
+                    Apply as Artist
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </motion.div>
