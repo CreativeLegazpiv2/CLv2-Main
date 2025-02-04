@@ -76,16 +76,16 @@ export const ForgotPass = ({ handleBackToLogin }: { handleBackToLogin: () => voi
       toast.error("New password and OTP are required.", { position: "bottom-right" });
       return;
     }
-  
+
     setLoading(true);
-  
+
     try {
       // Call resetPassword service to update password
       const response = await resetPassword(email, newPassword);
-  
+
       if (response.success) {
         toast.success("Password updated successfully!", { position: "bottom-right" });
-  
+
         // Redirect to login after a short delay
         setTimeout(() => {
           handleBackToLogin();
@@ -100,8 +100,8 @@ export const ForgotPass = ({ handleBackToLogin }: { handleBackToLogin: () => voi
       setLoading(false);
     }
   };
-  
-  
+
+
 
   return (
     <form className="w-full h-full flex flex-col gap-6">
@@ -139,19 +139,35 @@ export const ForgotPass = ({ handleBackToLogin }: { handleBackToLogin: () => voi
 
       {/* Submit/Resend Button */}
       {!otpValid && (
-        <div className="w-full lg:max-w-sm">
-          <motion.button
-            className="w-full py-3 text-lg font-semibold uppercase bg-palette-2 text-white rounded-full hover:bg-palette-1 transition-colors"
-            type="submit"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleOtpRequest}
-            disabled={loading || countdown > 0}
-          >
-            {otpSent ? (countdown > 0 ? `Resend OTP (${countdown}s)` : "Resend OTP") : loading ? "Submitting..." : "Submit"}
-          </motion.button>
+        <div className="w-full lg:max-w-sm relative">
+          {otpSent ? (
+            <motion.button
+              className="absolute right-0 top-0 p-2 text-palette-2 text-sm flex items-center gap-2 underline hover:text-palette-1 transition-colors"
+              type="button"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleOtpRequest}
+              disabled={loading || countdown > 0}
+            >
+              Resend OTP 
+              ({countdown > 0 ? `${countdown}s` : "Resend"})
+            </motion.button>
+
+          ) : (
+            <motion.button
+              className="w-full py-3 text-lg font-semibold uppercase bg-palette-2 text-white rounded-full hover:bg-palette-1 transition-colors"
+              type="submit"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleOtpRequest}
+              disabled={loading}
+            >
+              {loading ? "Submitting..." : "Submit"}
+            </motion.button>
+          )}
         </div>
       )}
+
 
       {/* OTP Submit Button */}
       {!otpValid && otpSent && (
