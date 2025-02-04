@@ -75,7 +75,7 @@ export const Header = ({
         setMenuItems([
           { name: "Home", link: "/home" },
           { name: "Directory", link: "/creative-directory" },
-          { name: "Gallery", link: "/g-user" },
+          { name: "Gallery", link: "/gallery-display" },
           { name: "FAQ", link: "/faqs" },
           { name: "Events", link: "/events" },
           { name: "Profile", link: "/profile" },

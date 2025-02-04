@@ -300,7 +300,7 @@ const UserDetailDisplay = ({ userDetail }: { userDetail: UserDetail }) => {
 
 const Button = () => {
   return (
-    <Link className="w-full flex justify-center items-center" href={"/g-user/publish"}>
+    <Link className="w-full flex justify-center items-center" href={"/gallery-display/publish"}>
       <motion.button
         className="bg-shade-1 text-secondary-1 uppercase py-3 w-full md:max-w-xs text-xl rounded-lg font-semibold"
         whileHover={{ scale: 1.05 }}

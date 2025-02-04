@@ -79,7 +79,7 @@ export default async function ViewCollectionPage({ params }: Props) {
   const collectionData = await getCollection(slug);
 
   if (!collectionData) {
-    redirect('/g-user');
+    redirect('/gallery-display');
     return null; // This prevents further rendering after redirection.
   }
 
