@@ -13,7 +13,7 @@ export default function GalleryVisitorPage() {
     return (
         <main className="w-full h-fit text-primary-2 overflow-x-hidden">
             <div className="pt-[10dvh] flex flex-col w-full max-w-full">
-                <CollectionsCarousel />
+                {/* <CollectionsCarousel /> */}
                 <FeaturedCollections />
                 <Infinite />                
             </div>
