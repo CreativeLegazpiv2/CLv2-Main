@@ -39,7 +39,7 @@ export const GalleryTitle = () => {
       variants={pageVariants}
       transition={pageTransition}
     >
-      <div className="w-full lg:max-w-[70%] md:max-w-[80%] max-w-[90%] mx-auto">
+      <div className="w-full lg:max-w-[70%] md:max-w-[80%] max-w-[90%] mx-auto py-[10dvh]">
         <motion.div className="w-full flex flex-col justify-center items-center gap-6 text-palette-2" variants={staggerChildren}>
           <motion.div
             className="w-full flex flex-col-reverse md:flex-row gap-4 md:justify-center justify-start items-start"

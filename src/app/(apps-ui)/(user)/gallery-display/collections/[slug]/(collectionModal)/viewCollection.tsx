@@ -40,7 +40,7 @@ export const ViewCollection = ({
                     alt={title}
                     width={768}
                     height={512}
-                    className="h-[80dvh] object-fill"
+                    className="h-[80dvh] object-contain"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
                     <h2 className="text-white text-2xl font-bold">{title}</h2>

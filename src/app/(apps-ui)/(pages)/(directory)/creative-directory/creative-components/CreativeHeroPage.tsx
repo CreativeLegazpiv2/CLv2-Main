@@ -41,7 +41,7 @@ export const CreativeHeroPage = () => {
       variants={pageVariants}
       transition={pageTransition}
     >
-      <div className="w-full lg:max-w-[70%] md:max-w-[80%] max-w-[90%] mx-auto">
+      <div className="w-full lg:max-w-[70%] md:max-w-[80%] max-w-[95%] mx-auto">
         <motion.div
           className="w-full flex md:flex-col flex-col md:gap-12 gap-6"
           variants={staggerChildren}
@@ -114,7 +114,7 @@ const SearchInput = () => {
         className="placeholder:text-palette-7 text-lg font-medium rounded-full bg-white ring-none 
                 outline-none w-full py-2.5 px-14"
         type="text"
-        placeholder="Search for an artist or cretive directory"
+        placeholder="Search for an creative directory"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />

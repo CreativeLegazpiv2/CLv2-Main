@@ -80,7 +80,7 @@ export const IconPage = () => {
           <div className="absolute bottom-[40%] left-[10%]">
             <StaggeredEffect id="stagger1" delay={0}>
               <TwinkleElement id="icon1" delay={0}>
-                <img src="images/creative-directory/icon/1.png" alt="" />
+                <img src="images/creative-directory/icon/1.png" className="md:w-full md:h-full w-24 h-24" alt="" />
               </TwinkleElement>
             </StaggeredEffect>
           </div>
@@ -94,11 +94,11 @@ export const IconPage = () => {
           <div className="absolute top-[10%] right-[15%]">
             <StaggeredEffect id="stagger3" delay={0.4}>
               <TwinkleElement id="icon3" delay={0.4}>
-                <img src="images/creative-directory/icon/3.png" alt="" />
+                <img src="images/creative-directory/icon/3.png" className="md:w-full md:h-full w-12 h-12" alt="" />
               </TwinkleElement>
             </StaggeredEffect>
           </div>
-          <div className="absolute top-[12%] right-[40%]">
+          <div className="absolute top-[12%] md:right-[40%] left-[10%]">
             <StaggeredEffect id="stagger4" delay={0.6}>
               <TwinkleElement id="icon4" delay={0.6}>
                 <img src="images/creative-directory/icon/4.png" alt="" />
@@ -119,7 +119,7 @@ export const IconPage = () => {
               </TwinkleElement>
             </StaggeredEffect>
           </div>
-          <div className="absolute bottom-[5%] right-[35%]">
+          <div className="absolute bottom-[5%] md:right-[35%] right-[15%]">
             <StaggeredEffect id="stagger7" delay={1.2}>
               <TwinkleElement id="shape3" delay={1.2}>
                 <div className="bg-shade-1 w-6 h-6 rotate-6 rounded-lg" />
@@ -133,7 +133,7 @@ export const IconPage = () => {
               </TwinkleElement>
             </StaggeredEffect>
           </div>
-          <div className="absolute top-[20%] right-[27%]">
+          <div className="absolute top-[20%] md:right-[27%] right-[10%]">
             <StaggeredEffect id="stagger9" delay={1.6}>
               <TwinkleElement id="shape5" delay={1.6}>
                 <div className="bg-palette-2 w-5 h-5 rounded-full" />

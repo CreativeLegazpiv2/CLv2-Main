@@ -1,128 +1,140 @@
-  "use client";
+"use client";
+import React, { useEffect, useState } from "react";
 
-  import React, { useEffect, useState } from "react";
+interface CollectionItem {
+  id: number;
+  title: string;
+  desc: string;
+  image_path: string;
+  artist: string;
+  slug: string;
+  profile_pic: string;
+  creative_field: string;
+}
 
-  interface CollectionItem {
-    id: number;
-    title: string;
-    desc: string;
-    image_path: string;
-    artist: string;
-    slug: string;
-    profile_pic: string;
-    creative_field: string;
+export const FeaturedCollections = () => {
+  const [featuredItems, setFeaturedItems] = useState<CollectionItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [visibleItems, setVisibleItems] = useState(12); // Number of items to display initially
+
+  useEffect(() => {
+    const fetchCollection = async () => {
+      try {
+        const response = await fetch("/api/collections");
+        const data = await response.json();
+        if (response.ok) {
+          setFeaturedItems(data.imageCollection);
+        } else {
+          setError(data.message);
+        }
+      } catch (err) {
+        setError("Failed to fetch collections");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCollection();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-lg text-palette-7">Loading collections...</p>
+      </div>
+    );
   }
 
-  export const FeaturedCollections = () => {
-    const [featuredItems, setFeaturedItems] = useState<CollectionItem[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [currentIndex, setCurrentIndex] = useState(0);
-
-    useEffect(() => {
-      const fetchCollection = async () => {
-        try {
-          const response = await fetch("/api/collections");
-          const data = await response.json();
-          if (response.ok) {
-            setFeaturedItems(data.imageCollection);
-          } else {
-            setError(data.message);
-          }
-        } catch (err) {
-          setError("Failed to fetch collections");
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchCollection();
-    }, []);
-
-    useEffect(() => {
-      const storedIndex = localStorage.getItem("currentIndex");
-      if (storedIndex) {
-        setCurrentIndex(parseInt(storedIndex, 10));
-      }
-    }, []);
-
-    useEffect(() => {
-      localStorage.setItem("currentIndex", currentIndex.toString());
-    }, [currentIndex]);
-
-    useEffect(() => {
-      const interval = setInterval(() => {
-        setCurrentIndex(
-          (prevIndex) => (prevIndex + 1) % Math.ceil(featuredItems.length / 6)
-        );
-      }, 5 * 60 * 1000);
-
-      return () => clearInterval(interval);
-    }, [featuredItems.length]);
-
-    if (loading) {
-      return (
-        <div className="min-h-screen flex items-center justify-center">
-          <p className="text-lg text-palette-7">Loading collections...</p>
-        </div>
-      );
-    }
-
-    if (error) {
-      return (
-        <div className="min-h-screen flex items-center justify-center">
-          <p className="text-lg text-red-500">Error: {error}</p>
-        </div>
-      );
-    }
-
+  if (error) {
     return (
-      <section className="bg-palette-5 sm:px-6 lg:px-8 min-h-screen pt-20">
-        <div className=" px-6 md:px-12">
-          <div className="columns-1 sm:columns-2 md:columns-4 lg:columns-5 gap-4">
-            {featuredItems.map((item) => (
-              <div key={item.id} className="mb-4 break-inside-avoid">
-                <div className="bg-palette-7/10 rounded-3xl p-4 flex flex-col gap-4">
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={item.profile_pic || "/images/creative-directory/profile.jpg"}
-                      alt={`${item.artist}'s profile`}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                    <div >
-                      <h4 className="text-sm font-semibold text-palette-7">
-                        {item.artist}
-                      </h4>
-                      <span className="text-palette-1 text-sm font-bold">
-                        {item.creative_field || "Creative Field"}
-                      </span>
-                    </div>
-                  </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-lg text-red-500">Error: {error}</p>
+      </div>
+    );
+  }
 
-                  <div
-                    onClick={() => window.location.href = `/gallery-display/collections/${item.slug}`}
-                    className="w-full relative cursor-pointer rounded-3xl overflow-hidden"
-                  >
-                    <div className="absolute inset-0 bg-black opacity-0 hover:opacity-50 transition-opacity duration-300 ease-in-out z-10"></div>
-                    {/* for now */}
-                    <div className="max-h-[24rem] overflow-hidden bg-white">
-                      <img
-                        src={item.image_path}
-                        alt={item.title}
-                        className="w-full h-fit object-contain"
-                        style={{
-                          maxHeight: '24rem', // 64 (h-64) in rem units
-                          width: '100%',
-                          objectFit: 'contain'
-                        }}
-                      />
-                    </div>
+  const handleShowMore = () => {
+    setVisibleItems((prevVisibleItems) => prevVisibleItems + 12); // Increase visible items by 12
+  };
+
+  return (
+    <section className="sm:px-6 lg:px-8 min-h-screen pt-20">
+      <div className="w-full max-w-[95%] mx-auto flex flex-col gap-6 p-4">
+        <h1 className="text-3xl font-bold text-palette-1 uppercase">Gallery</h1>
+        <div className="columns-1 sm:columns-2 md:columns- lg:columns-4 gap-4">
+          {dummyData.slice(0, visibleItems).map((item) => (
+            <div key={item.id} className="mb-4 break-inside-avoid">
+              <div className="bg-palette-6/20 rounded-3xl p-4 flex flex-col gap-4">
+                <div className="flex items-center gap-2">
+                  <img
+                  // item.profile_pic ||
+                    src={ "/images/creative-directory/profile.jpg"}
+                    alt={`${item.artist}'s profile`}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                  <div>
+                    <h4 className="text-sm font-semibold text-palette-7">
+                      {item.artist}
+                    </h4>
+                    <span className="text-palette-1 text-sm font-bold">
+                      {item.creative_field || "Creative Field"}
+                    </span>
+                  </div>
+                </div>
+                <div
+                  // onClick={() =>
+                  //   // (window.location.href = `/gallery-display/collections/${item.slug}`)
+                  // }
+                  className="w-full relative cursor-pointer rounded-3xl overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-black opacity-0 hover:opacity-50 transition-opacity duration-300 ease-in-out z-10"></div>
+                  <div className="max-h-[32rem] overflow-hidden">
+                    <img
+                      src={item.image_path}
+                      alt={item.title}
+                      className="w-full h-fit object-fill"
+                      style={{
+                        maxHeight: "32rem",
+                        width: "100%",
+                        objectFit: "fill",
+                      }}
+                    />
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+
         </div>
-      </section>
-    );
-  };
+
+        {/* Show More Button */}
+        {visibleItems < featuredItems.length && (
+          <div className="flex justify-center mt-8">
+            <button
+              onClick={handleShowMore}
+              className="px-6 py-2 bg-palette-7 text-white rounded-lg hover:bg-palette-6 transition-colors"
+            >
+              Show More
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
+
+const dummyData = [
+  { id: 1, artist: "artist 1", creative_field: "Creative 1", image_path: "images/gallery/11.jpg", title: "Image 1" },
+  { id: 2, artist: "artist 2", creative_field: "Creative 2", image_path: "images/gallery/2.jpg", title: "Image 2" },
+  { id: 3, artist: "artist 3", creative_field: "Creative 3", image_path: "images/gallery/33.jpg", title: "Image 3" },
+  { id: 4, artist: "artist 4", creative_field: "Creative 4", image_path: "images/gallery/44.jpg", title: "Image 4" },
+  { id: 5, artist: "artist 5", creative_field: "Creative 5", image_path: "images/gallery/55.jpg", title: "Image 5" },
+  { id: 6, artist: "artist 6", creative_field: "Creative 6", image_path: "images/gallery/66.jpg", title: "Image 5" },
+  { id: 7, artist: "artist 7", creative_field: "Creative 7", image_path: "images/gallery/77.jpg", title: "Image 5" },
+  { id: 8, artist: "artist 8", creative_field: "Creative 8", image_path: "images/gallery/88.jpg", title: "Image 5" },
+  { id: 9, artist: "artist 9", creative_field: "Creative 9", image_path: "images/gallery/99.jpg", title: "Image 5" },
+  { id: 10, artist: "artist 10", creative_field: "Creative 10", image_path: "images/gallery/10.jpg", title: "Image 5" },
+  { id: 11, artist: "artist 11", creative_field: "Creative 11", image_path: "images/gallery/111.jpg", title: "Image 5" },
+  { id: 12, artist: "artist 12", creative_field: "Creative 12", image_path: "images/gallery/12.png", title: "Image 5" },
+]

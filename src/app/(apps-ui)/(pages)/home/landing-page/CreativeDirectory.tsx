@@ -6,10 +6,10 @@ import { useRef } from "react";
 
 const Buttons = () => {
   return (
-    <div className="w-full gap-4 flex items-center">
-      <a href="/creative-directory">
+    <div className="w-full gap-4 flex md:flex-row flex-col md:items-center items-start">
+      <a href="/creative-directory" className="md:w-fit w-full">
         <motion.button
-          className="w-52 tracking-wider rounded-full py-2 font-semibold bg-palette-5 text-palette-3 uppercase"
+          className="md:w-52 w-full tracking-wider rounded-full py-2 font-semibold bg-palette-5 text-palette-3 uppercase"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           initial={{ opacity: 0, x: -50 }}
@@ -23,9 +23,9 @@ const Buttons = () => {
           explore directory
         </motion.button>
       </a>
-      <a href="/signup">
+      <a href="/signup" className="md:w-fit w-full">
         <motion.button
-          className="w-52 tracking-wider rounded-full py-2 font-semibold bg-palette-3 text-palette-5 uppercase"
+          className="md:w-52 w-full tracking-wider rounded-full py-2 font-semibold bg-palette-3 text-palette-5 uppercase"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           initial={{ opacity: 0, x: 50 }}

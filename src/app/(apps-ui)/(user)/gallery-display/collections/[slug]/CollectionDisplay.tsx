@@ -570,7 +570,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                 alt={`Image ${index + 1}`}
                 fill
                 priority
-                className="transition-transform duration-300 hover:scale-105 object-cover"
+                className="transition-transform duration-300 hover:scale-105 object-contain"
               />
               <motion.div
                 initial={{ opacity: 0 }}
@@ -812,7 +812,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                                         subcomment.userDetails?.profile_pic ||
                                         "/images/creative-directory/profile.jpg"
                                       }
-                                      className="w-full h-full rounded-full bg-cover object-cover border-2 border-gray-400"
+                                      className="w-full h-full rounded-full bg-contain object-contain border-2 border-gray-400"
                                       width={100}
                                       height={100}
                                       alt={`Comment ${index + 1}`}
