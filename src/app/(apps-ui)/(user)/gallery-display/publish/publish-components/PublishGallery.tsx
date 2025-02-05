@@ -34,21 +34,11 @@ export default function PublishGallery() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Get the token from the session
         const token = getSession();
-  
-        // Check if the token exists
         if (!token) {
           logoutAndRedirect();
           return;
         }
-        const isTokenExpired = await checkTokenExpiration(token);
-  
-        if (isTokenExpired) {
-          logoutAndRedirect();
-          return;
-        }
-  
         // Verify and decode the token
         const { payload } = await jwtVerify(
           token,

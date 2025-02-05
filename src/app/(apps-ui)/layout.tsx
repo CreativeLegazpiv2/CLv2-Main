@@ -28,7 +28,6 @@ export default function LoadLayout({
 
   return (
     <main className="w-full flex flex-col min-h-screen">
-      <AuthProvider>
         {isLoading ? (
           // Show loading animation while loading
           <div className="w-full h-screen flex justify-center items-center">
@@ -38,7 +37,6 @@ export default function LoadLayout({
           // Render children only after loading is complete
           <main className="flex-grow">{children}</main>
         )}
-      </AuthProvider>
     </main>
   );
 }

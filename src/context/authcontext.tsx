@@ -1,54 +1,83 @@
-// src/context/AuthContext.tsx
-'use client'
+"use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { jwtVerify } from "jose";
 
-type User = {
-  name: string;
-  // Add other user properties as needed
-};
+interface User {
+  id: number;
+  username: string;
+}
 
-type AuthContextType = {
+interface AuthContextType {
   user: User | null;
-  login: (user: User) => void;
+  isLoading: boolean;
+  login: (token: string) => void;
   logout: () => void;
-};
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-      } catch (error) {
-        console.error("Error parsing stored user data:", error);
-        // Optionally, remove the invalid data from localStorage
-        localStorage.removeItem('user');
+  const verifyToken = async (token: string) => {
+    try {
+      const { payload } = await jwtVerify(
+        token,
+        new TextEncoder().encode(process.env.NEXT_PUBLIC_JWT_SECRET || "your-secret")
+      );
+
+      if (typeof payload.id === "number" && typeof payload.username === "string") {
+        setUser({
+          id: payload.id,
+          username: payload.username,
+        });
+      } else {
+        throw new Error("Invalid token payload");
       }
+    } catch (error) {
+      console.error("Invalid token:", error);
+      localStorage.removeItem("token");
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      verifyToken(token);
+    } else {
+      setIsLoading(false);
+      router.push("/signin"); // Redirect if no token is found
     }
   }, []);
-  
 
-  const login = (userData: User) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push("/signin");
+    }
+  }, [isLoading, user, router]);
+
+  const login = (token: string) => {
+    localStorage.setItem("token", token);
+    verifyToken(token);
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('user');
-    router.push('/signin'); // Redirect to signin page after logout
+    localStorage.removeItem("token");
+    router.push("/signin");
   };
 
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -56,8 +85,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

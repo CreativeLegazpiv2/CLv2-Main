@@ -112,7 +112,7 @@ const AccordionItem = ({
 
     return (
         <div className={`w-full flex flex-col gap-4  ${textColor}`}>
-            <div className={`w-full flex flex-col md:pl-4 group rounded-lg transition-colors duration-200`}>
+            <div className={`w-full flex flex-col md:pl-4 rounded-lg transition-colors duration-200`}>
                 <hr className={`border w-full border-palette-1/20 ${hidden}`} />
                 <div className={`w-full flex flex-row gap-20 justify-between group items-start p-2 duration-300 ${hoverColor} px-4 rounded-full ${border}`}>
 
