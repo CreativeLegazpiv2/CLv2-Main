@@ -18,9 +18,9 @@ function Profile({ userDetail }: ProfileProps) {
   }
 
   return (
-    <div className="min-h-dvh w-full">
+    <div className="min-h-dvh w-full bg-palette-5">
       <UserProfile userDetail={userDetail} />
-      <Infinite />      
+      <Infinite />
     </div>
   );
 }

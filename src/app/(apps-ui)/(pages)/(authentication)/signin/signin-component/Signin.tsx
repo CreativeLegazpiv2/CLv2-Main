@@ -1,13 +1,10 @@
 "use client";
 
 import { Logo } from "@/components/reusable-component/Logo";
-import { loginUser } from "@/services/authservice";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Form } from "./SiginForm";
 import { ForgotPass } from "./ForgotPass";

@@ -30,7 +30,7 @@ export interface UserDetail {
   role: string;
 }
 
-interface UserProfileProps {  
+interface UserProfileProps {
   userDetail: UserDetail; // Expecting the userDetail as a prop
 }
 
@@ -43,23 +43,83 @@ export const UserProfile: React.FC<UserProfileProps> = ({ userDetail }) => {
   const [open, setOpen] = useState(false); // State to control Calendar and Messages
   return (
     <div className="min-h-dvh w-full text-primary-2">
-      <div className="w-full xl:max-w-[65%] lg:max-w-[80%] max-w-[90%] lg:px-8 mx-auto h-fit py-[12dvh]">
+      <div className="w-full min-h-[80dvh] max-h-[80dvh] relative">
+        <img src={"images/creative-profile/cover.png"} className="w-full h-full object-cover absolute top-0 left-0" alt="" />
+        <div className="absolute w-full h-full flex z-10 bg-gradient-to-r from-palette-5 from-0% via-palette-5 via-15% to-transparent to-60%">
+          <div className="w-full h-full max-h-[100%] max-w-[80%] mx-auto relative flex flex-col gap-2 justify-center items-start">
+            <h1 className="text-5xl font-bold uppercase text-palette-2">ainah mari saba</h1>
+            <span className="italic text-palette-2 text-2xl font-bold">Visual Arts</span>
+            <button className="bg-palette-6 py-2 px-4 w-32 text-palette-5 rounded-full tracking-wider uppercase mt-2">edit</button>
+            <div className="flex flex-col max-h-[29rem] absolute -bottom-[40%] left-0">
+              <img src={"images/creative-profile/image.png"} className="w-full h-full max-w-[22rem] min-w-[24rem] max-h-[29rem] " alt="" />
+              <h1 className="text-2xl font-bold uppercase text-palette-7 pt-6">ainah mari saba</h1>
+              <h2 className="text-palette-7 font-thin">Num of Works</h2>
+              <p className="font-thin cursor-pointer">"facebook link if meron"</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      {/* second details */}
+      <div className="w-full h-full min-h-dvh flex relative">
+        <div className="max-w-[50%] w-full h-full flex flex-col gap-2 justify-center items-start absolute right-0">
+          <span className="flex gap-4 flex-row items-center">Date Joined: February 15, 2024 <hr className="w-16" /></span>
+          <h1 className="text-4xl font-bolder">Introductory Title</h1>
+          <div className="flex items-center gap-2 py-6">
+            <Icon icon="arcticons:facebook" className="cursor-pointer text-palette-2" width="48" height="48" />
+            <Icon icon="arcticons:twitter-alt-1" className="cursor-pointer text-palette-2" width="48" height="48" />
+            <Icon icon="arcticons:instagram" className="cursor-pointer text-palette-2" width="48" height="48" />
+          </div>
+          <div className="pb-4">
+            <p className="font-thin w-full max-w-2xl">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Libero amet, vero velit quaerat nam, sequi debitis ut praesentium mollitia,
+              dolores dolorum eaque numquam accusantium fugit alias tempora. Eius, et commodi.
+            </p>
+          </div>
+          <div className="pt-4">
+            <h1 className="font-bolder capitalize">Address and Contact Number</h1>
+            <p className="font-thin">Contact no. and Address here</p>
+          </div>
+          <div className="pt-4">
+            <h1 className="font-bolder capitalize">Address and Contact Number</h1>
+            <p className="font-thin">Contact no. and Address here</p>
+          </div>
+        </div>
+      </div>
+
+      {/* collection */}
+      <div className="h-dvh w-full  bg-palette-3">
+        <div className="w-full h-full flex flex-row">
+          <div className="w-full h-full text-palette-5">
+            <div className="w-full h-full max-w-[70%] mx-auto flex flex-col items-start justify-center">
+              <h1 className="uppercase title font-thin text-3xl">featured work</h1>
+              {/* title here */}
+              <h2 className="uppercase font-bolder text-5xl">Flowers</h2>
+              <span className="italic font-bold text-xl py-4">year here</span>
+              <p className="text-xl w-full max-w-xl font-thin">
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur, voluptatum perferendis in voluptas hic cupiditate
+                rem provident illum nihil nesciunt asperiores aspernatur optio dignissimos quidem at non ex repellendus veritatis.
+              </p>
+            </div>
+          </div>
+          <div className="w-full h-full">
+            <img src={"images/creative-profile/cover.png"} className="w-full h-full object-cover" alt="" />
+          </div>
+        </div>
+      </div>
+      {/* <div className="w-full xl:max-w-[65%] lg:max-w-[80%] max-w-[90%] lg:px-8 mx-auto h-fit py-[12dvh]">
         <div className="w-full h-full flex flex-col">
-          <h1 className="uppercase font-semibold text-3xl lg:block hidden">
-            Creative profile
-          </h1>
+          
           <div className="w-full h-full mt-28">
             <div className="w-full h-fit bg-primary-3 rounded-xl shadow-lg relative">
               <ProfileDetails userDetail={userDetail} />
               <OtherDetails userDetail={userDetail} />
               <ProfileButton open={open} setOpen={setOpen} />
-
-              {/* Conditional rendering based on the open state */}
               {open ? <Messages /> : <Calendar />}
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

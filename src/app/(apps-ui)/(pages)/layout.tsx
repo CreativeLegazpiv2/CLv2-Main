@@ -72,7 +72,7 @@ export default function MainLayout({
       />
       
       <main className="flex-grow w-full">{children}</main>
-      <Infinite />
+
       <Footer />
       <AnimatePresence>
         {isSidebarOpen && (
