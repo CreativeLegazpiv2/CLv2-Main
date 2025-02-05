@@ -5,7 +5,7 @@ import { useRef, useEffect, useState } from "react";
 
 export const Infinite = () => {
   return (
-    <div className="w-full h-[35dvh] bg-palette-5">
+    <div className="w-full h-[35dvh] bg-palette-5 z-50">
       <InfiniteImages />
     </div>
   );

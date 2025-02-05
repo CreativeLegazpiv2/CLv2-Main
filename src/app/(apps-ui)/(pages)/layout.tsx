@@ -5,6 +5,7 @@ import { ButtonChat } from "@/components/buttonChat/buttonChat";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { SidebarDrawer } from "@/components/layout/SideBarDrawer";
+import Infinite from "@/components/reusable-component/Infinite";
 import { getSession } from "@/services/authservice";
 import { AnimatePresence } from "framer-motion";
 import React, { ReactNode, useEffect, useState } from "react";
@@ -71,6 +72,7 @@ export default function MainLayout({
       />
       
       <main className="flex-grow w-full">{children}</main>
+      <Infinite />
       <Footer />
       <AnimatePresence>
         {isSidebarOpen && (

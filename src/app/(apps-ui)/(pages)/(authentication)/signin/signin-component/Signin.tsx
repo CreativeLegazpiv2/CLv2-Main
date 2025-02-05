@@ -36,6 +36,7 @@ const AccountCreation = () => {
   // Function to toggle the forgot password state
   const handleForgotPasswordClick = () => {
     setForgotPassword(true);
+    setShowSignup(false);
   };
 
   // Function to reset to the login form
@@ -76,7 +77,7 @@ const AccountCreation = () => {
                 <>
                   {/* Left: Signup as Buyer */}
                   <span
-                    className="py-1 rounded-md whitespace-nowrap cursor-pointer"
+                    className="py-1 rounded-md whitespace-nowrap cursor-pointer hover:text-palette-2 duration-300 "
                     onClick={handleForgotPasswordClick}
                   >
                     Forgot password?
@@ -87,18 +88,18 @@ const AccountCreation = () => {
                 </>
               )}
               {!showSIgnup && !forgotPassword && (
-                <span className="cursor-pointer" onClick={() => setShowSignup(!showSIgnup)}>Register Now</span>
+                <span className="cursor-pointer hover:text-palette-2 duration-300 " onClick={() => setShowSignup(!showSIgnup)}>Register Now</span>
               )}
               {showSIgnup && (
                 <>
-                  <Link href="/signupBuyer" className="text-palette-1 hover:underline whitespace-nowrap cursor-pointer">
+                  <Link href="/signupBuyer" className="text-palette-1 hover:text-palette-2 duration-300  whitespace-nowrap cursor-pointer">
                     Signup as Buyer
                   </Link>
-                  <Link href="/applyartist" className="text-palette-1 hover:underline whitespace-nowrap cursor-pointer">
+                  <Link href="/applyartist" className="text-palette-1 hover:text-palette-2 duration-300  whitespace-nowrap cursor-pointer">
                     Apply as Artist
                   </Link>
 
-                  <span><X className="bg-palette-2 text-palette-5 rounded-md" onClick={() => setShowSignup(!showSIgnup)}/></span>
+                  <span><X className="bg-palette-1 text-palette-5 rounded-md cursor-pointer hover:bg-palette-2" onClick={() => setShowSignup(!showSIgnup)}/></span>
                 </>
 
               )}

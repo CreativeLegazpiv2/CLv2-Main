@@ -11,6 +11,7 @@ import { Step1 } from "./Step1";
 import { Step2 } from "./Step2";
 import { Step3 } from "./Step3";
 import { Step4 } from "./Step4";
+import { ToastContainer } from "react-toastify";
 
 interface UserDetail {
   username: string;
@@ -47,26 +48,15 @@ interface SelectProps {
 
 export const SignupBuyer = () => {
   return (
-    <div className="w-full min-h-dvh lg:py-[20dvh] py-[15dvh] bg-[url('/images/signup/background.jpg')] bg-cover bg-no-repeat bg-center relative">
-      {/* Black overlay for better contrast */}
-      <div className="absolute inset-0 w-full h-full bg-black/50"></div>
+    <div className="w-full h-dvh lg:py-[20dvh] py-[15dvh] bg-[url('/images/signup/background.jpg')] bg-cover bg-no-repeat bg-center relative">
+      {/* Full height overlay covering the entire div */}
+      <div className="absolute inset-0 w-full h-full bg-black/50"></div> {/* Increased opacity for better contrast */}
 
       {/* Content */}
-      <div className="relative w-full h-full xl:max-w-[55%] sm:max-w-[70%] max-w-[95%] mx-auto flex flex-col gap-10 justify-center items-center">
-        <motion.h1
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="font-bold lg:text-6xl md:text-5xl text-4xl text-white drop-shadow-xl text-center"
-        >
-          Explore Unique Art Pieces
-          <br />
-          <span className="font-bold lg:text-5xl md:text-4xl text-3xl text-white drop-shadow-xl">
-            Elevate Your Collection.
-          </span>
-        </motion.h1>
+      <div className="relative w-full h-full xl:max-w-[60%] sm:max-w-[70%] max-w-[95%] mx-auto flex flex-col gap-10 justify-center items-center">
         <AccountCreation />
       </div>
+      <ToastContainer />
     </div>
   );
 };
@@ -74,43 +64,23 @@ export const SignupBuyer = () => {
 const AccountCreation = () => {
   return (
     <div className="w-full h-full relative">
+
       {/* Main content */}
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="w-full h-full flex bg-white rounded-2xl z-50 relative shadow-2xl"
+        className="w-full h-full flex bg-palette-3 rounded-2xl z-50 relative shadow-2xl"
       >
-        <div className="w-full h-full sm:p-10 p-6 lg:block hidden">
-          <img
-            className="w-fit h-full rounded-xl object-cover"
-            src="../images/signup/study.png"
-            alt="Study"
-          />
+        <div className="w-full h-full justify-center items-center sm:p-10 p-6 lg:flex hidden">
+          <Logo color="text-palette-5" width={"auto"} height={"auto"} />
         </div>
-        <div className="w-full min-h-full lg:-ml-8 flex flex-col gap-4 justify-center items-center sm:p-10 p-4">
-          <div className="w-64 h-fit">
-            <Logo color="text-secondary-2" width={"auto"} height={"auto"} />
-          </div>
-          <div className="w-full h-full flex justify-end items-end">
+        <div className="w-full h-full flex flex-col bg-palette-5 text-palette-1 lg:rounded-r-2xl lg:rounded-none rounded-2xl gap-12 justify-center items-center sm:p-10">
+          <div className="w-full h-fit flex flex-col gap-4 justify-end items-center">
             <MultiStepForm />
           </div>
         </div>
       </motion.div>
-
-      {/* Background divs (behind the main content) */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-        className="w-full absolute lg:-bottom-10 -bottom-6 z-10 max-w-[90%] left-0 right-0 mx-auto h-32 rounded-2xl bg-shade-6 shadow-lg"
-      ></motion.div>
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
-        className="w-full absolute lg:-bottom-20 -bottom-12 z-0 max-w-[80%] left-0 right-0 mx-auto h-32 rounded-2xl bg-shade-7 shadow-lg"
-      ></motion.div>
     </div>
   );
 };
@@ -196,7 +166,7 @@ export const MultiStepForm = () => {
       setTimeout(() => {
         router.push("/signin");
       }, 2000);
-    } catch (err:any) {
+    } catch (err: any) {
       // Handle the "email already exists" error
       if ((err as Error).message.includes("Email already exists")) {
         setError("Email already exists. Please use a different email.");
@@ -254,10 +224,10 @@ export const MultiStepForm = () => {
       </AnimatePresence>
 
       {/* Display error message */}
-      {error && <div className="text-red-500 mt-2 text-sm">{error}</div>}
+      {error && <div className="text-red-500 mt-2 text-xs">{error}</div>}
 
       {/* Display success message */}
-      {success && <div className="text-green-500 mt-2 text-sm">{success}</div>}
+      {success && <div className="text-green-500 mt-2 text-xs">{success}</div>}
 
       {/* Form navigation buttons */}
       <div className="flex justify-center items-center gap-4 mt-4">
@@ -265,7 +235,7 @@ export const MultiStepForm = () => {
           <motion.button
             type="button"
             onClick={prevStep}
-            className="w-full py-2 bg-transparent border-2 border-primary-2 text-primary-2 rounded-lg hover:bg-primary-2 hover:text-white transition-colors"
+            className="w-full py-2 bg-transparent border-2 border-palette-2 rounded-lg hover:bg-palborder-palette-2 hover:text-palette-2 transition-colors"
             whileTap={{ scale: 0.95 }}
           >
             Previous
@@ -275,7 +245,7 @@ export const MultiStepForm = () => {
           <motion.button
             type="button"
             onClick={nextStep}
-            className="w-full py-2 bg-primary-2 text-white rounded-lg hover:bg-primary-1 transition-colors"
+            className="w-full py-2 bg-palette-1 text-white rounded-lg hover:bg-palette-2 transition-colors"
             whileTap={{ scale: 0.95 }}
           >
             Next
@@ -283,7 +253,7 @@ export const MultiStepForm = () => {
         ) : (
           <motion.button
             type="submit"
-            className="w-full py-2 bg-primary-2 text-white rounded-lg hover:bg-primary-2 transition-colors"
+            className="w-full py-2 bg-palette-2 text-white rounded-lg hover:bg-palette-1 transition-colors"
             whileTap={{ scale: 0.95 }}
           >
             Submit
@@ -292,10 +262,10 @@ export const MultiStepForm = () => {
       </div>
 
       {/* Link to login page */}
-      <div className="w-full flex flex-col justify-center items-center mt-2">
-        <p className="text-gray-600">Already have an account?</p>
-        <Link href="/signin" className="uppercase font-medium text-primary-1 hover:text-primary-2 transition-colors">
-          Login
+      <div className="w-full flex flex-col justify-start items-start mt-2">
+        <p className="text-palette-7 text-sm">Already have an account?</p>
+        <Link href="/signin" className="uppercase font-medium text-sm text-palette-2 hover:text-palette-1 transition-colors">
+          Sign in
         </Link>
       </div>
     </form>
@@ -305,7 +275,7 @@ export const MultiStepForm = () => {
 export const Input: React.FC<InputProps> = ({ name, value, onChange, placeholder, icon, type = "text" }) => (
   <div className="w-full relative">
     <input
-      className="w-full h-12 border-b-2 p-4 pl-12 bg-transparent placeholder-gray-500 focus:border-primary-1 transition-colors outline-none ring-0"
+      className="w-full h-12 border-b border-b-palette-1 p-4 pl-12 bg-transparent placeholder-palette-7/20 focus:border-palette-1 transition-colors outline-none ring-0"
       type={type}
       name={name}
       value={value}
@@ -314,7 +284,7 @@ export const Input: React.FC<InputProps> = ({ name, value, onChange, placeholder
       required
     />
     <Icon
-      className="text-secondary-2 absolute top-1/2 left-0 -translate-y-1/2"
+      className="text-palette-1 absolute top-1/2 left-0 -translate-y-1/2"
       icon={icon}
       width="35"
       height="35"
@@ -325,7 +295,7 @@ export const Input: React.FC<InputProps> = ({ name, value, onChange, placeholder
 export const TextArea: React.FC<InputProps> = ({ name, value, onChange, placeholder, icon }) => (
   <div className="w-full relative">
     <textarea
-      className="w-full h-16 border-b-2 p-4 pl-12 bg-transparent placeholder-gray-500 focus:border-primary-1 transition-colors outline-none ring-0 resize-none"
+      className="w-full h-16 border-b border-b-palette-1 p-4 pl-12 bg-transparent placeholder-palette-7/20 focus:border-palette-1 transition-colors outline-none ring-0 resize-none"
       name={name}
       value={value}
       onChange={onChange}
@@ -333,7 +303,7 @@ export const TextArea: React.FC<InputProps> = ({ name, value, onChange, placehol
       required
     />
     <Icon
-      className="text-secondary-2 absolute top-4 left-0"
+      className="text-palette-1 absolute top-4 left-0"
       icon={icon}
       width="35"
       height="35"
@@ -347,7 +317,7 @@ export const Select: React.FC<SelectProps> = ({ name, value, onChange, placehold
       name={name}
       value={value}
       onChange={onChange}
-      className="w-full p-4 pl-12 pr-10 border-b-2 bg-transparent placeholder-gray-500 focus:border-primary-1 transition-colors outline-none ring-0 appearance-none"
+      className="w-full p-4 pl-12 pr-10 border-b border-b-palette-21bg-transparent placeholder-palette-7/20 focus:border-palette-1 transition-colors outline-none ring-0 appearance-none"
       required
     >
       <option value="" disabled>{placeholder}</option>
@@ -356,14 +326,14 @@ export const Select: React.FC<SelectProps> = ({ name, value, onChange, placehold
       ))}
     </select>
     <Icon
-      className="text-secondary-2 absolute top-1/2 left-0 -translate-y-1/2"
+      className="text-palette-1 absolute top-1/2 left-0 -translate-y-1/2"
       icon={icon}
       width="35"
       height="35"
     />
     <Icon
       icon={"mdi:chevron-down"}
-      className="absolute top-1/2 right-3 -translate-y-1/2 text-secondary-2 pointer-events-none"
+      className="absolute top-1/2 right-3 -translate-y-1/2 text-palette-1 pointer-events-none"
       width="20"
       height="20"
     />

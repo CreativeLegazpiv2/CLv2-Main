@@ -1,10 +1,10 @@
 export const Step4 = ({ formData, handleSubmit, prevStep, handleCancel }: any) => {
     return (
-      <div className="w-full h-full flex flex-col gap-4 text-primary-2">
+      <div className="w-full h-full flex flex-col gap-4 text-palette-1">
         <h2 className="font-bold text-xl mb-4">Step 4: Review</h2>
   
         {/* Review Information */}
-        <div className="bg-gray-100 p-4 rounded shadow-md">
+        <div className="">
           <p className="mb-2">
             <span className="font-semibold">Username: </span>{formData.username}
           </p>

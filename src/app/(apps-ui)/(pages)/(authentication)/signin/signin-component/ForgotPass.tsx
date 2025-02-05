@@ -107,7 +107,7 @@ export const ForgotPass = ({ handleBackToLogin }: { handleBackToLogin: () => voi
     <form className="w-full h-full flex flex-col gap-6">
       {/* Email Input */}
       {!otpSent && !otpValid && (
-        <div className="w-full lg:max-w-sm relative">
+        <div className="w-full relative">
           <input
             className="w-full border-2 pl-12 h-12 border-palette-2/50 outline-none bg-transparent placeholder-palette-1 rounded-full focus:border-palette-2 transition-colors"
             type="email"
@@ -121,7 +121,7 @@ export const ForgotPass = ({ handleBackToLogin }: { handleBackToLogin: () => voi
 
       {/* OTP Input */}
       {otpSent && !otpValid && (
-        <div className="w-full lg:max-w-sm relative">
+        <div className="w-full relative">
           <input
             className="w-full border-2 pl-12 h-12 border-palette-2/50 outline-none bg-transparent placeholder-palette-1 rounded-full focus:border-palette-2 transition-colors"
             type="text"
@@ -139,7 +139,7 @@ export const ForgotPass = ({ handleBackToLogin }: { handleBackToLogin: () => voi
 
       {/* Submit/Resend Button */}
       {!otpValid && (
-        <div className="w-full lg:max-w-sm relative">
+        <div className="w-full relative">
           {otpSent ? (
             <motion.button
               className="absolute right-0 top-0 p-2 text-palette-2 text-sm flex items-center gap-2 underline hover:text-palette-1 transition-colors"
@@ -171,7 +171,7 @@ export const ForgotPass = ({ handleBackToLogin }: { handleBackToLogin: () => voi
 
       {/* OTP Submit Button */}
       {!otpValid && otpSent && (
-        <div className="w-full lg:max-w-sm mt-4">
+        <div className="w-full mt-4">
           <motion.button
             className="w-full py-3 text-lg font-semibold uppercase bg-palette-3 text-white rounded-full hover:bg-palette-1 transition-colors"
             onClick={handleOtpSubmit}
@@ -186,7 +186,7 @@ export const ForgotPass = ({ handleBackToLogin }: { handleBackToLogin: () => voi
 
       {/* New Password Input (after OTP is validated) */}
       {otpValid && (
-        <div className="w-full lg:max-w-sm relative mt-4">
+        <div className="w-full relative mt-4">
           <input
             className="w-full border-2 pl-12 h-12 border-palette-2/50 outline-none bg-transparent placeholder-palette-1 rounded-full focus:border-palette-2 transition-colors"
             type="password"
@@ -200,7 +200,7 @@ export const ForgotPass = ({ handleBackToLogin }: { handleBackToLogin: () => voi
 
       {/* Submit New Password */}
       {otpValid && (
-        <div className="w-full lg:max-w-sm mt-4">
+        <div className="w-full mt-4">
           <motion.button
             className="w-full py-3 text-lg font-semibold uppercase bg-palette-4 text-white rounded-full hover:bg-palette-1 transition-colors"
             onClick={handlePasswordSubmit}
@@ -214,8 +214,8 @@ export const ForgotPass = ({ handleBackToLogin }: { handleBackToLogin: () => voi
       )}
 
       {/* Back to Login */}
-      <div className="w-full flex justify-center items-center">
-        <button type="button" className="text-palette-1 underline mt-4" onClick={handleBackToLogin}>
+      <div className="w-full flex justify-end items-center text-sm">
+        <button type="button" className="text-palette-1 hover:text-palette-2 duration-300 mt-4" onClick={handleBackToLogin}>
           Back to Login
         </button>
       </div>

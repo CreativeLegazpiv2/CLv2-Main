@@ -40,7 +40,7 @@ export const Form = () => {
     return (
       <form className="w-full h-full flex flex-col gap-6" onSubmit={handleSubmit}>
         {/* Username */}
-        <div className="w-full lg:max-w-sm relative">
+        <div className="w-full relative">
           <input
             className="w-full border-2 pl-12 h-12 border-palette-2/50 outline-none ring-0 bg-transparent placeholder-palette-1 rounded-full focus:border-palette-2 transition-colors"
             type="text"
@@ -57,7 +57,7 @@ export const Form = () => {
         </div>
   
         {/* Password */}
-        <div className="w-full lg:max-w-sm relative">
+        <div className="w-full relative">
           <input
             className="w-full border-2 pl-12 h-12 border-palette-2/50 outline-none ring-0 bg-transparent placeholder-palette-1 rounded-full focus:border-palette-2 transition-colors"
             type="password" // Changed to password type
@@ -75,7 +75,7 @@ export const Form = () => {
   
         {error && <p className="text-red-500 text-sm">{error}</p>}
   
-        <div className="w-full lg:max-w-sm ">
+        <div className="w-full ">
           <motion.button
             className="w-full py-3 text-lg font-semibold uppercase bg-palette-2 text-white rounded-full hover:bg-palette-1 transition-colors"
             type="submit"

@@ -22,7 +22,6 @@ export default function GalleryVisitorPage() {
                 {/* <CollectionsCarousel /> */}
                 <GalleryTitle />
                 <CreativeDirectory />
-                
                 <FeaturedCollections />
                 <Infinite />                
             </div>

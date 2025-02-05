@@ -3,7 +3,7 @@ import { Logo } from "../reusable-component/Logo";
 
 export const Footer = () => {
   return (
-    <div className="w-full md:h-[35dvh] h-fit bg-palette-2 md:py-0 pt-[5dvh] pb-[10dvh]">
+    <div className="w-full md:h-[35dvh] h-fit bg-palette-2 md:py-0 pt-[5dvh] pb-[10dvh] z-50">
       <div className="w-full h-full flex md:flex-row flex-col md:justify-between justify-center items-center md:max-w-[80%] max-w-[90%] mx-auto">
         <div className="w-fit h-full flex flex-col justify-center items-center md:gap-6 gap-2">
           <div className="w-full py-12 h-fit flex flex-col gap-2 font-medium text-sm">

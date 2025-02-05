@@ -3,7 +3,7 @@ import { Input } from "./Signup";
 
 export const Step1 = ({ formData, handleChange, nextStep }: any) => {
   return (
-    <div className="w-full h-full flex flex-col gap-4 text-primary-2">
+    <div className="w-full h-full flex flex-col gap-4 text-palette-1">
       <h2 className="font-bold text-xl">Step 1: Basic Information</h2>
 
       {/* Full Name Input */}
