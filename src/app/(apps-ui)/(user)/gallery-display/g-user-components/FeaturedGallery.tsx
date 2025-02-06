@@ -123,7 +123,7 @@ export const FeaturedCollections = () => {
 };
 
 
-const dummyData = [
+export const dummyData = [
   { id: 1, artist: "artist 1", creative_field: "Creative 1", image_path: "images/gallery/11.jpg", title: "Image 1" },
   { id: 2, artist: "artist 2", creative_field: "Creative 2", image_path: "images/gallery/2.jpg", title: "Image 2" },
   { id: 3, artist: "artist 3", creative_field: "Creative 3", image_path: "images/gallery/33.jpg", title: "Image 3" },
