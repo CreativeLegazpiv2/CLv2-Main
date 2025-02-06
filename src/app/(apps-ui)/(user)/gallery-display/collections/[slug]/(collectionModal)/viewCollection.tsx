@@ -14,6 +14,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import { toast } from "react-toastify"
+import { Interested } from "./Interested"
 
 interface ViewCollectionProps {
     generatedId: string
@@ -557,35 +558,39 @@ export const ViewCollection = ({
                         fill
                         className="object-contain"
                     />
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 ">
                         <h2 className="text-white text-2xl font-bold">{title}</h2>
                         <div className="flex justify-between text-white text-base">
                             <span>{artist}</span>
                             <span>{year}</span>
                         </div>
-                        { collection.images.childid != getID && (
+                        {images.map((image, index) => (
                             <>
-                                <motion.button
-                                    initial={{ backgroundColor: "#FFD094", color: "#403737" }}
-                                    whileHover={{
-                                        scale: 1.1,
-                                        backgroundColor: "#403737",
-                                        color: "white",
-                                    }}
-                                    whileTap={{ scale: 0.9 }}
-                                    transition={{ duration: 0.3, delay: 0.2 }}
-                                    className="w-32 py-2 rounded-full"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setSelectedImage(image);
-                                        setInterestModalOpen(true);
-                                        setChat(false);
-                                    }}
-                                >
-                                    Interested?
-                                </motion.button>
-                            </>
-                        )}
+                                {image.childid != getID && (
+                                    <>
+                                        <motion.button
+                                        key={index + 'button' }
+                                            initial={{ backgroundColor: "#FFD094", color: "#403737" }}
+                                            whileHover={{
+                                                scale: 1.1,
+                                                backgroundColor: "#403737",
+                                                color: "white",
+                                            }}
+                                            whileTap={{ scale: 0.9 }}
+                                            transition={{ duration: 0.3, delay: 0.2 }}
+                                            className="w-32 py-2 rounded-full"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setSelectedImage(image);
+                                                setInterestModalOpen(true);
+                                                setChat(false);
+                                            }}
+                                        >
+                                            Interested?
+                                        </motion.button>
+                                    </>
+                                )}</>
+                        ))}
                     </div>
                 </div>
 
@@ -643,7 +648,7 @@ export const ViewCollection = ({
 
                                         return (
                                             <div
-                                                key={index}
+                                                key={index +1}
                                                 className="bg-gray-50 p-4 rounded-lg overflow-y-auto relative"
                                             >
                                                 <div className="w-full flex gap-2.5 items-start justify-start">
@@ -732,7 +737,7 @@ export const ViewCollection = ({
                                                 {displayedSubcomments.map(
                                                     (subcomment: Subcomment, subIndex: number) => (
                                                         <div
-                                                            key={subIndex}
+                                                            key={subIndex +1 }
                                                             className="p-2 rounded-lg ml-12 mt-2"
                                                         >
                                                             <div className="w-full flex gap-2.5 items-start justify-start">
@@ -822,6 +827,22 @@ export const ViewCollection = ({
                 </form>
 
             </div>
+
+             {isInterestModalOpen && selectedImage && (
+                    <div className="fixed -bottom-2 -right-1 z-[550] p-4">
+                      <Interested
+                        childid={selectedImage.childid}
+                        created_at={selectedImage.created_at}
+                        artist={selectedImage.artist}
+                        image={selectedImage.image_path}
+                        title={selectedImage.title}
+                        desc={selectedImage.desc}
+                        year={selectedImage.year}
+                        onCancel={() => setInterestModalOpen(false)}
+                        chat={chat}
+                      />
+                    </div>
+                  )}
         </motion.div>
     )
 }
