@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/services/supabaseClient';
-import { jwtVerify } from 'jose';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret';
 
 export async function POST(req: Request) {
   const userId = req.headers.get('User-ID'); // Extract user ID from custom header

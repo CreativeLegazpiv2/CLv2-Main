@@ -11,7 +11,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (!user) {
-      router.push('/apps-ui/signin');
+      router.push('/signin');
     }
   }, [user, router]);
 

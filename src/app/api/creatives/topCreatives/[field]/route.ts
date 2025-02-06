@@ -62,7 +62,7 @@ export async function GET(req: Request) {
             const likes = likesCount.find((like) => like.galleryLiked === detail.detailsid);
             return {
                 first_name: detail.first_name,
-                profile_pic: detail.profile_pic || "/images/creative-directory/boy.png",
+                profile_pic: detail.profile_pic || "/images/creative-directory/profile.jpg",
                 bio: detail.bio || "No bio available",
                 newCount: likes?.totalCount || 0,
             };

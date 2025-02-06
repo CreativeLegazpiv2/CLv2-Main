@@ -9,7 +9,7 @@ export default function Home() {
  
   useEffect(() => {
     // Trigger client-side navigation on load
-    router.push('/apps-ui'); // Replace with your target route
+    router.push('/home'); // Replace with your target route
   }, [router]);
 
   return null;

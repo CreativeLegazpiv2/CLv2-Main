@@ -29,12 +29,12 @@ export const CreativeDirectory: React.FC<CreativeDirectoryProps> = ({
 
   // Function to handle Join button click
   const handleJoinClick = () => {
-    router.push("/apps-ui/signin"); // Redirect to /apps-ui/signin
+    router.push("/signin"); // Redirect to /signin
   };
 
   // Function to handle Explore button click
   const handleExploreClick = () => {
-    router.push("/apps-ui/creative-dashboard"); // Redirect to /apps-ui/creative-dashboard
+    router.push("/creative-directory"); // Redirect to /creative-directory
   };
 
   return (
@@ -52,7 +52,7 @@ export const CreativeDirectory: React.FC<CreativeDirectoryProps> = ({
           <img className="w-full lg:h-full block lg:hidden" src={"../images/landing-page/laptop.png"} alt="" />
           <div className="lg:w-fit w-full flex flex-row md:justify-center justify-evenly items-center md:gap-6 gap-4 font-semibold">
             <motion.button
-              onClick={handleJoinClick} // Redirect to /apps-ui/signin
+              onClick={handleJoinClick} // Redirect to /signin
               className={`bg-primary-2 text-secondary-1 md:w-36 w-32 py-2 rounded-full uppercase ${trackingWide} ${textFont}`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -60,7 +60,7 @@ export const CreativeDirectory: React.FC<CreativeDirectoryProps> = ({
               join
             </motion.button>
             <motion.button
-              onClick={handleExploreClick} // Redirect to /apps-ui/creative-dashboard
+              onClick={handleExploreClick} // Redirect to /creative-dashboard
               className={`bg-secondary-1 text-primary-2 md:w-36 w-32 py-2 rounded-full uppercase ${trackingWide} ${textFont}`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
