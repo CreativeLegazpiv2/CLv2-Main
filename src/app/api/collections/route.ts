@@ -27,7 +27,7 @@ export async function GET(req: Request) {
     // Fetch user details where `detailsid` matches the `id` from `image_collections`
     const { data: userDetails, error: userError } = await supabase
       .from('userDetails')
-      .select('profile_pic, creative_field, detailsid') // Select only the required fields
+      .select('*') // Select all columns
       .in('detailsid', imageCollectionIds); // Match `detailsid` with the `id` values
 
     if (userError) {

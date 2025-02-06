@@ -62,7 +62,7 @@ export const FeaturedCollections = () => {
       <div className="w-full max-w-[95%] mx-auto flex flex-col gap-6 p-4">
         <h1 className="text-3xl font-bold text-palette-1 uppercase">Gallery</h1>
         <div className="columns-1 sm:columns-2 md:columns- lg:columns-4 gap-4">
-          {dummyData.slice(0, visibleItems).map((item) => (
+          {featuredItems.slice(0, visibleItems).map((item) => (
             <div key={item.id} className="mb-4 break-inside-avoid">
               <div className="bg-palette-6/20 rounded-3xl p-4 flex flex-col gap-4">
                 <div className="flex items-center gap-2">
@@ -81,9 +81,9 @@ export const FeaturedCollections = () => {
                   </div>
                 </div>
                 <div
-                  // onClick={() =>
-                  //   (window.location.href = `/gallery-display/collections/${item.slug}`)
-                  // }
+                  onClick={() =>
+                    (window.location.href = `/gallery-display/collections/${item.slug}`)
+                  }
                   className="w-full relative cursor-pointer rounded-3xl overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-black opacity-0 hover:opacity-50 transition-opacity duration-300 ease-in-out z-10"></div>

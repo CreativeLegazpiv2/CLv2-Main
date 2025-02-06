@@ -24,6 +24,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
 interface CollectionProps {
   collection: {
     images: {
+      sluger: string;
       created_at: Date;
       generatedId: string;
       image_path: string;
@@ -522,7 +523,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
   };
 
   return (
-    <div className="bg-white min-h-screen relative lg:max-w-screen-xl w-full max-w-[95%] mx-auto">
+    <div className=" min-h-screen relative w-full max-w-[80%] py-[10dvh] mx-auto">
       <Icon
         onClick={() => window.history.back()}
         className="absolute top-2 right-2 cursor-pointer z-20"
@@ -530,10 +531,11 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
         width="35"
         height="35"
       />
-      <div className="w-full h-full">
+      <div className="w-full h-full flex flex-col gap-6">
+        <h1 className="text-3xl font-bold text-palette-1 uppercase">collection</h1>
         {selectedImage && (
           <>
-            <motion.h1
+            {/* <motion.h1
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-4xl font-bold text-gray-900 mb-4"
@@ -547,115 +549,46 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
               className="text-xl text-gray-600 mb-8"
             >
               {selectedImage.desc}
-            </motion.p>
+            </motion.p> */}
           </>
         )}
 
         {/* Image Gallery */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-12">
+        <div className="columns-1 sm:columns-2 md:columns- lg:columns-4 gap-4">
           {images.map((image, index) => (
-            <motion.div
-              key={`${image.image_path}-${index}`}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.1 }}
-              className={`relative h-64 rounded-lg overflow-hidden shadow-lg cursor-pointer ${selectedImage?.generatedId === image.generatedId
-                ? "border-2 border-sky-500"
-                : ""
-                }`}
-              onClick={() => handleImageClick(image)}
-            >
-              <Image
-                src={image.image_path}
-                alt={`Image ${index + 1}`}
-                fill
-                priority
-                className="transition-transform duration-300 hover:scale-105 object-contain"
-              />
-              <motion.div
-                initial={{ opacity: 0 }}
-                whileHover={{
-                  backgroundColor: "rgba(0, 0, 0, 0.3)",
-                  opacity: 1,
-                }}
-                transition={{ duration: 0.3 }}
-                className="absolute md:flex hidden top-0 left-0 w-full h-full bg-black justify-center items-center gap-8"
-              >
-                {image.childid === getID && (
-                  <>
-                    <motion.button
-                      initial={{ backgroundColor: "#FFD094", color: "#403737" }}
-                      whileHover={{
-                        scale: 1.1,
-                        backgroundColor: "#403737",
-                        color: "white",
-                      }}
-                      whileTap={{ scale: 0.9 }}
-                      transition={{ duration: 0.3, delay: 0.2 }}
-                      className="w-32 py-2 rounded-full"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedImage(image);
-                        setEditModalOpen(true);
-                      }}
-                    >
-                      Edit
-                    </motion.button>
-                    <motion.button
-                      initial={{ backgroundColor: "#FFD094", color: "#403737" }}
-                      whileHover={{
-                        scale: 1.1,
-                        backgroundColor: "#403737",
-                        color: "white",
-                      }}
-                      whileTap={{ scale: 0.9 }}
-                      transition={{ duration: 0.3, delay: 0.2 }}
-                      className="w-32 py-2 rounded-full"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setImageToDelete({
-                          generatedId: image.generatedId,
-                          image_path: image.image_path,
-                        });
-                        setDeleteModalOpen(true);
-                      }}
-                    >
-                      Delete
-                    </motion.button>
-                  </>
-                )}
+            <div key={`${image.image_path}-${index}`} className="mb-4 break-inside-avoid">
+              <div className="bg-palette-6/20 rounded-3xl p-4 flex flex-col gap-4">
+                <div
+                  // onClick={() =>
+                  //   (window.location.href = `/gallery-display/collections/${item.slug}`)
+                  // }
+                  onClick={() => handleImageClick(image)}
+                  className="w-full relative cursor-pointer rounded-3xl overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-black opacity-0 hover:opacity-50 transition-opacity duration-300 ease-in-out z-10"></div>
+                  <div className="max-h-[32rem] overflow-hidden">
+                    <img
 
-                {image.childid != getID && (
-                  <>
-                    <motion.button
-                      initial={{ backgroundColor: "#FFD094", color: "#403737" }}
-                      whileHover={{
-                        scale: 1.1,
-                        backgroundColor: "#403737",
-                        color: "white",
+                      src={image.image_path}
+                      alt={image.title}
+                      className="w-full h-fit object-fill"
+                      style={{
+                        maxHeight: "32rem",
+                        width: "100%",
+                        objectFit: "fill",
                       }}
-                      whileTap={{ scale: 0.9 }}
-                      transition={{ duration: 0.3, delay: 0.2 }}
-                      className="w-32 py-2 rounded-full"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedImage(image);
-                        setInterestModalOpen(true);
-                        setChat(false);
-                      }}
-                    >
-                      Interested?
-                    </motion.button>
-                  </>
-                )}
-              </motion.div>
-            </motion.div>
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
           ))}
         </div>
 
         <div className="w-full h-fit flex gap-12">
           {/* Collection Details */}
-          {selectedImage && (
+          {/* {selectedImage && (
             <div className="bg-gray-200 p-6 rounded-lg mb-8 w-full h-fit max-w-[24.5rem]">
               <div className="flex justify-between items-start">
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">
@@ -681,7 +614,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
                 <strong>Year:</strong> {selectedImage.year}
               </p>
             </div>
-          )}
+          )} */}
 
           <div className="max-h-[32rem] min-h-40 w-full border border-gray-300 rounded-lg p-4 overflow-hidden">
             {/* Comment Section */}
@@ -964,6 +897,7 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
           onClick={() => setViewModalOpen(false)} // Close modal when clicking outside
         >
           <ViewCollection
+            collection={collection}
             generatedId={selectedImage.generatedId}
             created_at={selectedImage.created_at}
             image={selectedImage.image_path}

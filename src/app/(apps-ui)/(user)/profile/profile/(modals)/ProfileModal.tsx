@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { motion, AnimatePresence } from "framer-motion";
-import { UserDetail } from "../UserProfile";
+import { UserDetail } from "../../../gallery-display/collections/[slug]/UserProfile";
 import { getSession } from "@/services/authservice";
 import { jwtVerify } from "jose";
 import Image from "next/image";
