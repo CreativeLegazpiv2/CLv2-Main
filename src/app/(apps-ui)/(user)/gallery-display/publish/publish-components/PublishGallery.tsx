@@ -8,7 +8,7 @@ import { getSession } from "@/services/authservice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { checkTokenExpiration, logoutAndRedirect} from "@/services/jwt";
+import { checkTokenExpiration, logoutAndRedirect } from "@/services/jwt";
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
 
 
@@ -44,10 +44,10 @@ export default function PublishGallery() {
           token,
           new TextEncoder().encode(JWT_SECRET)
         );
-  
+
         // Extract the user ID from the token payload
         const userIdFromToken = payload.id as string;
-  
+
         // Call the API with the userIdFromToken
         const response = await fetch('/api/user', {
           method: 'GET',
@@ -55,14 +55,14 @@ export default function PublishGallery() {
             'Authorization': userIdFromToken, // Pass the userId as the Authorization header
           },
         });
-  
+
         if (!response.ok) {
           throw new Error('Failed to fetch user details');
         }
-  
+
         // Parse the response JSON
         const data = await response.json();
-  
+
         // Store the first_name in localStorage under the key "Fname"
         if (data.first_name) {
           localStorage.setItem('Fname', data.first_name);
@@ -75,7 +75,7 @@ export default function PublishGallery() {
         console.error('Error fetching user details:', error);
       }
     };
-  
+
     fetchUserData();
   }, []);
 
@@ -127,84 +127,109 @@ export default function PublishGallery() {
   const handleUpload = async () => {
     const token = getSession();
     const Fname = localStorage.getItem("Fname") as string;
-    if (!token) return;
+
+    if (!token) {
+        toast.error("Session expired. Please log in again.");
+        return;
+    }
+
+    // Validate fields
+    if (!formData.image) {
+        toast.error("Please upload an image.");
+        return;
+    }
+    if (!formData.title.trim()) {
+        toast.error("Title is required.");
+        return;
+    }
+    if (!formData.desc.trim()) {
+        toast.error("Description is required.");
+        return;
+    }
+    if (!formData.year.trim() || !validateYear(formData.year)) {
+        toast.error("Year must be a valid 4-digit number.");
+        return;
+    }
 
     setLoading(true); // Set loading to true when upload starts
 
     try {
-      const { payload } = await jwtVerify(
-        token,
-        new TextEncoder().encode(JWT_SECRET)
-      );
-      const userIdFromToken = payload.id as string;
+        const { payload } = await jwtVerify(
+            token,
+            new TextEncoder().encode(JWT_SECRET)
+        );
+        const userIdFromToken = payload.id as string;
 
-      const data = new FormData();
-      data.append("image", formData.image as File);
-      data.append("title", formData.title);
-      data.append("desc", formData.desc);
-      data.append("year", formData.year);
+        const data = new FormData();
+        data.append("image", formData.image as File);
+        data.append("title", formData.title);
+        data.append("desc", formData.desc);
+        data.append("year", formData.year);
 
-      const response = await fetch("/api/collections/publish", {
-        method: "PUT",
-        headers: {
-          "user-id": userIdFromToken,
-          Fname: Fname,
-        },
-        body: data,
-      });
+        const response = await fetch("/api/collections/publish", {
+            method: "PUT",
+            headers: {
+                "user-id": userIdFromToken,
+                Fname: Fname,
+            },
+            body: data,
+        });
 
-      if (!response.ok) {
-        const errorBody = await response.text();
-        throw new Error(`Failed to send message: ${errorBody}`);
-      }
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`Failed to send message: ${errorBody}`);
+        }
 
-      const result = await response.json();
-      console.log(result); // Handle success (optional)
-      setFormData({
-        title: "",
-        desc: "",
-        year: "",
-        image: null,
-      });
-      setPreviewImage(null);
-      toast.success("Gallery published successfully!", {
-        position: "bottom-right",
-      });
+        const result = await response.json();
+        console.log(result); // Handle success (optional)
+
+        setFormData({
+            title: "",
+            desc: "",
+            year: "",
+            image: null,
+        });
+        setPreviewImage(null);
+        toast.success("Gallery published successfully!", {
+            position: "bottom-right",
+        });
+        window.location.reload();
     } catch (error) {
-      console.error("Error sending message:", error);
-      toast.error("Failed to publish gallery. Please try again.");
+        console.error("Error sending message:", error);
+        toast.error("Failed to publish gallery. Please try again.");
     } finally {
-      setLoading(false); // Reset loading state
+        setLoading(false); // Reset loading state
     }
-  };
+};
 
   return (
-    <div className="bg-gray-100 pt-36 pb-16 px-4 sm:px-6 lg:px-8">
-      <ToastContainer />
-      <div className="max-w-7xl mx-auto">
-        <div className="flex w-full justify-between items-center">
-          <h1 className="text-2xl font-bold mb-6">PUBLISH</h1>
-          <Icon
-            onClick={() => window.history.back()}
-            className="cursor-pointer"
-            icon="ion:arrow-back"
-            width="35"
-            height="35"
-          />
-        </div>
-        <hr className="border-t border-gray-300 mb-8" />
 
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Left Column */}
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">UPLOAD</h3>
-              <div
-                className="border-2 border-dashed border-gray-300 rounded-lg p-4 mb-4"
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-              >
-                <div className="bg-orange-100 rounded-lg p-8 text-center">
+
+    <motion.div
+      onClick={(e) => e.stopPropagation()}
+      initial={{ scale: 0.9, y: 50, opacity: 0 }}
+      animate={{ scale: 1, y: 0, opacity: 1 }}
+      exit={{ scale: 0.9, y: 50, opacity: 0 }}
+      transition={{
+        type: "spring",
+        damping: 25,
+        stiffness: 500,
+      }}
+      className="w-[90%] lg:max-w-screen-xl h-[80vh] overflow-hidden flex flex-col mx-auto bg-white rounded-lg p-4 relative"
+    >
+      <h2 className="text-3xl font-extrabold mb-2">PUBLISH COLLECTION</h2>
+      <div className="p-4 rounded-lg h-full overflow-y-auto custom-scrollbar">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Left Column */}
+          <div className="h-full overflow-y-auto relative">
+            <h3 className="text-xl font-bold mb-4">UPLOAD</h3>
+            <div
+              className="border-2 border-dashed border-gray-300 rounded-lg p-4 mb-4"
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+            >
+              <label htmlFor="file-input" className="cursor-pointer">
+                <div className="bg-orange-100 rounded-lg p-8 text-center flex items-center justify-center">
                   <input
                     type="file"
                     accept="image/*"
@@ -212,140 +237,121 @@ export default function PublishGallery() {
                     className="hidden"
                     id="file-input"
                   />
-                  <label htmlFor="file-input" className="cursor-pointer">
-                    {previewImage ? (
-                      <Image
-                        src={previewImage}
-                        alt="Preview"
-                        width={500}
-                        height={200}
-                        className="rounded-lg"
+                  {previewImage ? (
+                    <Image
+                      src={previewImage}
+                      alt="Preview"
+                      width={0}
+                      height={0}
+                      className="rounded-lg h-32 w-32"
+                    />
+                  ) : (
+                    <>
+                      <Icon
+                        className="mx-auto h-12 w-12 text-gray-400"
+                        icon="stash:image-plus-light"
+                        width="25"
+                        height="25"
                       />
-                    ) : (
-                      <>
-                        <Icon
-                          className="mx-auto h-12 w-12 text-gray-400"
-                          icon="stash:image-plus-light"
-                          width="25"
-                          height="25"
-                        />
 
-                        <p className="mt-1">
-                          Drag and drop files here or click to upload
-                        </p>
-                      </>
-                    )}
-                  </label>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label
-                    htmlFor="title"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Title
-                  </label>
-                  <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="year"
-                    className="block text-sm font-medium text-gray-700 "
-                  >
-                    Year
-                  </label>
-                  <input
-                    type="number"
-                    id="year"
-                    name="year"
-                    value={formData.year}
-                    onChange={handleChange}
-                    className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="desc"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Description
-                  </label>
-                  <textarea
-                    id="desc"
-                    name="desc"
-                    rows={3}
-                    value={formData.desc}
-                    onChange={handleChange}
-                    className="mt-1 block w-full resize-none border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  ></textarea>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column */}
-            <div>
-              <div className="mb-4">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  Publication preview
-                </h3>
-                {previewImage ? (
-                  <div className="bg-white rounded-lg shadow-md overflow-hidden w-[300px] h-[400]">
-                    <div className="overflow-hidden w-[300px] relative">
-                      <Image
-                        src={previewImage}
-                        alt="Preview"
-                        width={300}
-                        height={200}
-                        className="object-cover"
-                      />
-                      <div className="absolute top-0 left-0 right-0 bottom-0 flex flex-col justify-end p-2 bg-gradient-to-t from-black to-transparent">
-                        <h3 className="text-lg font-bold text-white">
-                          {formData.title || "Title"}
-                        </h3>
-                        <div className="flex w-full justify-between items-center">
-                        <p className="text-gray-200">by {getFname}</p>
-                        <p className="text-gray-200 mr-0">{formData.year || "Year"}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <p className="mt-2 text-gray-800 break-words">
-                        {formData.desc || "Description"}
+                      <p className="mt-1">
+                        Drag and drop files here or click to upload
                       </p>
-                    </div>
-                  </div>
-                ) : (
-                  <p className="text-gray-500">
-                    Upload an image to see the preview.
-                  </p>
-                )}
+                    </>
+                  )}
+                </div>
+              </label>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label
+                  htmlFor="title"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Title
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
               </div>
 
-              <motion.button
-                onClick={handleUpload}
-                disabled={loading} // Disable button during loading
-                className={`w-full py-3 mt-4 rounded-md text-white ${
-                  loading ? "bg-gray-500" : "bg-orange-500 hover:bg-orange-600"
-                }`}
-              >
-                {loading ? "Publishing..." : "Publish"}{" "}
-                {/* Change button text based on loading state */}
-              </motion.button>
+              <div>
+                <label
+                  htmlFor="year"
+                  className="block text-sm font-medium text-gray-700 "
+                >
+                  Year
+                </label>
+                <input
+                  type="number"
+                  id="year"
+                  name="year"
+                  value={formData.year}
+                  onChange={handleChange}
+                  className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="desc"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Description
+                </label>
+                <textarea
+                  id="desc"
+                  name="desc"
+                  rows={3}
+                  value={formData.desc}
+                  onChange={handleChange}
+                  className="mt-1 block w-full resize-none border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                ></textarea>
+              </div>
             </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="flex flex-col w-full h-full">
+            <div className="h-full flex justify-center items-center p-4">
+              {previewImage ? (
+                <div className="h-full bg-white">
+                  <div className='overflow-hidden relative'>
+                    <Image
+                      src={previewImage}
+                      alt="Preview"
+                      width={0} height={0} className="object-fill w-full h-full max-h-[50dvh]"
+                    />
+                    
+                  </div>
+                  
+                </div>
+              ) : (
+                <p className="text-gray-500">
+                  Upload an image to see the preview.
+                </p>
+              )}
+            </div>
+
+            <motion.button
+              onClick={handleUpload}
+              disabled={loading} // Disable button during loading
+              className={`w-full py-3 mt-4 rounded-md text-white ${loading ? "bg-gray-500" : "bg-orange-500 hover:bg-orange-600"
+                }`}
+            >
+              {loading ? "Publishing..." : "Publish"}{" "}
+              {/* Change button text based on loading state */}
+            </motion.button>
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
+
   );
 }

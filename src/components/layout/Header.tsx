@@ -6,7 +6,7 @@ import { Icon } from "@iconify/react";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Link from "next/link";
-import { getSession, logoutUser } from "@/services/authservice";
+import { getSession, getUserDetailsFromToken, logoutUser } from "@/services/authservice";
 import { usePathname, useRouter } from "next/navigation";
 
 interface MenuItemProps {
@@ -66,20 +66,35 @@ export const Header = ({
     }
   };
 
+
+
   const checkAuth = async () => {
     try {
-      const session = await getSession();
-      setIsLoggedIn(!!session);
+      const session = await getSession()
+      setIsLoggedIn(!!session)
 
       if (session) {
-        setMenuItems([
-          { name: "Home", link: "/home" },
-          { name: "Directory", link: "/creative-directory" },
-          { name: "Gallery", link: "/gallery-display" },
-          { name: "FAQ", link: "/faqs" },
-          { name: "Events", link: "/events" },
-          { name: "Profile", link: "/profile" },
-        ]);
+        try {
+          const userDetails = await getUserDetailsFromToken()
+
+          if (userDetails && userDetails.detailsid) {
+            setMenuItems([
+              { name: "Home", link: "/home" },
+              { name: "Directory", link: "/creative-directory" },
+              { name: "Gallery", link: "/gallery-display" },
+              { name: "FAQ", link: "/faqs" },
+              { name: "Events", link: "/events" },
+              {
+                name: "Profile",
+                link: `/gallery-display/collections/${userDetails.detailsid}`,
+              },
+            ])
+          } else {
+            console.error("User details or detailsid not found")
+          }
+        } catch (error) {
+          console.error("Error fetching user details:", error)
+        }
       } else {
         setMenuItems([
           { name: "Home", link: "/home" },
@@ -87,12 +102,13 @@ export const Header = ({
           { name: "Gallery", link: "/gallery" },
           { name: "FAQ", link: "/faqs" },
           { name: "Events", link: "/events" },
-        ]);
+        ])
       }
     } catch (error) {
-      console.error("Auth check failed:", error);
+      console.error("Auth check failed:", error)
     }
-  };
+  }
+
 
   useEffect(() => {
     if (headerRef.current && !gsapAnimationRef.current) {

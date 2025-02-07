@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret';
 
 interface FormData {
-  generatedId:string;
+  generatedId: string;
   created_at: Date;
   title: string;
   desc: string;
@@ -18,7 +18,7 @@ interface FormData {
 }
 
 interface EditCollectionProps {
-  generatedId:string;
+  generatedId: string;
   created_at: Date;
   image: string | null;
   title: string;
@@ -88,27 +88,27 @@ export const EditCollection = ({
     setLoading(true);
     const token = getSession();
     if (!token) return;
-  
+
     try {
       const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
       const userIdFromToken = payload.id as string; // Get user ID from the JWT
-  
+
       const data = new FormData();
-  
+
       // Always append the required fields
       data.append('title', formData.title);
       data.append('desc', formData.desc);
       data.append('year', formData.year.toString());
       data.append('artist', formData.artist);
-  
+
       // Convert created_at to ISO string format
       const createdAtISO = new Date(formData.created_at).toISOString();
       data.append('created_at', createdAtISO);
       data.append('generatedId', formData.generatedId);
-  
+
       // Append the original image path for cleanup
       data.append('imageBefore', originalImage || '');
-  
+
       // Append the image only if it exists and is different from the original image
       if (formData.image) {
         console.log("Image passing: " + formData.image.name);
@@ -121,7 +121,7 @@ export const EditCollection = ({
       } else {
         throw new Error("No image available for upload."); // Handle the case where no image is provided
       }
-  
+
       // Debugging: Log FormData contents
       const entries = data.entries();
       let entry = entries.next();
@@ -130,7 +130,7 @@ export const EditCollection = ({
         console.log(key, value);
         entry = entries.next();
       }
-  
+
       const response = await fetch(`/api/collections/updateCollection`, {
         method: 'PUT',
         body: data,
@@ -138,13 +138,13 @@ export const EditCollection = ({
           "userId": userIdFromToken,
         },
       });
-  
+
       const responseData = await response.json();
-  
+
       if (!response.ok) {
         throw new Error(responseData.error || 'Failed to update collection');
       }
-  
+
       // Call the onEdit callback with updated data
       onEdit({
         generatedId: formData.generatedId,
@@ -154,14 +154,17 @@ export const EditCollection = ({
         year: formData.year,
         artist: formData.artist,
         image_path: previewImage ? previewImage : originalImage, // Keep the original if no new image
+
       });
+      window.location.reload();
+
     } catch (error) {
       console.error('Error updating collection:', error);
     } finally {
       setLoading(false);
     }
   };
-  
+
 
   return (
     <motion.div
@@ -189,25 +192,26 @@ export const EditCollection = ({
       <div className="p-4 rounded-lg h-fit overflow-y-auto custom-scrollbar">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Left Column */}
-          <div>
+          <div className="h-full overflow-y-auto relative">
             <h3 className="text-xl font-bold mb-4">UPLOAD</h3>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 mb-4">
-              <div className="bg-orange-100 rounded-lg p-8 text-center">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                  id="file-input"
-                />
-                <label htmlFor="file-input" className="cursor-pointer">
+              <label htmlFor="file-input" className="cursor-pointer">
+                <div className="bg-orange-100 rounded-lg p-2 text-center items-center flex justify-center">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    id="file-input"
+                  />
+
                   {previewImage ? (
                     <Image
                       src={previewImage}
                       alt="Preview"
-                      width={500}
-                      height={200}
-                      className="rounded-lg"
+                      width={0}
+                      height={0}
+                      className="rounded-lg h-32 w-32"
                     />
                   ) : (
                     <>
@@ -216,8 +220,9 @@ export const EditCollection = ({
                       </p>
                     </>
                   )}
-                </label>
-              </div>
+
+                </div>
+              </label>
             </div>
 
             <div className="space-y-4">
@@ -255,49 +260,49 @@ export const EditCollection = ({
                 />
               </div>
 
-                <div>
-                  <label
-                    htmlFor="desc"
-                    className="block text-sm font-medium text-primary-2"
-                  >
-                    description
-                  </label>
-                  <textarea
-                    id="desc"
-                    name="desc"
-                    value={formData.desc}
-                    onChange={handleChange}
-                    rows={3}
-                    className="mt-1 block w-full border resize-none border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  ></textarea>
-                </div>
+              <div>
+                <label
+                  htmlFor="desc"
+                  className="block text-sm font-medium text-primary-2"
+                >
+                  description
+                </label>
+                <textarea
+                  id="desc"
+                  name="desc"
+                  value={formData.desc}
+                  onChange={handleChange}
+                  rows={3}
+                  className="mt-1 block w-full border resize-none border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                ></textarea>
               </div>
             </div>
+          </div>
 
-            {/* Right Column */}
-            <div>
-              <div className="mb-4">
-                {previewImage ? (
-                  <div className="bg-white rounded-lg shadow-md overflow-hidden w-[300px] h-[400]">
-                    <div className='overflow-hidden w-[300px] relative'>
-                      <Image src={previewImage} alt="Preview" width={300} height={200} className="object-cover" />
-                      <div className='absolute top-0 left-0 right-0 bottom-0 flex flex-col justify-end p-2 bg-gradient-to-t from-black to-transparent'>
+          {/* Right Column */}
+          <div className="flex flex-col w-full h-full">
+            <div className="h-full flex justify-center items-center p-4">
+              {previewImage ? (
+                <div className="h-full bg-white">
+                  <div className='overflow-hidden relative'>
+                    <Image src={previewImage} alt="Preview" width={0} height={0} className="object-fill w-full h-full max-h-[50dvh]" />
+                    {/* <div className='absolute top-0 left-0 right-0 bottom-0 flex flex-col justify-end p-2 bg-gradient-to-t from-black to-transparent'>
                         <h3 className="text-lg font-bold text-white">{formData.title || "Title"}</h3>
                         <p className="text-gray-200">by {formData.artist}</p>
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <p className="mt-2 text-gray-800 break-words">{formData.desc || "desc"}</p>
-                    </div>
+                      </div> */}
                   </div>
-                ) : (
-                  <p className="text-gray-500">Upload an image to see the preview.</p>
-                )}
-              </div>
+                  {/* <div className="p-4">
+                      <p className="mt-2 text-gray-800 break-words">{formData.desc || "desc"}</p>
+                    </div> */}
+                </div>
+              ) : (
+                <p className="text-gray-500">Upload an image to see the preview.</p>
+              )}
+            </div>
 
             <motion.button
               onClick={handleSubmit}
-              className="w-full py-3 mt-4 bg-orange-500 hover:bg-orange-600 rounded-md text-white"
+              className="w-full py-3 bg-orange-500 hover:bg-orange-600 rounded-md text-white"
             >
               {loading ? "Saving Changes..." : "Save Changes"}
             </motion.button>

@@ -38,7 +38,10 @@ export const ButtonChat = ({
         ease: "easeInOut",
       },
     },
+
+    
   };
+  
 
   return (
     <>

@@ -1,5 +1,6 @@
 "use client"
-
+import Lottie from "lottie-react"
+import animationData from "../../../../../../../../public/cat.json";
 import CommentSkeleton from "@/components/Skeletal/commentSkeleton"
 import SubcommentSkeleton from "@/components/Skeletal/subcommentSkeleton"
 import { getSession } from "@/services/authservice"
@@ -8,7 +9,7 @@ import useAuthRedirect from "@/services/hoc/auth"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { motion } from "framer-motion"
 import { jwtVerify } from "jose"
-import { SendHorizontal } from "lucide-react"
+import { SendHorizontal, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -17,14 +18,14 @@ import { toast } from "react-toastify"
 import { Interested } from "./Interested"
 
 interface ViewCollectionProps {
-    generatedId: string
-    created_at: Date
-    image: string | null
-    title: string
-    desc: string
-    year: number
-    artist: string
-    onClose: () => void
+    generatedId: string;
+    created_at: Date;
+    image: string | null;
+    title: string;
+    desc: string;
+    year: number;
+    artist: string;
+    onClose: () => void; // Close the ViewCollection modal
     collection: {
         images: {
             created_at: Date;
@@ -37,6 +38,9 @@ interface ViewCollectionProps {
             childid: string;
         }[];
     };
+    onOpenInterestModal: (image: any) => void; // Open the Interested modal
+    onOpenEditModal: (image: any) => void; // Open the Edit modal
+    onOpenDeleteModal: (image: any) => void; // Open the Delete modal
 }
 
 interface UserDetails {
@@ -45,11 +49,14 @@ interface UserDetails {
     profile_pic: string;
 }
 interface Subcomment {
+    id: string;
     comment: string;
     userid: string;
     created_at: string;
     userDetails?: UserDetails;
 }
+
+
 
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
@@ -63,7 +70,10 @@ export const ViewCollection = ({
     year,
     artist,
     onClose,
-    collection
+    collection,
+    onOpenInterestModal,
+    onOpenEditModal,
+    onOpenDeleteModal,
 
 }: ViewCollectionProps) => {
 
@@ -75,7 +85,6 @@ export const ViewCollection = ({
     );
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [isEditModalOpen, setEditModalOpen] = useState(false);
-    const [isInterestModalOpen, setInterestModalOpen] = useState(false);
     const [imageToDelete, setImageToDelete] = useState<{
         generatedId: string;
         image_path: string;
@@ -94,7 +103,6 @@ export const ViewCollection = ({
     const [replyLoading, setReplyLoading] = useState<{ [key: string]: boolean }>(
         {}
     );
-    const [chat, setChat] = useState(false);
     const [isLoadingComments, setIsLoadingComments] = useState(true);
     const [isViewModalOpen, setViewModalOpen] = useState(false);
 
@@ -317,13 +325,6 @@ export const ViewCollection = ({
         }
     };
 
-    const handleImageClick = (image: typeof selectedImage) => {
-        setSelectedImage(image);
-        setViewModalOpen(true);
-    };
-
-
-
     useEffect(() => {
         if (collection.images.length > 0) {
             setImages(collection.images);
@@ -349,91 +350,6 @@ export const ViewCollection = ({
 
         fetchData();
     }, [collection.images]);
-
-    const handleDelete = async () => {
-        if (!imageToDelete) return;
-
-        const token = getSession();
-        if (!token) return;
-
-        try {
-            const { payload } = await jwtVerify(
-                token,
-                new TextEncoder().encode(JWT_SECRET)
-            );
-            const userId = payload.id as string;
-            await deleteCollectionItem(
-                imageToDelete.generatedId,
-                userId,
-                imageToDelete.image_path
-            );
-            toast.success("Deleted successfully!", { position: "bottom-right" });
-
-            const updatedImages = images.filter(
-                (img) => img.generatedId !== imageToDelete.generatedId
-            );
-            setImages(updatedImages);
-
-            if (selectedImage?.generatedId === imageToDelete.generatedId) {
-                setSelectedImage(
-                    updatedImages.length > 0 ? updatedImages[0] : collection.images[0]
-                );
-            }
-
-            setDeleteModalOpen(false);
-            setImageToDelete(null);
-        } catch (error) {
-            console.error("Error deleting image:", error);
-        }
-    };
-
-    const handleEdit = async (updatedData: {
-        title: string;
-        desc: string;
-        year: number;
-        image_path: string | null;
-    }) => {
-        if (!selectedImage) return;
-
-        const token = getSession();
-        if (!token) return;
-
-        try {
-            const { payload } = await jwtVerify(
-                token,
-                new TextEncoder().encode(JWT_SECRET)
-            );
-            const userId = payload.id as string;
-
-            toast.success("Collection updated successfully!", {
-                position: "bottom-right",
-            });
-
-            const updatedImages = images.map((img) =>
-                img.generatedId === selectedImage.generatedId
-                    ? {
-                        ...img,
-                        ...updatedData,
-                        image_path: updatedData.image_path || "/images/default.jpg",
-                    }
-                    : img
-            );
-            setImages(updatedImages);
-
-            setSelectedImage({
-                ...selectedImage,
-                ...updatedData,
-                image_path: updatedData.image_path || "/images/default.jpg",
-            });
-
-            setEditModalOpen(false);
-        } catch (error) {
-            console.error("Error editing the collection:", error);
-            toast.error("Failed to update the collection.", {
-                position: "bottom-right",
-            });
-        }
-    };
 
     function formatTimeAgo(timestamp: string): string {
         const now = new Date();
@@ -547,290 +463,326 @@ export const ViewCollection = ({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 500 }}
-            className="w-full max-w-[90%] h-full max-h-[90vh] mx-auto bg-white rounded-lg overflow-hidden shadow-lg flex flex-row"
+            className="w-full relative max-w-[90%] h-full max-h-[90vh] mx-auto bg-white rounded-lg overflow-y-auto shadow-lg"
         >
+            <X className="absolute top-2 right-2 cursor-pointer z-[1000] border bg-palette-6 text-white rounded-md" size={24} onClick={onClose} />
             {/* Image Container */}
-            <div className="w-full h-full flex flex-col">
-                <div className="relative w-full h-[60vh] bg-palette-5">
-                    <Image
-                        src={image || "/placeholder.svg"}
-                        alt={title}
-                        fill
-                        className="object-contain"
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 ">
-                        <h2 className="text-white text-2xl font-bold">{title}</h2>
-                        <div className="flex justify-between text-white text-base">
-                            <span>{artist}</span>
-                            <span>{year}</span>
-                        </div>
-                        {images.map((image, index) => (
-                            <>
-                                {image.childid != getID && (
-                                    <>
-                                        <motion.button
-                                        key={index + 'button' }
-                                            initial={{ backgroundColor: "#FFD094", color: "#403737" }}
-                                            whileHover={{
-                                                scale: 1.1,
-                                                backgroundColor: "#403737",
-                                                color: "white",
-                                            }}
-                                            whileTap={{ scale: 0.9 }}
-                                            transition={{ duration: 0.3, delay: 0.2 }}
-                                            className="w-32 py-2 rounded-full"
+            <div className="flex lg:flex-row flex-col h-full w-full">
+                <div className="w-full h-full flex flex-col ">
+                    <div className="relative w-full h-[60vh] bg-palette-5">
+                        <Image
+
+                            src={image || "/placeholder.svg"}
+                            alt={title}
+                            fill
+                            className="object-contain"
+                        />
+                        <div className="w-full absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 flex flex-row items-center justify-between">
+ 
+                            <div className="w-fit flex flex-col text-white text-base">
+                                <h2 className="text-white text-xl font-bold" key={title}>{title}</h2>
+                                <div className="flex gap-2">
+                                    <span key={artist}>{artist},</span>
+                                    <span key={year}>{year}</span>
+                                </div>
+
+                            </div>
+                            {collection.images.map((image, index) => (
+                                <div key={image.generatedId} className="w-fit">
+                                    {/* "Interested?" Button */}
+                                    {image.childid !== getID && (
+                                        <button
+                                            className="absolute bottom-4 right-4 bg-palette-1 p-2 px-4 rounded-full text-palette-5 hover:bg-palette-2 duration-300"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                setSelectedImage(image);
-                                                setInterestModalOpen(true);
-                                                setChat(false);
+                                                onOpenInterestModal(image); // Open the Interested modal
                                             }}
                                         >
                                             Interested?
-                                        </motion.button>
-                                    </>
-                                )}</>
-                        ))}
-                    </div>
-                </div>
+                                        </button>
+                                    )}
 
-                {/* Content Container */}
-                <div className="flex flex-col p-2 px-4 bg-white">
+                                    {/* Edit and Delete Buttons */}
+                                    {image.childid == getID && image.generatedId == generatedId && (
+                                        <div className="flex gap-2 mt-4 w-fit absolute right-4 bottom-4">
+                                            <button
+                                                className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+                                                onClick={() => {
+                                                    onOpenEditModal(image); // Open the Edit modal
+                                                    onClose(); // Close the ViewCollection modal
+                                                }}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600"
+                                                onClick={() => {
+                                                    onOpenDeleteModal(image); // Open the Delete modal
+                                                    onClose(); // Close the ViewCollection modal
+                                                }}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
 
-                    <div
-                        className="flex items-center justify-between  h-fit"
-                        onClick={toggleLike}
-                    >
-                        <h1 className="text-gray-400 text-sm mb-4">
-                            Posted: {new Date(created_at).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                            })}
-                        </h1>
-                        <div className="flex items-center">
-                            <Icon
-                                className="text-red-400 cursor-pointer"
-                                icon={liked ? "jam:heart-f" : "jam:heart"}
-                                width="30"
-                                height="30"
-                            />
-                            <span className="ml-2 text-gray-600">{likeCount} likes</span>
+
                         </div>
                     </div>
-                    <p className="text-gray-600 text-base h-full overflow-y-auto">{desc}</p>
+
+                    {/* Content Container */}
+                    <div className="flex flex-col p-2 px-4 bg-white">
+
+                        <div
+                            className="flex items-center justify-between  h-fit"
+                            onClick={toggleLike}
+                        >
+                            <h1 className="text-gray-400 text-sm mb-4">
+                                {new Date(created_at).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                })}
+                            </h1>
+                            <div className="flex items-center">
+                                <Icon
+                                    className="text-red-400 cursor-pointer"
+                                    icon={liked ? "jam:heart-f" : "jam:heart"}
+                                    width="30"
+                                    height="30"
+                                />
+                                <span className="ml-2 text-gray-600">{likeCount} likes</span>
+                            </div>
+                        </div>
+                        <p className="text-gray-600 text-base h-full overflow-y-auto">{desc}</p>
+                    </div>
                 </div>
-            </div>
-            <div className="w-full h-full bg-white relative border border-black/20">
-                <div className=" w-full h-full p-4  flex flex-col">
-                    <div className=" w-full h-dvh bg-white">
-                        <div className="h-full flex flex-col max-h-[75dvh] min-h-40">
-                            <h2 className="h-fit text-xl font-semibold text-gray-900 mb-4">
-                                Comments
-                            </h2>
-                            <div className="h-full w-full overflow-y-auto">
-                                {isLoadingComments ? (
-                                    <>
-                                        <CommentSkeleton />
-                                        <CommentSkeleton />
-                                        <CommentSkeleton />
-                                    </>
-                                ) : (
-                                    comments.map((comment, index) => {
-                                        const subcommentsForComment: Subcomment[] =
-                                            comment.subcomments || [];
-                                        const shouldShowMoreButton = subcommentsForComment.length > 1;
-                                        const displayedSubcomments = showMoreReplies[comment.id]
-                                            ? subcommentsForComment
-                                            : subcommentsForComment.slice(0, 1);
-                                        const additionalRepliesCount =
-                                            subcommentsForComment.length - 1;
+                <div className="w-full h-full bg-white relative border border-black/20">
+                    <div className=" w-full h-full p-4  flex flex-col">
+                        <div className=" w-full h-dvh bg-white">
+                            <div className="h-full flex flex-col max-h-[75dvh] min-h-40">
+                                <h2 className="h-fit text-xl font-semibold text-gray-900 mb-4">
+                                    Comments
+                                </h2>
+                                <div className="h-full w-full overflow-y-auto">
+                                    {isLoadingComments ? (
+                                        <>
+                                            <CommentSkeleton />
+                                            <CommentSkeleton />
+                                            <CommentSkeleton />
+                                        </>
+                                    ) : comments.length === 0 ? (
+                                        <div className="text-center relative text-gray-500 w-full h-full justify-center items-center flex flex-col">
+                                            <h1 className="italic text-palette-7/50 text-xl absolute top-10 max-w-64">Be the First to Comment on this collection</h1>
+                                            <Lottie
+                                                className="w-full h-full "
+                                                loop={true}
+                                                autoPlay={true}
+                                                animationData={animationData}
 
-                                        return (
-                                            <div
-                                                key={index +1}
-                                                className="bg-gray-50 p-4 rounded-lg overflow-y-auto relative"
-                                            >
-                                                <div className="w-full flex gap-2.5 items-start justify-start">
-                                                    <Link
-                                                        href={`/gallery/view-profile/${comment.detailsid}`}
-                                                        passHref
+                                            />
+
+                                        </div>
+                                    ) :
+                                        (
+                                            comments.map((comment, index) => {
+                                                const subcommentsForComment: Subcomment[] =
+                                                    comment.subcomments || [];
+                                                const shouldShowMoreButton = subcommentsForComment.length > 1;
+                                                const displayedSubcomments = showMoreReplies[comment.id]
+                                                    ? subcommentsForComment
+                                                    : subcommentsForComment.slice(0, 1);
+                                                const additionalRepliesCount =
+                                                    subcommentsForComment.length - 1;
+
+                                                return (
+                                                    <div
+                                                        key={comment.id}
+                                                        className="bg-gray-50 p-4 rounded-lg overflow-y-auto relative"
                                                     >
-                                                        <div className="w-10 h-10">
-                                                            <Image
-                                                                src={
-                                                                    comment.profile_pic ||
-                                                                    "/images/creative-directory/profile.jpg"
-                                                                }
-                                                                className="w-full h-full rounded-full bg-cover object-cover border-2 border-gray-400"
-                                                                width={100}
-                                                                height={100}
-                                                                alt={`Comment ${index + 1}`}
-                                                            />
-                                                        </div>
-                                                    </Link>
-                                                    <div className="w-full flex flex-col gap-1 justify-start items-start">
-                                                        <div className="w-full flex flex-col gap-0.5 bg-gray-200 p-2.5 rounded-md">
-                                                            <p className="text-base text-gray-700 font-semibold">
-                                                                {comment.first_name}
-                                                            </p>
-                                                            <p className="text-gray-600">{comment.comment}</p>
-                                                        </div>
-                                                        <div className="w-full flex justify-between">
-                                                            <div className="flex gap-4">
-                                                                <p className="text-gray-600 text-sm pl-2">
-                                                                    <TimeAgo timestamp={comment.created_at} />
-                                                                </p>
-                                                                <button
-                                                                    className="text-sm text-gray-400"
-                                                                    onClick={() => handleReplyClick(comment.id)}
-                                                                >
-                                                                    Reply
-                                                                </button>
-                                                            </div>
-                                                            {shouldShowMoreButton && (
-                                                                <button
-                                                                    onClick={() =>
-                                                                        setShowMoreReplies({
-                                                                            ...showMoreReplies,
-                                                                            [comment.id]: !showMoreReplies[comment.id],
-                                                                        })
-                                                                    }
-                                                                    className="text-gray-400 text-sm"
-                                                                >
-                                                                    {showMoreReplies[comment.id]
-                                                                        ? ""
-                                                                        : `View More ${additionalRepliesCount} Comments`}
-                                                                </button>
-                                                            )}
-                                                        </div>
-                                                        {showReplyInput[comment.id] && (
-                                                            <form
-                                                                onSubmit={(e) => handleReplySubmit(e, comment.id)}
-                                                                className="mt-2 pl-4 w-full flex gap-2"
+                                                        <div className="w-full flex gap-2.5 items-start justify-start">
+                                                            <Link
+                                                                href={`/gallery-display/collections/${comment.detailsid}`}
+                                                                passHref
                                                             >
-                                                                <input
-                                                                    type="text"
-                                                                    value={replyInput[comment.id] || ""}
-                                                                    onChange={(e) =>
-                                                                        setReplyInput({
-                                                                            ...replyInput,
-                                                                            [comment.id]: e.target.value,
-                                                                        })
-                                                                    }
-                                                                    className="border-[1.5px] border-gray-300 focus:outline-none focus:ring-[1.5px] px-4 rounded-full h-fit py-2 w-full"
-                                                                    placeholder={
-                                                                        "Add a reply as" + " " + comment.first_name
-                                                                    }
-                                                                />
-                                                                <button
-                                                                    type="submit"
-                                                                    className="mt-2 text-blue-500 p-2 rounded"
-                                                                >
-                                                                    <SendHorizontal size={36} strokeWidth={1.75} />
-                                                                </button>
-                                                            </form>
-                                                        )}
-                                                    </div>
-                                                </div>
-
-                                                {displayedSubcomments.map(
-                                                    (subcomment: Subcomment, subIndex: number) => (
-                                                        <div
-                                                            key={subIndex +1 }
-                                                            className="p-2 rounded-lg ml-12 mt-2"
-                                                        >
-                                                            <div className="w-full flex gap-2.5 items-start justify-start">
-                                                                <Link
-                                                                    href={`/gallery/view-profile/${subcomment.userDetails?.detailsid}`}
-                                                                    passHref
-                                                                >
-                                                                    <div className="w-10 h-10 ">
-                                                                        <Image
-                                                                            src={
-                                                                                subcomment.userDetails?.profile_pic ||
-                                                                                "/images/creative-directory/profile.jpg"
-                                                                            }
-                                                                            className="w-full h-full rounded-full bg-contain object-contain border-2 border-gray-400"
-                                                                            width={100}
-                                                                            height={100}
-                                                                            alt={`Comment ${index + 1}`}
-                                                                        />
-                                                                    </div>
-                                                                </Link>
-                                                                <div className="w-full flex flex-col gap-1 justify-start items-start">
-                                                                    <div className="w-full flex flex-col gap-0.5 bg-gray-200 p-2.5 rounded-md">
-                                                                        <p className="text-base text-gray-700 font-semibold">
-                                                                            {subcomment.userDetails?.first_name}
-                                                                        </p>
-                                                                        <p className="text-gray-600">
-                                                                            {subcomment.comment}
-                                                                        </p>
-                                                                    </div>
+                                                                <div className="w-10 h-10">
+                                                                    <Image
+                                                                        src={
+                                                                            comment.profile_pic ||
+                                                                            "/images/creative-directory/profile.jpg"
+                                                                        }
+                                                                        className="w-full h-full rounded-full bg-cover object-cover border-2 border-gray-400"
+                                                                        width={100}
+                                                                        height={100}
+                                                                        alt={`Comment ${index + 1}`}
+                                                                    />
+                                                                </div>
+                                                            </Link>
+                                                            <div className="w-full flex flex-col gap-1 justify-start items-start">
+                                                                <div className="w-full flex flex-col gap-0.5 bg-gray-200 p-2.5 rounded-md">
+                                                                    <p className="text-base text-gray-700 font-semibold">
+                                                                        {comment.first_name}
+                                                                    </p>
+                                                                    <p className="text-gray-600">{comment.comment}</p>
+                                                                </div>
+                                                                <div className="w-full flex justify-between">
                                                                     <div className="flex gap-4">
                                                                         <p className="text-gray-600 text-sm pl-2">
-                                                                            <TimeAgo
-                                                                                timestamp={subcomment.created_at}
-                                                                            />
+                                                                            <TimeAgo timestamp={comment.created_at} />
                                                                         </p>
+                                                                        <button
+                                                                            className="text-sm text-gray-400"
+                                                                            onClick={() => handleReplyClick(comment.id)}
+                                                                        >
+                                                                            Reply
+                                                                        </button>
                                                                     </div>
+                                                                    {shouldShowMoreButton && (
+                                                                        <button
+                                                                            onClick={() =>
+                                                                                setShowMoreReplies({
+                                                                                    ...showMoreReplies,
+                                                                                    [comment.id]: !showMoreReplies[comment.id],
+                                                                                })
+                                                                            }
+                                                                            className="text-gray-400 text-sm"
+                                                                        >
+                                                                            {showMoreReplies[comment.id]
+                                                                                ? ""
+                                                                                : `View More ${additionalRepliesCount} Comments`}
+                                                                        </button>
+                                                                    )}
                                                                 </div>
+                                                                {showReplyInput[comment.id] && (
+                                                                    <form
+                                                                        onSubmit={(e) => handleReplySubmit(e, comment.id)}
+                                                                        className="mt-2 pl-4 w-full flex gap-2"
+                                                                    >
+                                                                        <input
+                                                                            type="text"
+                                                                            value={replyInput[comment.id] || ""}
+                                                                            onChange={(e) =>
+                                                                                setReplyInput({
+                                                                                    ...replyInput,
+                                                                                    [comment.id]: e.target.value,
+                                                                                })
+                                                                            }
+                                                                            className="border-[1.5px] border-gray-300 focus:outline-none focus:ring-[1.5px] px-4 rounded-full h-fit py-2 w-full"
+                                                                            placeholder={
+                                                                                "Add a reply as" + " " + comment.first_name
+                                                                            }
+                                                                        />
+                                                                        <button
+                                                                            type="submit"
+                                                                            className="mt-2 text-blue-500 p-2 rounded"
+                                                                        >
+                                                                            <SendHorizontal size={36} strokeWidth={1.75} />
+                                                                        </button>
+                                                                    </form>
+                                                                )}
                                                             </div>
                                                         </div>
-                                                    )
-                                                )}
-                                                {replyLoading[comment.id] && (
-                                                    <div className="ml-12 mt-2">
-                                                        <SubcommentSkeleton />
-                                                    </div>
-                                                )}
-                                                {shouldShowMoreButton && (
-                                                    <button
-                                                        onClick={() =>
-                                                            setShowMoreReplies({
-                                                                ...showMoreReplies,
-                                                                [comment.id]: !showMoreReplies[comment.id],
-                                                            })
-                                                        }
-                                                        className="text-gray-400 text-sm ml-[92%] whitespace-nowrap"
-                                                    >
-                                                        {showMoreReplies[comment.id] ? "View Less" : ""}
-                                                    </button>
-                                                )}
-                                            </div>
-                                        );
-                                    })
-                                )}
-                            </div>
 
+                                                        {displayedSubcomments.map(
+                                                            (subcomment: Subcomment, subIndex: number) => (
+                                                                <div
+                                                                    key={subcomment.id}
+                                                                    className="p-2 rounded-lg ml-12 mt-2"
+                                                                >
+                                                                    <div className="w-full flex gap-2.5 items-start justify-start">
+                                                                        <Link
+                                                                            href={`/gallery/view-profile/${subcomment.userDetails?.detailsid}`}
+                                                                            passHref
+                                                                        >
+                                                                            <div className="w-10 h-10 ">
+                                                                                <Image
+                                                                                    src={
+                                                                                        subcomment.userDetails?.profile_pic ||
+                                                                                        "/images/creative-directory/profile.jpg"
+                                                                                    }
+                                                                                    className="w-full h-full rounded-full bg-contain object-contain border-2 border-gray-400"
+                                                                                    width={100}
+                                                                                    height={100}
+                                                                                    alt={`Comment ${index + 1}`}
+                                                                                />
+                                                                            </div>
+                                                                        </Link>
+                                                                        <div className="w-full flex flex-col gap-1 justify-start items-start">
+                                                                            <div className="w-full flex flex-col gap-0.5 bg-gray-200 p-2.5 rounded-md">
+                                                                                <p className="text-base text-gray-700 font-semibold">
+                                                                                    {subcomment.userDetails?.first_name}
+                                                                                </p>
+                                                                                <p className="text-gray-600">
+                                                                                    {subcomment.comment}
+                                                                                </p>
+                                                                            </div>
+                                                                            <div className="flex gap-4">
+                                                                                <p className="text-gray-600 text-sm pl-2">
+                                                                                    <TimeAgo
+                                                                                        timestamp={subcomment.created_at}
+                                                                                    />
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            )
+                                                        )}
+                                                        {replyLoading[comment.id] && (
+                                                            <div className="ml-12 mt-2">
+                                                                <SubcommentSkeleton />
+                                                            </div>
+                                                        )}
+                                                        {shouldShowMoreButton && (
+                                                            <button
+                                                                onClick={() =>
+                                                                    setShowMoreReplies({
+                                                                        ...showMoreReplies,
+                                                                        [comment.id]: !showMoreReplies[comment.id],
+                                                                    })
+                                                                }
+                                                                className="text-gray-400 text-sm ml-[92%] whitespace-nowrap"
+                                                            >
+                                                                {showMoreReplies[comment.id] ? "View Less" : ""}
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })
+                                        )}
+                                </div>
+
+                            </div>
                         </div>
                     </div>
-                </div>
-                <form
-                    onSubmit={handleCommentSubmit}
-                    className="bg-white flex gap-2 w-full p-4 items-center absolute bottom-0"
-                >
-                    <input
-                        type="text"
-                        value={commentInput}
-                        onChange={(e) => setCommentInput(e.target.value)}
-                        className="border-[1.5px] border-gray-300 py-2 rounded-full h-fit px-4 w-full"
-                        placeholder="Add a comment..."
-                    />
-                    <button type="submit" className="p-2 rounded">
-                        <SendHorizontal
-                            className="text-blue-500 text-xl"
-                            size={36}
-                            strokeWidth={2}
+                    <form
+                        onSubmit={handleCommentSubmit}
+                        className="bg-white flex gap-2 w-full p-4 items-center absolute bottom-0"
+                    >
+                        <input
+                            type="text"
+                            value={commentInput}
+                            onChange={(e) => setCommentInput(e.target.value)}
+                            className="border-[1.5px] border-gray-300 py-2 rounded-full h-fit px-4 w-full"
+                            placeholder="Add a comment..."
                         />
-                    </button>
-                </form>
+                        <button type="submit" className="p-2 rounded">
+                            <SendHorizontal
+                                className="text-blue-500 text-xl"
+                                size={36}
+                                strokeWidth={2}
+                            />
+                        </button>
+                    </form>
 
+                </div>
             </div>
 
-             {isInterestModalOpen && selectedImage && (
-                    <div className="fixed -bottom-2 -right-1 z-[550] p-4">
-                      <Interested
+            {/* {isInterestModalOpen && selectedImage && (
+                <div className="fixed -bottom-2 -right-1 z-[550] p-4">
+                    <Interested
                         childid={selectedImage.childid}
                         created_at={selectedImage.created_at}
                         artist={selectedImage.artist}
@@ -840,9 +792,9 @@ export const ViewCollection = ({
                         year={selectedImage.year}
                         onCancel={() => setInterestModalOpen(false)}
                         chat={chat}
-                      />
-                    </div>
-                  )}
+                    />
+                </div>
+            )} */}
         </motion.div>
     )
 }

@@ -298,7 +298,7 @@ export const signupUser = async (
 
 export const getUserDetailsFromToken = async () => {
   try {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token');
     if (!token) {
       throw new Error("No token found in local storage");
     }
@@ -331,7 +331,6 @@ export const getUserDetailsFromToken = async () => {
 
 export const getSession = () => {
     return localStorage.getItem("token");
-
 };
 
 export const getMessageId = () => {

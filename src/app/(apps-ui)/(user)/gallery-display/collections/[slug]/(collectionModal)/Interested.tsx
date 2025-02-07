@@ -387,19 +387,22 @@ export const Interested = ({
     if (!token) return;
 
     try {
+      // Verify the JWT token to get the sender's user ID
       const { payload } = await jwtVerify(
         token,
         new TextEncoder().encode(JWT_SECRET)
       );
       const userIdFromToken = payload.id as string;
+
+      // Send the chat message
       const response = await fetch("/api/chat/msg-session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          sender_a: userIdFromToken, // Use the user ID from the token
-          sender_b: formData.childid, // Use the child ID from formData
+          sender_a: userIdFromToken, // Sender's ID
+          sender_b: formData.childid, // Recipient's ID
           image_path: previewImage,
           message: `Hello, I'm interested in this item!. Entitled: ${formData.title}`, // Default message
         }),
@@ -411,10 +414,19 @@ export const Interested = ({
 
       const data = await response.json();
       console.log("Message sent successfully", data);
+
+      // Extract session ID and other details from the response
+      const sessionId = data.sessionId; // Assuming the API returns the session ID
+      const senderA = userIdFromToken;
+      const senderB = formData.childid;
+
+      // Trigger handleClick to open the chat session
+      handleClick(sessionId, senderA, senderB);
+
       setMessage(""); // Clear the message input
       fetchMessages(); // Fetch messages again to update the chat
     } catch (error: any) {
-      console.log("Error sending message:", error.message);
+      console.error("Error sending message:", error.message);
     }
   };
 
@@ -487,41 +499,41 @@ export const Interested = ({
 
   const handleClick = async (id: string, getA: string, getB: string) => {
     setMsgLoading(true);
+
     const token = getSession();
     if (!token) return;
 
-    const { payload } = await jwtVerify(
-      token,
-      new TextEncoder().encode(JWT_SECRET)
-    );
-    const userIdFromToken = payload.id as string;
-
-    // Determine the other user's ID
-    const selectedUserId = getA === userIdFromToken ? getB : getA;
-    setselectedId(selectedUserId);
-    console.log("selectedSessionId", selectedSessionId); // Debug log
-
-    setSelectedSessionId(id);
-    setIsRightColumnVisible(true); // Show right column
-
-    // Fetch user details (first name, profile picture) from Supabase
     try {
+      const { payload } = await jwtVerify(
+        token,
+        new TextEncoder().encode(JWT_SECRET)
+      );
+      const userIdFromToken = payload.id as string;
+
+      // Determine the other user's ID
+      const selectedUserId = getA === userIdFromToken ? getB : getA;
+      setselectedId(selectedUserId);
+      setSelectedSessionId(id);
+      setIsRightColumnVisible(true); // Show right column
+
+      // Fetch user details
       const { data, error } = await supabase
         .from("userDetails")
         .select("detailsid, first_name, profile_pic, creative_field")
         .eq("detailsid", selectedUserId)
         .single();
-      console.log("mock ", data);
 
       if (error) throw error;
 
       // Update state to store the selected user details
-      setUserDetails([data]); // Set the fetched user details to state (e.g., user details)
+      setUserDetails([data]); // Set the fetched user details to state
     } catch (error: any) {
-      console.log("Error fetching user details:", error.message);
+      console.error("Error fetching user details:", error.message);
+    } finally {
+      setMsgLoading(false);
     }
 
-    // Fetch messages (existing functionality)
+    // Fetch messages
     try {
       const response = await fetch("/api/chat/all-msg-session", {
         method: "GET",
@@ -539,7 +551,7 @@ export const Interested = ({
       setMessages(data.message);
       fetchMessages();
     } catch (error: any) {
-      console.log("Error fetching messages:", error.message);
+      console.error("Error fetching messages:", error.message);
     }
   };
 
@@ -636,7 +648,7 @@ export const Interested = ({
   };
 
   return (
-    <div className="poppins fixed bottom-0 right-0 z-[900] w-full max-w-md min-w-[24rem] h-[70vh] overflow-hidden flex flex-col rounded-xl shadow-customShadow3 bg-gray-200">
+    <div className="poppins fixed bottom-0 right-0 z-[900] w-full max-w-sm min-w-[24rem] h-[70vh] overflow-hidden flex flex-col rounded-xl shadow-customShadow3 bg-gray-200">
       <button
         onClick={onCancel}
         className="absolute top-2 right-2 p-2 bg-gray-200 rounded-lg cursor-pointer"
@@ -663,11 +675,10 @@ export const Interested = ({
                   />
                   <div className="flex flex-col">
                     <p
-                      className={`text-gray-200 font-medium text-base ${
-                        userDetails[0].first_name.length > 10
-                          ? "line-clamp-1"
-                          : ""
-                      }`}
+                      className={`text-gray-200 font-medium text-base ${userDetails[0].first_name.length > 10
+                        ? "line-clamp-1"
+                        : ""
+                        }`}
                     >
                       {userDetails[0].first_name}
                     </p>
@@ -781,11 +792,10 @@ export const Interested = ({
                           onClick={() =>
                             handleClick(session.id, session.a, session.b)
                           }
-                          className={`${
-                            selectedSessionId === session.id
-                              ? "bg-gray-400"
-                              : ""
-                          }`}
+                          className={`${selectedSessionId === session.id
+                            ? "bg-gray-400"
+                            : ""
+                            }`}
                         >
                           <div className="flex flex-row capitalize bg-black/10 rounded-md p-2 gap-4 cursor-pointer">
                             <div className="w-12 h-12 rounded-full overflow-hidden">
@@ -860,18 +870,16 @@ export const Interested = ({
                       return (
                         <div
                           key={msg.id} // Use unique key for each message
-                          className={`p-2 flex flex-col w-full ${
-                            msg.sender === gettokenId
-                              ? "items-end"
-                              : "items-start"
-                          }`}
+                          className={`p-2 flex flex-col w-full ${msg.sender === gettokenId
+                            ? "items-end"
+                            : "items-start"
+                            }`}
                         >
                           <div
-                            className={`mb-2 p-4 min-w-14 rounded-t-3xl flex flex-col gap-2 max-w-[80%] ${
-                              msg.sender === gettokenId
-                                ? "bg-[skyblue] rounded-bl-3xl"
-                                : "bg-black/10 rounded-br-3xl"
-                            }`}
+                            className={`mb-2 p-4 min-w-14 rounded-t-3xl flex flex-col gap-2 max-w-[80%] ${msg.sender === gettokenId
+                              ? "bg-[skyblue] rounded-bl-3xl"
+                              : "bg-black/10 rounded-br-3xl"
+                              }`}
                           >
                             <p className="text-sm">{msg.message}</p>
 
@@ -889,11 +897,10 @@ export const Interested = ({
                           </div>
                           <div>
                             <p
-                              className={`text-[10px] ${
-                                msg.sender === gettokenId
-                                  ? "text-black/80"
-                                  : "text-black/70"
-                              }`}
+                              className={`text-[10px] ${msg.sender === gettokenId
+                                ? "text-black/80"
+                                : "text-black/70"
+                                }`}
                             >
                               {formattedDate}, {formattedTime}
                             </p>
