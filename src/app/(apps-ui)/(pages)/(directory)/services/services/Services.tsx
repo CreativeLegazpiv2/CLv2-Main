@@ -36,7 +36,7 @@ export const Services = () => {
   }, [dynamic]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
   if (error) {
@@ -467,7 +467,7 @@ const CreativeButton: React.FC<{ detailsid: string }> = ({ detailsid }) => {
 
   const viewProfile = async () => {
     if (gettSession) {
-      window.location.href = `/gallery/view-profile/${detailsid}`;
+      window.location.href = `/gallery-display/collections/${detailsid}`;
     } else {
       toast.error("No uploaded works yet!", {
         position: "bottom-right",
@@ -477,17 +477,6 @@ const CreativeButton: React.FC<{ detailsid: string }> = ({ detailsid }) => {
 
   return (
     <div className="w-full h-fit flex md:flex-row flex-col gap-4 justify-evenly items-center">
-      <motion.div
-        whileTap={{ scale: 0.95 }}
-        whileHover={{ scale: 1.05 }}
-        className="w-full h-fit flex flex-row-reverse gap-2 justify-center items-center text-primary-2"
-      >
-        <button className="py-2 bg-primary-1 rounded-full uppercase w-48 font-bold text-base"
-          onClick={handleGalleryClick}
-        >
-          view gallery
-        </button>
-      </motion.div>
 
       {gettSession && (
         <motion.div

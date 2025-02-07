@@ -1,6 +1,6 @@
 "use client"
 import { Infinite } from "@/components/reusable-component/Infinite";
-import PublishGallery from "./publish-components/PublishGallery";
+import PublishGallery from "../collections/[slug]/(collectionModal)/PublishGallery";
 import { Subscribe } from "@/components/reusable-component/Subscribe";
 import useAuthRedirect from "@/services/hoc/auth";
 

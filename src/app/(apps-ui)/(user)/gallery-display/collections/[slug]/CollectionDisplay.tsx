@@ -2,21 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
 import { deleteCollectionItem } from "@/services/Collections/deleteCollection";
 import { getSession } from "@/services/authservice";
 import { jwtVerify } from "jose";
-import { useRouter } from "next/navigation";
 import useAuthRedirect from "@/services/hoc/auth";
 import DeleteCollection from "./(collectionModal)/DeleteCollection";
 import { toast, ToastContainer } from "react-toastify";
 import { EditCollection } from "./(collectionModal)/EditCollection";
 import { Interested } from "./(collectionModal)/Interested";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { SendHorizontal } from "lucide-react";
-import Link from "next/link";
-import CommentSkeleton from "@/components/Skeletal/commentSkeleton";
-import SubcommentSkeleton from "@/components/Skeletal/subcommentSkeleton";
 import { ViewCollection } from "./(collectionModal)/viewCollection";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
@@ -193,23 +186,35 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
 
 
   return (
-    <div className=" min-h-screen relative w-full max-w-[80%] py-[10dvh] mx-auto">
-
-      {isInterestModalOpen && selectedImage && (
-        <div className=" w-full h-full z-[550]">
-          <Interested
-            childid={selectedImage.childid}
-            created_at={selectedImage.created_at}
-            artist={selectedImage.artist}
-            image={selectedImage.image_path}
-            title={selectedImage.title}
-            desc={selectedImage.desc}
-            year={selectedImage.year}
-            onCancel={() => setInterestModalOpen(false)}
-            chat={chat}
-          />
-        </div>
-      )}
+    <div className=" min-h-screen relative w-full max-w-[90%] py-[10dvh] pt-[20dvh] mx-auto">
+      <AnimatePresence>
+        {isInterestModalOpen && selectedImage && (
+          <motion.div
+            onClick={(e) => e.stopPropagation()}
+            initial={{ scale: 0.9, y: 500, x: 200, opacity: 0 }}
+            animate={{ scale: 1, y: 0, x: 0, opacity: 1 }}
+            exit={{ scale: 0.5, y: 500, x: 500, opacity: 0 }}
+            transition={{
+              type: "tween",
+              damping: 25,
+              stiffness: 500,
+            }}
+            className="w-full h-full fixed z-[550] bottom-0 right-0"
+          >
+            <Interested
+              childid={selectedImage.childid}
+              created_at={selectedImage.created_at}
+              artist={selectedImage.artist}
+              image={selectedImage.image_path}
+              title={selectedImage.title}
+              desc={selectedImage.desc}
+              year={selectedImage.year}
+              onCancel={() => setInterestModalOpen(false)}
+              chat={chat}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="w-full h-full flex flex-col gap-6">
         <h1 className="text-3xl font-bold text-palette-1 uppercase">collection</h1>

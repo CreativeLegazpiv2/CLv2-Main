@@ -12,15 +12,14 @@ export interface UserDetail {
   creative_field: string;
   address: string;
   mobileNo: string;
+  bday?: string; // Add this line for the birthdate
   bio?: string;
-  bday?: Date;
-  email?: string;
   instagram: string;
   facebook: string;
-  twitter: string;
   portfolioLink: string;
   profile_pic?: string;
   role: string;
+  email?: string;
 }
 
 interface CollectionItem {

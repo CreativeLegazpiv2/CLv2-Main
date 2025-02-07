@@ -648,7 +648,7 @@ export const Interested = ({
   };
 
   return (
-    <div className="poppins fixed bottom-0 right-0 z-[900] w-full max-w-sm min-w-[24rem] h-[70vh] overflow-hidden flex flex-col rounded-xl shadow-customShadow3 bg-gray-200">
+    <div className="poppins fixed bottom-1.5 right-2 z-[900] w-full max-w-sm min-w-[24rem] h-[70vh] overflow-hidden flex flex-col rounded-xl shadow-customShadow3 bg-gray-200">
       <button
         onClick={onCancel}
         className="absolute top-2 right-2 p-2 bg-gray-200 rounded-lg cursor-pointer"

@@ -33,7 +33,7 @@ function DashboardContent({ children }: LayoutProps) {
       <main className="flex-grow">{children}</main>
 
       {user && (
-        <div className="fixed -bottom-2 -right-1 z-[500] p-4">
+        <div className=" z-[500]">
           <ButtonChat
             isChatModalOpen={isChatModalOpen}
             onOpenChatModal={() => setIsChatModalOpen(true)}

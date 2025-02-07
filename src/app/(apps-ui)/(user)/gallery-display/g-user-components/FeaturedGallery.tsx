@@ -58,7 +58,7 @@ export const FeaturedCollections = () => {
   };
 
   return (
-    <section className="sm:px-6 lg:px-8 min-h-screen pt-20">
+    <section className="sm:px-6 lg:px-8 min-h-screen py-20">
       <div className="w-full max-w-[95%] mx-auto flex flex-col gap-6 p-4">
         <h1 className="text-3xl font-bold text-palette-1 uppercase">Gallery</h1>
         <div className="columns-1 sm:columns-2 md:columns- lg:columns-4 gap-4">

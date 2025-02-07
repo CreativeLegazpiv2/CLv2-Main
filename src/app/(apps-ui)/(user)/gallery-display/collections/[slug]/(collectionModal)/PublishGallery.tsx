@@ -11,8 +11,12 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { checkTokenExpiration, logoutAndRedirect } from "@/services/jwt";
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
 
+interface props {
+  openModal: boolean;
+  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-export default function PublishGallery() {
+export default function PublishGallery({ openModal, setOpenModal }: props) {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [getFname, setFname] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -129,78 +133,81 @@ export default function PublishGallery() {
     const Fname = localStorage.getItem("Fname") as string;
 
     if (!token) {
-        toast.error("Session expired. Please log in again.");
-        return;
+      toast.error("Session expired. Please log in again.");
+      return;
     }
 
     // Validate fields
     if (!formData.image) {
-        toast.error("Please upload an image.");
-        return;
+      toast.error("Please upload an image.");
+      return;
     }
     if (!formData.title.trim()) {
-        toast.error("Title is required.");
-        return;
+      toast.error("Title is required.");
+      return;
     }
     if (!formData.desc.trim()) {
-        toast.error("Description is required.");
-        return;
+      toast.error("Description is required.");
+      return;
     }
     if (!formData.year.trim() || !validateYear(formData.year)) {
-        toast.error("Year must be a valid 4-digit number.");
-        return;
+      toast.error("Year must be a valid 4-digit number.");
+      return;
     }
 
     setLoading(true); // Set loading to true when upload starts
 
     try {
-        const { payload } = await jwtVerify(
-            token,
-            new TextEncoder().encode(JWT_SECRET)
-        );
-        const userIdFromToken = payload.id as string;
+      const { payload } = await jwtVerify(
+        token,
+        new TextEncoder().encode(JWT_SECRET)
+      );
+      const userIdFromToken = payload.id as string;
 
-        const data = new FormData();
-        data.append("image", formData.image as File);
-        data.append("title", formData.title);
-        data.append("desc", formData.desc);
-        data.append("year", formData.year);
+      const data = new FormData();
+      data.append("image", formData.image as File);
+      data.append("title", formData.title);
+      data.append("desc", formData.desc);
+      data.append("year", formData.year);
 
-        const response = await fetch("/api/collections/publish", {
-            method: "PUT",
-            headers: {
-                "user-id": userIdFromToken,
-                Fname: Fname,
-            },
-            body: data,
-        });
+      const response = await fetch("/api/collections/publish", {
+        method: "PUT",
+        headers: {
+          "user-id": userIdFromToken,
+          Fname: Fname,
+        },
+        body: data,
+      });
 
-        if (!response.ok) {
-            const errorBody = await response.text();
-            throw new Error(`Failed to send message: ${errorBody}`);
-        }
+      if (!response.ok) {
+        const errorBody = await response.text();
+        throw new Error(`Failed to send message: ${errorBody}`);
+      }
 
-        const result = await response.json();
-        console.log(result); // Handle success (optional)
+      const result = await response.json();
+      console.log(result); // Handle success (optional)
 
-        setFormData({
-            title: "",
-            desc: "",
-            year: "",
-            image: null,
-        });
-        setPreviewImage(null);
-        toast.success("Gallery published successfully!", {
-            position: "bottom-right",
-        });
-        window.location.reload();
+      setFormData({
+        title: "",
+        desc: "",
+        year: "",
+        image: null,
+      });
+      setPreviewImage(null);
+      toast.success("Gallery published successfully!", {
+        position: "bottom-right",
+      });
+
+      setOpenModal(false);
+
+      window.location.reload();
     } catch (error) {
-        console.error("Error sending message:", error);
-        toast.error("Failed to publish gallery. Please try again.");
+      console.error("Error sending message:", error);
+      toast.error("Failed to publish gallery. Please try again.");
     } finally {
-        setLoading(false); // Reset loading state
+      setLoading(false); // Reset loading state
     }
-};
+  };
 
   return (
 
@@ -328,9 +335,9 @@ export default function PublishGallery() {
                       alt="Preview"
                       width={0} height={0} className="object-fill w-full h-full max-h-[50dvh]"
                     />
-                    
+
                   </div>
-                  
+
                 </div>
               ) : (
                 <p className="text-gray-500">

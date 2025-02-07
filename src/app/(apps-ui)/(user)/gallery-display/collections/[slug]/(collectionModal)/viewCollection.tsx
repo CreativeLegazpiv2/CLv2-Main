@@ -9,7 +9,7 @@ import useAuthRedirect from "@/services/hoc/auth"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { motion } from "framer-motion"
 import { jwtVerify } from "jose"
-import { SendHorizontal, X } from "lucide-react"
+import { ArrowRight, EllipsisVertical, SendHorizontal, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -104,7 +104,7 @@ export const ViewCollection = ({
         {}
     );
     const [isLoadingComments, setIsLoadingComments] = useState(true);
-    const [isViewModalOpen, setViewModalOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false)
 
     useAuthRedirect();
     // Redirect to /gallery if images array becomes empty
@@ -465,11 +465,11 @@ export const ViewCollection = ({
             transition={{ type: "spring", damping: 25, stiffness: 500 }}
             className="w-full relative max-w-[90%] h-full max-h-[90vh] mx-auto bg-white rounded-lg overflow-y-auto shadow-lg"
         >
-            <X className="absolute top-2 right-2 cursor-pointer z-[1000] border bg-palette-6 text-white rounded-md" size={24} onClick={onClose} />
+            <X className="absolute top-2 right-2 cursor-pointer z-[1000] bg-palette-6 text-white rounded-md" size={24} onClick={onClose} />
             {/* Image Container */}
             <div className="flex lg:flex-row flex-col h-full w-full">
                 <div className="w-full h-full flex flex-col ">
-                    <div className="relative w-full h-[60vh] bg-palette-5">
+                    <div className="relative w-full md:h-[60vh] h-[90vh] bg-palette-5">
                         <Image
 
                             src={image || "/placeholder.svg"}
@@ -477,93 +477,105 @@ export const ViewCollection = ({
                             fill
                             className="object-contain"
                         />
-                        <div className="w-full absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 flex flex-row items-center justify-between">
- 
-                            <div className="w-fit flex flex-col text-white text-base">
-                                <h2 className="text-white text-xl font-bold" key={title}>{title}</h2>
-                                <div className="flex gap-2">
-                                    <span key={artist}>{artist},</span>
-                                    <span key={year}>{year}</span>
-                                </div>
+                        <div className="w-full absolute bottom-0 left-0 right-0 p-4 flex md:flex-row flex-col items-center md:justify-between justify-end md:gap-0 gap-4">
 
-                            </div>
-                            {collection.images.map((image, index) => (
-                                <div key={image.generatedId} className="w-fit">
-                                    {/* "Interested?" Button */}
-                                    {image.childid !== getID && (
-                                        <button
-                                            className="absolute bottom-4 right-4 bg-palette-1 p-2 px-4 rounded-full text-palette-5 hover:bg-palette-2 duration-300"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                onOpenInterestModal(image); // Open the Interested modal
-                                            }}
-                                        >
-                                            Interested?
-                                        </button>
-                                    )}
+                            {/* <div className="w-fit flex flex-col text-white text-base">
+                                    <h2 className="text-white text-xl font-bold" key={title}>{title}</h2>
+                                    <div className="flex gap-2">
+                                        <span key={artist}>{artist},</span>
+                                        <span key={year}>{year}</span>
+                                    </div>
 
-                                    {/* Edit and Delete Buttons */}
-                                    {image.childid == getID && image.generatedId == generatedId && (
-                                        <div className="flex gap-2 mt-4 w-fit absolute right-4 bottom-4">
-                                            <button
-                                                className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
-                                                onClick={() => {
-                                                    onOpenEditModal(image); // Open the Edit modal
-                                                    onClose(); // Close the ViewCollection modal
-                                                }}
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600"
-                                                onClick={() => {
-                                                    onOpenDeleteModal(image); // Open the Delete modal
-                                                    onClose(); // Close the ViewCollection modal
-                                                }}
-                                            >
-                                                Delete
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                                </div> */}
+
 
 
                         </div>
                     </div>
 
                     {/* Content Container */}
-                    <div className="flex flex-col p-2 px-4 bg-white">
+                    <div className="flex flex-col p-2 px-4 bg-white gap-10 border-t border-palette-7/30">
 
                         <div
-                            className="flex items-center justify-between  h-fit"
+                            className="flex items-center justify-between w-full h-fit relative"
                             onClick={toggleLike}
                         >
-                            <h1 className="text-gray-400 text-sm mb-4">
+                            <h1 className="text-gray-400 text-sm w-full">
                                 {new Date(created_at).toLocaleDateString('en-US', {
                                     year: 'numeric',
                                     month: 'long',
                                     day: 'numeric'
                                 })}
                             </h1>
-                            <div className="flex items-center">
-                                <Icon
-                                    className="text-red-400 cursor-pointer"
-                                    icon={liked ? "jam:heart-f" : "jam:heart"}
-                                    width="30"
-                                    height="30"
-                                />
-                                <span className="ml-2 text-gray-600">{likeCount} likes</span>
-                            </div>
+
+                            {collection.images.map((image, index) => (
+                                <div key={image.generatedId} className="w-fit h-fit md:justify-end flex ">
+                                    {/* "Interested?" Button */}
+                                    {image.childid !== getID && image.generatedId == generatedId && (
+                                        <button
+                                            className="md:absolute  -right-2 -top-1.5 text-base w-fit rounded-full text-palette-6  duration-300 flex items-center gap-2"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onOpenInterestModal(image); // Open the Interested modal 
+                                            }}
+                                        >
+                                            Interested?
+                                            <ArrowRight size={24} />
+                                        </button>
+                                    )}
+
+                                    {/* Edit and Delete Buttons */}
+                                    {image.childid == getID && image.generatedId == generatedId && (
+                                        <div className="relative">
+                                            {/* Ellipsis Icon Button */}
+                                            <button
+                                                className="p-2 rounded-full hover:bg-gray-200"
+                                                onClick={() => setMenuOpen(!menuOpen)}
+                                            >
+                                                <EllipsisVertical className="text-gray-700" />
+                                            </button>
+
+                                            {/* Dropdown Menu */}
+                                            {menuOpen && (
+                                                <div className="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg border border-gray-200 z-50">
+                                                    <button
+                                                        className="block w-full text-left px-4 py-2 text-blue-500 hover:bg-gray-100"
+                                                        onClick={() => {
+                                                            onOpenEditModal(image)
+                                                            onClose()
+                                                            setMenuOpen(false)  // Close menu after action
+                                                        }}
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                    <button
+                                                        className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100"
+                                                        onClick={() => {
+                                                            onOpenDeleteModal(image)
+                                                            onClose()
+                                                            setMenuOpen(false)  // Close menu after action
+                                                        }}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
                         </div>
-                        <p className="text-gray-600 text-base h-full overflow-y-auto">{desc}</p>
+                        <div className="h-full">
+                            <span className="text-palette-7/20">Description:</span>
+                            <p className="text-palette-7 font-thin text-base h-full overflow-y-auto">{desc}</p>
+                        </div>
                     </div>
                 </div>
                 <div className="w-full h-full bg-white relative border border-black/20">
                     <div className=" w-full h-full p-4  flex flex-col">
                         <div className=" w-full h-dvh bg-white">
                             <div className="h-full flex flex-col max-h-[75dvh] min-h-40">
-                                <h2 className="h-fit text-xl font-semibold text-gray-900 mb-4">
+                                <h2 className="h-fit text-xl font-semibold text-palette-7/20 mb-4">
                                     Comments
                                 </h2>
                                 <div className="h-full w-full overflow-y-auto">
@@ -770,7 +782,7 @@ export const ViewCollection = ({
                         />
                         <button type="submit" className="p-2 rounded">
                             <SendHorizontal
-                                className="text-blue-500 text-xl"
+                                className="text-palette-2 font-thin text-xl"
                                 size={36}
                                 strokeWidth={2}
                             />

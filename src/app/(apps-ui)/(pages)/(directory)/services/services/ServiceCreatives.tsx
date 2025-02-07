@@ -71,7 +71,7 @@ export const ServiceCreatives = () => {
           <div className="w-full max-w-[90%] mx-auto">
             <div className="w-full h-fit grid lg:grid-cols-3 grid-cols-1 gap-8 p-4">
               {loading ? (
-                <p>Loading...</p>
+                <p></p>
               ) : error ? (
                 <p>Error: {error}</p>
               ) : (

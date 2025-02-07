@@ -55,13 +55,13 @@ export const ButtonChat = ({
           }}
           whileTap={{ scale: 0.9 }}
           transition={{ duration: 0.3, delay: 0.2 }}
-          className="w-36 py-3 rounded-md flex text-lg gap-2 items-center justify-center font-bold capitalize
-                 border border-primary-2/50 shadow-customShadow2
+          className="w-24 py-2 rounded-t-lg flex text-lg gap-2 items-center justify-center font-bold capitalize
+                 border border-primary-2/50 shadow-customShadow2 fixed z-[500] bottom-0 right-2
                  "
           onClick={onOpenChatModal}
           aria-label="Open chat"
         >
-          <Icon icon="bxs:chat" width="25" height="25" /> Chat
+          <Icon icon="bxs:chat" width="16" height="16" /> Chat
         </motion.button>
       )}
 
@@ -69,15 +69,15 @@ export const ButtonChat = ({
         {isChatModalOpen && (
           <motion.div
             onClick={(e) => e.stopPropagation()}
-            initial={{ scale: 0.9, y: 500, opacity: 0 }}
-            animate={{ scale: 1, y: 0, opacity: 1 }}
-            exit={{ scale: 0.5, y: 500, x: 100, opacity: 0 }}
+            initial={{ scale: 0.9, y: 500, x: 200, opacity: 0 }}
+            animate={{ scale: 1, y: 0, x: 0, opacity: 1 }}
+            exit={{ scale: 0.5, y: 500, x: 500, opacity: 0 }}
             transition={{
               type: "tween",
               damping: 25,
               stiffness: 500,
             }}
-            className="w-full h-full"
+            className="w-full h-full fixed z-[500] bottom-0 right-0"
           >
             <Interested
               onCancel={onCloseChatModal}

@@ -16,7 +16,7 @@ const pageVariants = {
 
 // Define the CreativeUser interface
 interface CreativeUser {
-    detailsid: number; // Adjust according to your data structure
+    detailsid: number;
     first_name: string;
     bio: string;
     imageBg: string;
@@ -28,7 +28,7 @@ const calculateAge = (birthday: string): number => {
     const birthDate = new Date(birthday);
     const ageDiff = Date.now() - birthDate.getTime();
     const ageDate = new Date(ageDiff);
-    return Math.abs(ageDate.getUTCFullYear() - 1970); // Calculate age
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
 };
 
 const SearchResultsPage = () => {
@@ -43,21 +43,21 @@ const SearchResultsPage = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const users = await CreativeService.fetchCreativeUsers(); // Fetch users from the service
-                setFilteredUsers(users); // Set the fetched users to state
+                const users = await CreativeService.fetchCreativeUsers();
+                setFilteredUsers(users);
             } catch (error) {
                 console.error('Failed to fetch users:', error);
             }
         };
 
-        fetchUsers(); // Call the fetch function
+        fetchUsers();
     }, []);
 
     useEffect(() => {
         const observer = new IntersectionObserver(([entry]) => {
             setIsInView(entry.isIntersecting);
         }, {
-            threshold: 0.1, // Adjust the threshold as needed
+            threshold: 0.1,
         });
 
         if (ref.current) {
@@ -91,21 +91,21 @@ const SearchResultsPage = () => {
 
     return (
         <motion.div
-            className="w-full min-h-screen bg-palette-5 pt-[5dvh] pb-20 text-primary-2"
+            className="w-full min-h-screen bg-palette-4 pt-[5dvh] pb-20 text-palette-7"
             initial="initial"
             animate="animate"
             exit="exit"
             variants={pageVariants}
-            transition={{ duration: 0.5 }} // Optional transition properties
+            transition={{ duration: 0.5 }}
         >
             <div className="w-full lg:max-w-[70%] md:max-w-[80%] max-w-[90%] mx-auto">
                 <motion.div className="w-full flex flex-col gap-8">
                     {/* Header with Back Button */}
                     <motion.div className="flex items-center gap-4">
-                        <Link href="/" className="text-primary-2 hover:opacity-80 transition-opacity">
+                        <Link href="/" className="text-palette-1 hover:opacity-80 transition-opacity">
                             <Icon icon="eva:arrow-back-fill" width="24" height="24" />
                         </Link>
-                        <h1 className="text-3xl font-semibold">Search Results</h1>
+                        <h1 className="text-3xl font-semibold text-palette-7">Search Results</h1>
                     </motion.div>
 
                     {/* Search Bar */}
@@ -114,22 +114,22 @@ const SearchResultsPage = () => {
                         className="w-full max-w-2xl relative"
                     >
                         <input
-                            className="placeholder:text-primary-2 text-lg font-medium rounded-full bg-quaternary-2 ring-none 
-                            outline-none w-full py-2.5 px-14"
+                            className="placeholder:text-palette-6 text-palette-7 text-lg font-medium rounded-full bg-palette-5 
+                            ring-2 ring-transparent focus:ring-palette-1 outline-none w-full py-2.5 px-14 transition-all duration-300"
                             type="text"
                             placeholder="Search"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                         <Icon
-                            className="absolute top-1/2 -translate-y-1/2 left-4 text-primary-2"
+                            className="absolute top-1/2 -translate-y-1/2 left-4 text-palette-6"
                             icon="cil:search"
                             width="23"
                             height="23"
                         />
                         <button type="submit">
                             <Icon
-                                className="cursor-pointer -mt-1 absolute top-[55%] -translate-y-1/2 right-4 text-primary-2"
+                                className="cursor-pointer -mt-1 absolute top-[55%] -translate-y-1/2 right-4 text-palette-6 hover:text-palette-1 transition-colors"
                                 icon="iconamoon:send-thin" 
                                 width="28" 
                                 height="28" 
@@ -139,20 +139,20 @@ const SearchResultsPage = () => {
 
                     {/* Search Query Display */}
                     <motion.div>
-                        <p className="text-lg opacity-80">
-                            Showing results for "<span className="font-semibold">{query}</span>"
+                        <p className="text-lg text-palette-7 opacity-80">
+                            Showing results for "<span className="font-semibold text-palette-2">{query}</span>"
                         </p>
                     </motion.div>
 
                     {/* Categories Results */}
                     {filteredCategories.length > 0 && (
                         <motion.div>
-                            <h2 className="text-2xl font-semibold mb-4">Categories</h2>
+                            <h2 className="text-2xl font-semibold mb-4 text-palette-7">Categories</h2>
                             <motion.div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
                                 {filteredCategories.map((category) => (
                                     <Link href={category.link} key={category.id}>
                                         <motion.div
-                                            className="bg-quaternary-2 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+                                            className="bg-palette-5 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
                                         >
                                             <img
                                                 src={category.src}
@@ -160,7 +160,7 @@ const SearchResultsPage = () => {
                                                 className="w-full h-48 object-cover"
                                             />
                                             <div className="p-6">
-                                                <h3 className="text-xl font-semibold">{category.title}</h3>
+                                                <h3 className="text-xl font-semibold text-palette-7">{category.title}</h3>
                                             </div>
                                         </motion.div>
                                     </Link>
@@ -172,33 +172,22 @@ const SearchResultsPage = () => {
                     {/* Artists/Users Results */}
                     {filteredUsersList.length > 0 && (
                         <motion.div className="mt-8">
-                            <h2 className="text-2xl font-semibold mb-4">Artists</h2>
+                            <h2 className="text-2xl font-semibold mb-4 text-palette-7">Artists</h2>
                             <motion.div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 pt-[5dvh]">
                                 {filteredUsersList.map((user) => (
                                     <motion.div
                                         key={user.detailsid}
-                                        ref={ref} // Attach the ref here
+                                        ref={ref}
                                         initial={{ opacity: 0, y: 50 }}
                                         animate={!isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
                                         transition={{ duration: 0.5, ease: "easeOut" }}
                                         whileHover={{ scale: 1.02 }}
-                                        className="w-full border border-gray-400 rounded-xl p-4 bg-secondary-1 shadow-customShadow"
+                                        className="w-full border border-palette-6 rounded-xl p-4 bg-palette-5 shadow-lg"
                                     >
-                                        <div className="flex flex-col ">
-                                            {/* <div className="w-full h-52 relative">
-                                                <img 
-                                                    className="w-full h-full object-cover" 
-                                                    src={user.imageBg || "../../images/landing-page/eabab.png"} 
-                                                    alt={user.first_name} 
-
-                                                />
-                                            </div> */}
+                                        <div className="flex flex-col">
                                             <div className="w-full h-full max-h-28 -mt-12 flex justify-center items-center">
-                                                {/* <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                                                    <Icon className="cursor-pointer" icon="jam:heart" width="35" height="35" />
-                                                </motion.span> */}
                                                 <img 
-                                                    className="h-32 w-32 z-50 rounded-full object-cover border-2 border-gray-400" 
+                                                    className="h-32 w-32 z-50 rounded-full object-cover border-2 border-palette-6" 
                                                     src={user.profile_pic || "../../images/creative-directory/profile.jpg"} 
                                                     alt={user.first_name}
                                                 />
@@ -206,8 +195,8 @@ const SearchResultsPage = () => {
                                             </div>
                                             <div className="w-full min-h-32 max-h-fit mt-6">
                                                 <div className="w-full h-full max-w-[87%] mx-auto flex flex-col gap-2 justify-center items-center">
-                                                    <h6 className="text-center text-2xl font-bold">{user.first_name}, {calculateAge(user.bday)}</h6>
-                                                    <p className={`text-center text-xs font-semibold ${user.bio.length > 100 ? "line-clamp-6" : ""}`}>{user.bio}</p>
+                                                    <h6 className="text-center text-2xl font-bold text-palette-7">{user.first_name}, {calculateAge(user.bday)}</h6>
+                                                    <p className={`text-center text-xs font-semibold text-palette-6 ${user.bio.length > 100 ? "line-clamp-6" : ""}`}>{user.bio}</p>
                                                 </div>
                                             </div>
                                         </div>
