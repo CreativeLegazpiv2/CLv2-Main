@@ -6,13 +6,15 @@ import { UserProfile } from "./UserProfile";
 import CollectionDisplay from "./CollectionDisplay";
 import { supabase } from "@/services/supabaseClient";
 
-interface UserDetail {
+export interface UserDetail {
   detailsid: string;
   first_name: string;
   creative_field: string;
   address: string;
   mobileNo: string;
   bio?: string;
+  bday?: Date;
+  email?: string;
   instagram: string;
   facebook: string;
   twitter: string;
