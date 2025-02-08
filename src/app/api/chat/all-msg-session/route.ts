@@ -15,7 +15,6 @@ export async function GET(req: Request ) {
       .from('allmessage')
       .select('*')  // Select id, a, and b fields explicitly
       .eq('sessionid', sender_a)
-      .order('created_at', { ascending: false });
 
     if (sessionsError) {
       throw new Error(sessionsError.message);

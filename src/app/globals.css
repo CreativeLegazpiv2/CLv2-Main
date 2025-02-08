@@ -62,3 +62,8 @@
 .scroll-none::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Edge */
 }
+
+input::-webkit-calendar-picker-indicator {
+  display: none !important;
+  
+}

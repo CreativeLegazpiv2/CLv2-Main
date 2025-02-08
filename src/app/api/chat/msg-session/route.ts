@@ -98,7 +98,6 @@ export async function GET(req: Request) {
         .from('allmessage')
         .select('*')
         .eq('sessionid', session.id)
-        .order('created_at', { ascending: false });
 
       if (messagesError) {
         throw new Error(messagesError.message);

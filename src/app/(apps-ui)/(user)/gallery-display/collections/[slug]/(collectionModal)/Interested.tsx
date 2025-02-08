@@ -111,7 +111,33 @@ export const Interested = ({
   const [isMsgLoading, setMsgLoading] = useState<boolean>(false);
   const [recentChats, setRecentChats] = useState<any[]>([]);
   const [isSending, setIsSending] = useState(false);  // Loading state for sending message
+  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
 
+  const suggestionsList = [
+    'audiovisual-media',
+    'digital-interactive-media',
+    'creative-services',
+    'design',
+    'publishing-and-printing-media',
+    'performing-arts',
+    'visual-arts',
+    'traditional-and-cultural-expressions',
+    'cultural-sites'
+  ];
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    if (query.length > 0) {
+      const filtered = suggestionsList.filter((suggestion) =>
+        suggestion.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredSuggestions(filtered);
+    } else {
+      setFilteredSuggestions([]);
+    }
+  };
 
 
 
@@ -205,14 +231,14 @@ export const Interested = ({
       setTimeout(() => {
         setIsLoading(false);
         setIsRightColumnVisible(true);
-      },2000)
-      
+      }, 2000)
+
     } else {
       setChat(true);
       setTimeout(() => {
         setIsLoading(false);
         setIsRightColumnVisible(false);
-      },2000)
+      }, 2000)
     }
   }, []);
 
@@ -450,11 +476,11 @@ export const Interested = ({
     if (isSending) return;  // Prevent multiple sends if already sending
     const token = getSession();
     if (!token) return;
-  
+
     if (!message.trim()) return; // Prevent sending empty messages
-  
+
     setIsSending(true);  // Set loading to true before sending
-  
+
     if (!isChat) {
       try {
         const { payload } = await jwtVerify(
@@ -462,7 +488,7 @@ export const Interested = ({
           new TextEncoder().encode(JWT_SECRET)
         );
         const userIdFromToken = payload.id as string;
-        
+
         const response = await fetch("/api/chat/msg-session", {
           method: "POST",
           headers: {
@@ -474,11 +500,11 @@ export const Interested = ({
             message,
           }),
         });
-  
+
         if (!response.ok) {
           throw new Error("Failed to send message");
         }
-  
+
         const data = await response.json();
         console.log("Message sent successfully", data);
         setMessage(""); // Clear the message input
@@ -495,7 +521,7 @@ export const Interested = ({
           new TextEncoder().encode(JWT_SECRET)
         );
         const userIdFromToken = payload.id as string;
-  
+
         const response = await fetch("/api/chat/msg-session", {
           method: "POST",
           headers: {
@@ -507,11 +533,11 @@ export const Interested = ({
             message,
           }),
         });
-  
+
         if (!response.ok) {
           throw new Error("Failed to send message");
         }
-  
+
         const data = await response.json();
         console.log("Message sent successfully", data);
         setMessage(""); // Clear the message input
@@ -523,23 +549,23 @@ export const Interested = ({
       }
     }
   };
-  
+
 
 
   const handleBackToSessions = () => {
     setChat(true);
     setSelectedSessionId(null);
     setIsRightColumnVisible(false);
-  
+
     setIsLoading(true);  // Start loading
-  
+
     // Simulate a 1-second loading delay
     setTimeout(() => {
       setIsLoading(false);  // Stop loading after 1 second
       fetchSessionData();
     }, 1000);
   };
-  
+
 
   const modalVariants = {
     hidden: {
@@ -600,7 +626,8 @@ export const Interested = ({
 
 
   const filteredUsers = getUsers.filter((user) =>
-    user.first_name.toLowerCase().includes(searchQuery.toLowerCase())
+    user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (user.creative_field ?? "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
 
@@ -608,35 +635,35 @@ export const Interested = ({
     setMsgLoading(true);
     const token = getSession();
     if (!token) return;
-  
+
     try {
       const { payload } = await jwtVerify(
         token,
         new TextEncoder().encode(JWT_SECRET)
       );
       const userIdFromToken = payload.id as string;
-  
+
       const selectedUserId = getA === userIdFromToken ? getB : getA;
       setselectedId(selectedUserId);
       setSelectedSessionId(id);
       setIsRightColumnVisible(true);
-  
+
       // Fetch user details
       const { data, error } = await supabase
         .from("userDetails")
         .select("detailsid, first_name, profile_pic, creative_field")
         .eq("detailsid", selectedUserId)
         .single();
-  
+
       if (error) throw error;
       setUserDetails([data]); // Store the fetched user details
-  
+
     } catch (error: any) {
       console.error("Error fetching user details:", error.message);
     } finally {
       setMsgLoading(false);
     }
-  
+
     // Fetch messages only if they exist
     try {
       const response = await fetch("/api/chat/all-msg-session", {
@@ -646,13 +673,13 @@ export const Interested = ({
           sender_a: id,
         },
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to fetch messages");
       }
-  
+
       const data = await response.json();
-  
+
       if (data.message.length > 0) {
         setMessages(data.message);
       } else {
@@ -662,7 +689,7 @@ export const Interested = ({
       console.error("Error fetching messages:", error.message);
     }
   };
-  
+
 
 
   const handleClickNewChat = async (id: string) => {
@@ -674,29 +701,29 @@ export const Interested = ({
       return;
     }
     setIsRightColumnVisible(true);
-  
+
     try {
       const { payload } = await jwtVerify(
         token,
         new TextEncoder().encode(JWT_SECRET)
       );
       const userIdFromToken = payload.id as string;
-  
+
       // Set the selected user but do not create a session yet
       setselectedId(id);
       setSelectedSessionId(null);
-  
+
       // Fetch user details & check for existing chat session
       await handleClick(id, userIdFromToken, id);
-  
+
     } catch (error: any) {
       console.log("Error preparing new chat:", error.message);
     } finally {
       setMsgLoading(false);
     }
   };
-  
-  
+
+
 
 
   return (
@@ -750,21 +777,53 @@ export const Interested = ({
             <div className="bg-white w-full h-full z-[900] flex flex-col">
               <div className="h-fit w-full p-2 relative group">
                 <Search className="absolute top-1/2 left-4 transform -translate-y-1/2 text-primary-3/30 group-focus-within:text-primary-3" />
+
                 <input
                   type="text"
-                  className="border border-primary-3/30 pl-10 pr-4 py-2 rounded-full w-full outline-none focus:ring-primary-3 focus:ring-1 peer"
-                  placeholder="Search creative username..."
+                  list="suggestions" 
+                  className="border border-primary-3/30 pl-10 pr-4 py-2 rounded-full w-full outline-none focus:ring-primary-3 focus:ring-1 peer appearance-none"
+                  placeholder="Search creative username or field"
                   value={searchQuery}
                   onChange={(e) => {
-                    setSearchQuery(e.target.value);
+                    setSearchQuery(e.target.value)
                     if (e.target.value) {
-                      setShowModal(true);
+                      const filteredSuggestions = suggestionsList.filter((suggestion) =>
+                        suggestion.toLowerCase().includes(e.target.value.toLowerCase())
+                      )
+                      setFilteredSuggestions(filteredSuggestions)
+                      setShowModal(true)
                     } else {
-                      setShowModal(false);
+                      setShowModal(false)
+                      setFilteredSuggestions([])
                     }
                   }}
+               
                 />
+
+                {/* Datalist provides native suggestions */}
+                <datalist id="suggestions">
+                  <option value="audiovisual-media" />
+                  <option value="digital-interactive-media" />
+                  <option value="creative-services" />
+                  <option value="design" />
+                  <option value="publishing-and-printing-media" />
+                  <option value="performing-arts" />
+                  <option value="visual-arts" />
+                  <option value="traditional-and-cultural-expressions" />
+                  <option value="cultural-sites" />
+                </datalist>
+
+                {/* Close Button */}
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute top-1/2 right-4 transform -translate-y-1/2 text-primary-3/50 hover:text-primary-3 focus:outline-none"
+                  >
+                    ✕
+                  </button>
+                )}
               </div>
+
 
               {/* Modal for searched users */}
               {showModal && (
@@ -831,50 +890,51 @@ export const Interested = ({
                       <Loader size={55} className="animate-spin" />
                     </div>
                   ) : sessions.length === 0 ? (
-                    <div className="w-full h-full flex justify-center items-center">
+                    <div className="w-full h-full flex flex-col justify-center items-center">
                       <p>No Recent Messages yet</p>
+                      <p className="text-sm text-palette-7/50">Try to search for a user or creative field</p>
                     </div>
                   ) : (
                     <ul className="space-y-2 overflow-y-auto p-2 flex flex-col h-full">
-                    {sessions
-                      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())  // Sort descending
-                      .map((session) => (
-                        <li
-                          key={session.id}
-                          onClick={() => handleClick(session.id, session.a, session.b)}
-                          className={`${selectedSessionId === session.id ? "bg-gray-400" : ""}`}
-                        >
-                          <div className="flex flex-row capitalize bg-black/10 rounded-md p-2 gap-4 cursor-pointer">
-                            <div className="w-12 h-12 rounded-full overflow-hidden">
-                              <Image
-                                className="w-full h-full object-cover"
-                                src={session.userDetails.profile_pic || "/images/emptyProfile.png"}
-                                alt={session.userDetails.first_name}
-                                width={48}
-                                height={48}
-                              />
+                      {sessions
+                        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())  // Sort descending
+                        .map((session) => (
+                          <li
+                            key={session.id}
+                            onClick={() => handleClick(session.id, session.a, session.b)}
+                            className={`${selectedSessionId === session.id ? "bg-gray-400" : ""}`}
+                          >
+                            <div className="flex flex-row capitalize bg-black/10 rounded-md p-2 gap-4 cursor-pointer">
+                              <div className="w-12 h-12 rounded-full overflow-hidden">
+                                <Image
+                                  className="w-full h-full object-cover"
+                                  src={session.userDetails.profile_pic || "/images/emptyProfile.png"}
+                                  alt={session.userDetails.first_name}
+                                  width={48}
+                                  height={48}
+                                />
+                              </div>
+                              <div className="flex flex-col">
+                                <strong className="text-sm">
+                                  <p className="line-clamp-1">{session.userDetails.first_name}</p>
+                                </strong>
+                                {session.userDetails.role === "buyer" ? (
+                                  <span className="text-xs text-black/50">
+                                    , {session.userDetails.role}
+                                  </span>
+                                ) : (
+                                  <div className="text-xs text-black/50">
+                                    {session.userDetails.creative_field
+                                      ? session.userDetails.creative_field.replace(/-/g, ' ')
+                                      : ''}
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                            <div className="flex flex-col">
-                              <strong className="text-sm">
-                                <p className="line-clamp-1">{session.userDetails.first_name}</p>
-                              </strong>
-                              {session.userDetails.role === "buyer" ? (
-                                <span className="text-xs text-black/50">
-                                  , {session.userDetails.role}
-                                </span>
-                              ) : (
-                                <div className="text-xs text-black/50">
-                                  {session.userDetails.creative_field
-                                    ? session.userDetails.creative_field.replace(/-/g, ' ')
-                                    : ''}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </li>
-                      ))}
-                  </ul>
-                  
+                          </li>
+                        ))}
+                    </ul>
+
                   )}
                 </div>
               </div>
@@ -981,16 +1041,15 @@ export const Interested = ({
                       type="text"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      
+
                       placeholder="Send a message..."
                       className="w-full py-2 border border-gray-300 rounded-full px-4"
                     />
                     <button
                       type="submit"
                       disabled={isSending || !message.trim()}
-                      className={`px-2 rounded-md cursor-pointer  ${
-                        isSending ? 'text-gray-400 cursor-not-allowed' : 'text-white'
-                      }`}
+                      className={`px-2 rounded-md cursor-pointer  ${isSending ? 'text-gray-400 cursor-not-allowed' : 'text-white'
+                        }`}
                     >
                       <SendHorizontal size={24} />
                     </button>
