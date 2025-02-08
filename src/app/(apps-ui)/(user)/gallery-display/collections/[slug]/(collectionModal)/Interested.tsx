@@ -48,6 +48,7 @@ interface Session {
   a: string; // Sender A
   b: string; // Sender B
   // Add other session fields as needed
+  created_at: string;
   userDetails: userDetails;
 }
 
@@ -108,6 +109,11 @@ export const Interested = ({
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isMsgLoading, setMsgLoading] = useState<boolean>(false);
+  const [recentChats, setRecentChats] = useState<any[]>([]);
+  const [isSending, setIsSending] = useState(false);  // Loading state for sending message
+
+
+
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -195,10 +201,18 @@ export const Interested = ({
   useEffect(() => {
     if (!chat) {
       setChat(false);
-      setIsRightColumnVisible(true);
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+        setIsRightColumnVisible(true);
+      },2000)
+      
     } else {
       setChat(true);
-      setIsRightColumnVisible(false);
+      setTimeout(() => {
+        setIsLoading(false);
+        setIsRightColumnVisible(false);
+      },2000)
     }
   }, []);
 
@@ -433,9 +447,14 @@ export const Interested = ({
   };
 
   const handleSendMessage = async () => {
+    if (isSending) return;  // Prevent multiple sends if already sending
     const token = getSession();
     if (!token) return;
-
+  
+    if (!message.trim()) return; // Prevent sending empty messages
+  
+    setIsSending(true);  // Set loading to true before sending
+  
     if (!isChat) {
       try {
         const { payload } = await jwtVerify(
@@ -443,6 +462,7 @@ export const Interested = ({
           new TextEncoder().encode(JWT_SECRET)
         );
         const userIdFromToken = payload.id as string;
+        
         const response = await fetch("/api/chat/msg-session", {
           method: "POST",
           headers: {
@@ -454,17 +474,19 @@ export const Interested = ({
             message,
           }),
         });
-
+  
         if (!response.ok) {
           throw new Error("Failed to send message");
         }
-
+  
         const data = await response.json();
         console.log("Message sent successfully", data);
         setMessage(""); // Clear the message input
         fetchMessages(); // Fetch messages again to update the chat
       } catch (error: any) {
         console.log("Error sending message:", error.message);
+      } finally {
+        setIsSending(false);  // Reset loading state after sending
       }
     } else {
       try {
@@ -473,6 +495,7 @@ export const Interested = ({
           new TextEncoder().encode(JWT_SECRET)
         );
         const userIdFromToken = payload.id as string;
+  
         const response = await fetch("/api/chat/msg-session", {
           method: "POST",
           headers: {
@@ -480,32 +503,43 @@ export const Interested = ({
           },
           body: JSON.stringify({
             sender_a: userIdFromToken, // Use the user ID from the token
-            sender_b: selectedId, // Use the child ID from formData
+            sender_b: selectedId, // Use the selected ID for ongoing chat
             message,
           }),
         });
-
+  
         if (!response.ok) {
           throw new Error("Failed to send message");
         }
-
+  
         const data = await response.json();
         console.log("Message sent successfully", data);
         setMessage(""); // Clear the message input
         fetchMessages(); // Fetch messages again to update the chat
       } catch (error: any) {
         console.log("Error sending message:", error.message);
+      } finally {
+        setIsSending(false);  // Reset loading state after sending
       }
     }
   };
-
+  
 
 
   const handleBackToSessions = () => {
     setChat(true);
     setSelectedSessionId(null);
     setIsRightColumnVisible(false);
+  
+    setIsLoading(true);  // Start loading
+  
+    // Simulate a 1-second loading delay
+    setTimeout(() => {
+      setIsLoading(false);  // Stop loading after 1 second
+      fetchSessionData();
+    }, 1000);
   };
+  
 
   const modalVariants = {
     hidden: {
@@ -530,48 +564,80 @@ export const Interested = ({
     },
   };
 
+  useEffect(() => {
+    const fetchRecentChats = async () => {
+      const token = getSession();
+      if (!token) return;
+
+      try {
+        const { payload } = await jwtVerify(
+          token,
+          new TextEncoder().encode(JWT_SECRET)
+        );
+        const userIdFromToken = payload.id as string;
+
+        const response = await fetch(`/api/chat/recent-chats`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "user-id": userIdFromToken,
+          },
+        });
+
+        // if (!response.ok) {
+        //   throw new Error("Failed to fetch recent chats");
+        // }
+
+        const data = await response.json();
+        setRecentChats(data.recentChats);
+      } catch (error: any) {
+        throw error;
+      }
+    };
+
+    fetchRecentChats();
+  }, []);
+
+
   const filteredUsers = getUsers.filter((user) =>
     user.first_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  
+
   const handleClick = async (id: string, getA: string, getB: string) => {
     setMsgLoading(true);
-
     const token = getSession();
     if (!token) return;
-
+  
     try {
       const { payload } = await jwtVerify(
         token,
         new TextEncoder().encode(JWT_SECRET)
       );
       const userIdFromToken = payload.id as string;
-
-      // Determine the other user's ID
+  
       const selectedUserId = getA === userIdFromToken ? getB : getA;
       setselectedId(selectedUserId);
       setSelectedSessionId(id);
-      setIsRightColumnVisible(true); // Show right column
-
+      setIsRightColumnVisible(true);
+  
       // Fetch user details
       const { data, error } = await supabase
         .from("userDetails")
         .select("detailsid, first_name, profile_pic, creative_field")
         .eq("detailsid", selectedUserId)
         .single();
-
+  
       if (error) throw error;
-
-      // Update state to store the selected user details
-      setUserDetails([data]); // Set the fetched user details to state
+      setUserDetails([data]); // Store the fetched user details
+  
     } catch (error: any) {
       console.error("Error fetching user details:", error.message);
     } finally {
       setMsgLoading(false);
     }
-
-    // Fetch messages
+  
+    // Fetch messages only if they exist
     try {
       const response = await fetch("/api/chat/all-msg-session", {
         method: "GET",
@@ -580,19 +646,25 @@ export const Interested = ({
           sender_a: id,
         },
       });
-
+  
       if (!response.ok) {
         throw new Error("Failed to fetch messages");
       }
-
+  
       const data = await response.json();
-      setMessages(data.message);
-      fetchMessages();
+  
+      if (data.message.length > 0) {
+        setMessages(data.message);
+      } else {
+        setMessages([]); // No messages yet, do not store session
+      }
     } catch (error: any) {
       console.error("Error fetching messages:", error.message);
     }
   };
   
+
+
   const handleClickNewChat = async (id: string) => {
     setMsgLoading(true);
     console.log("clicked id:", id);
@@ -602,63 +674,38 @@ export const Interested = ({
       return;
     }
     setIsRightColumnVisible(true);
+  
     try {
       const { payload } = await jwtVerify(
         token,
         new TextEncoder().encode(JWT_SECRET)
       );
       const userIdFromToken = payload.id as string;
-
-      const response = await fetch("/api/chat/new-msg", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          sender_a: userIdFromToken, // Use the user ID from the token
-          sender_b: id,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("To create new chat");
-      }
-
-      const data = await response.json();
-      console.log("Message sent successfully", data);
-      const selectedUserId = data.a === userIdFromToken ? data.b : data.a;
-      setselectedId(selectedUserId);
-      setSelectedSessionId(data.sessionId);
-      fetchSessionData();
-
-      const dataidmsg = data.sessionId as string;
-      const responseData = await fetch("/api/chat/all-msg-session", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          sender_a: dataidmsg,
-        },
-      });
-
-      if (!responseData.ok) {
-        throw new Error("Failed to fetch messages");
-      }
-
-      const dataResponse = await responseData.json(); // Corrected this line
-      setMessages(dataResponse.message);
-      fetchMessages();
+  
+      // Set the selected user but do not create a session yet
+      setselectedId(id);
+      setSelectedSessionId(null);
+  
+      // Fetch user details & check for existing chat session
+      await handleClick(id, userIdFromToken, id);
+  
     } catch (error: any) {
-      console.log("Error sending message:", error.message);
+      console.log("Error preparing new chat:", error.message);
+    } finally {
+      setMsgLoading(false);
     }
   };
+  
+  
+
 
   return (
     <div className="poppins fixed bottom-1.5 right-2 z-[900] w-full max-w-sm min-w-[24rem] h-[70vh] overflow-hidden flex flex-col rounded-xl shadow-customShadow3 bg-gray-200">
       <button
         onClick={onCancel}
-        className="absolute top-2 right-2 p-2 bg-gray-200 rounded-lg cursor-pointer"
+        className="absolute top-2 right-2 p-1 bg-gray-200 rounded-lg cursor-pointer"
       >
-        <X size={25} />
+        <X size={20} />
       </button>
       <div className="bg-primary-2 p-2.5">
         <div className="text-xl text-gray-200 font-extrabold min-h-10">
@@ -679,19 +726,15 @@ export const Interested = ({
                     className="w-10 h-10 rounded-full mr-2 object-cover"
                   />
                   <div className="flex flex-col">
-                    <p
-                      className={`text-gray-200 font-medium text-base ${userDetails[0].first_name.length > 10
-                        ? "line-clamp-1"
-                        : ""
-                        }`}
-                    >
+                    <p className="text-gray-200 text-sm font-semibold line-clamp-1">
                       {userDetails[0].first_name}
                     </p>
                     <p className="text-gray-200 text-xs font-normal">
                       {userDetails[0].creative_field
-                        ? userDetails[0].creative_field
+                        ? userDetails[0].creative_field.replace(/-/g, ' ')
                         : "Buyer"}
                     </p>
+
                   </div>
                 </div>
               </div>
@@ -729,9 +772,9 @@ export const Interested = ({
                   <div className="bg-white p-2 shadow-lg w-full h-full max-h-56 flex flex-col max-w-md">
                     <button
                       onClick={() => setShowModal(false)}
-                      className="absolute top-2 right-2 p-2 bg-gray-200 rounded-lg cursor-pointer"
+                      className="absolute top-2 right-2 p-1 bg-gray-200 rounded-lg cursor-pointer"
                     >
-                      <X size={25} />
+                      <X size={20} />
                     </button>
                     <h3 className="font-bold pb-2 text-black/50 text-sm">
                       Search Results
@@ -758,14 +801,16 @@ export const Interested = ({
                             />
                           </div>
                           <div className="flex flex-col">
-                            <strong className="text-sm">{user.first_name}</strong>
+                            <strong className="text-sm"><p className="line-clamp-1">{user.first_name}</p></strong>
                             {user.role === "buyer" ? (
                               <span className="text-xs text-black/50">
                                 , {user.role}
                               </span>
                             ) : (
                               <div className="text-xs text-black/50">
-                                {user.creative_field}
+                                {user.creative_field
+                                  ? user.creative_field.replace(/-/g, ' ')
+                                  : ''}
                               </div>
                             )}
                           </div>
@@ -791,46 +836,45 @@ export const Interested = ({
                     </div>
                   ) : (
                     <ul className="space-y-2 overflow-y-auto p-2 flex flex-col h-full">
-                      {sessions.map((session) => (
+                    {sessions
+                      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())  // Sort descending
+                      .map((session) => (
                         <li
                           key={session.id}
-                          onClick={() =>
-                            handleClick(session.id, session.a, session.b)
-                          }
-                          className={`${selectedSessionId === session.id
-                            ? "bg-gray-400"
-                            : ""
-                            }`}
+                          onClick={() => handleClick(session.id, session.a, session.b)}
+                          className={`${selectedSessionId === session.id ? "bg-gray-400" : ""}`}
                         >
                           <div className="flex flex-row capitalize bg-black/10 rounded-md p-2 gap-4 cursor-pointer">
                             <div className="w-12 h-12 rounded-full overflow-hidden">
                               <Image
                                 className="w-full h-full object-cover"
-                                src={
-                                  session.userDetails.profile_pic ||
-                                  "/images/emptyProfile.png"
-                                }
+                                src={session.userDetails.profile_pic || "/images/emptyProfile.png"}
                                 alt={session.userDetails.first_name}
                                 width={48}
                                 height={48}
                               />
                             </div>
                             <div className="flex flex-col">
-                              <strong className="text-sm">{session.userDetails.first_name}</strong>
+                              <strong className="text-sm">
+                                <p className="line-clamp-1">{session.userDetails.first_name}</p>
+                              </strong>
                               {session.userDetails.role === "buyer" ? (
                                 <span className="text-xs text-black/50">
                                   , {session.userDetails.role}
                                 </span>
                               ) : (
                                 <div className="text-xs text-black/50">
-                                  {session.userDetails.creative_field}
+                                  {session.userDetails.creative_field
+                                    ? session.userDetails.creative_field.replace(/-/g, ' ')
+                                    : ''}
                                 </div>
                               )}
                             </div>
                           </div>
                         </li>
                       ))}
-                    </ul>
+                  </ul>
+                  
                   )}
                 </div>
               </div>
@@ -841,9 +885,9 @@ export const Interested = ({
             <div className="flex flex-col h-full w-full bg-white z-[900]">
               <button
                 onClick={handleBackToSessions}
-                className="absolute top-2 right-2 p-2 bg-gray-200 rounded-lg cursor-pointer"
+                className="absolute top-2 right-2 p-1 bg-gray-200 rounded-lg cursor-pointer"
               >
-                <ArrowLeft size={25} />
+                <ArrowLeft size={20} />
               </button>
               <div className="h-full flex flex-col gap-4 w-full">
                 <div
@@ -937,12 +981,16 @@ export const Interested = ({
                       type="text"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      placeholder="Chat here..."
+                      
+                      placeholder="Send a message..."
                       className="w-full py-2 border border-gray-300 rounded-full px-4"
                     />
                     <button
                       type="submit"
-                      className="text-gray-200 p-2 rounded-lg"
+                      disabled={isSending || !message.trim()}
+                      className={`px-2 rounded-md cursor-pointer  ${
+                        isSending ? 'text-gray-400 cursor-not-allowed' : 'text-white'
+                      }`}
                     >
                       <SendHorizontal size={24} />
                     </button>

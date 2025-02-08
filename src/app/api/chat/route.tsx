@@ -14,7 +14,8 @@ export async function GET(req: Request) {
     const { data: messages, error: messagesError } = await supabase
       .from('messages')
       .select('id, first_name, message, created_at, for')
-      .or(`for.eq.${userId},id.eq.${userId}`);
+      .or(`for.eq.${userId},id.eq.${userId}`)
+      .order('created_at', { ascending: false });
 
     if (messagesError) {
       console.error('Supabase fetch error for messages:', messagesError);
@@ -82,7 +83,8 @@ export async function PUT(req: Request) {
     const { data: updatedMessages, error: fetchError } = await supabase
     .from('messages')
     .select('id, first_name, message, created_at, for')
-    .or(`for.eq.${userId},id.eq.${userId}`);
+    .or(`for.eq.${userId},id.eq.${userId}`)
+    .order('created_at', { ascending: false });
 
     if (fetchError) {
       console.error('Error fetching updated messages:', fetchError);

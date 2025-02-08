@@ -14,7 +14,9 @@ export async function GET(req: NextRequest) {
     const { data: sessions, error: sessionsError } = await supabase
       .from('msgSession')
       .select('id, a, b')
-      .or(`a.eq.${sender_a},b.eq.${sender_a}`);
+      .or(`a.eq.${sender_a},b.eq.${sender_a}`)
+      .order('created_at', { ascending: false });
+
 
     if (sessionsError) {
       throw new Error(sessionsError.message);

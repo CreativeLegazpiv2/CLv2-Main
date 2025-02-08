@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/services/supabaseClient';
 
-export async function GET(req: Request) {
+export async function GET(req: Request ) {
   try {
     const headers = req.headers;
     const sender_a = headers.get('sender_a');
@@ -14,7 +14,8 @@ export async function GET(req: Request) {
     const { data: message, error: sessionsError } = await supabase
       .from('allmessage')
       .select('*')  // Select id, a, and b fields explicitly
-      .eq('sessionid', sender_a);  
+      .eq('sessionid', sender_a)
+      .order('created_at', { ascending: false });
 
     if (sessionsError) {
       throw new Error(sessionsError.message);
