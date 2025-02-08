@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
-import { AuthProvider } from "@/context/authcontext";
 
 const LottieAnimation = dynamic(
   () => import("@/components/animations/_lottieloader"),
@@ -21,7 +20,7 @@ export default function LoadLayout({
   useEffect(() => {
     // Trigger loading on route change
     setIsLoading(true);
-    const timer = setTimeout(() => setIsLoading(false), 1000); // Customize delay
+    const timer = setTimeout(() => setIsLoading(false), 3000); // Customize delay
 
     return () => clearTimeout(timer); // Cleanup on unmount
   }, [pathname]);

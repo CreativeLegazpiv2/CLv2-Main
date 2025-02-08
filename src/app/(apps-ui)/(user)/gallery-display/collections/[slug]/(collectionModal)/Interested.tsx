@@ -499,6 +499,42 @@ export const Interested = ({
     }
   };
 
+
+
+  const handleBackToSessions = () => {
+    setChat(true);
+    setSelectedSessionId(null);
+    setIsRightColumnVisible(false);
+  };
+
+  const modalVariants = {
+    hidden: {
+      opacity: 0,
+      scale: 0.8,
+    },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut",
+      },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.8,
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut",
+      },
+    },
+  };
+
+  const filteredUsers = getUsers.filter((user) =>
+    user.first_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  
   const handleClick = async (id: string, getA: string, getB: string) => {
     setMsgLoading(true);
 
@@ -556,40 +592,7 @@ export const Interested = ({
       console.error("Error fetching messages:", error.message);
     }
   };
-
-  const handleBackToSessions = () => {
-    setChat(true);
-    setSelectedSessionId(null);
-    setIsRightColumnVisible(false);
-  };
-
-  const modalVariants = {
-    hidden: {
-      opacity: 0,
-      scale: 0.8,
-    },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.3,
-        ease: "easeInOut",
-      },
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.8,
-      transition: {
-        duration: 0.3,
-        ease: "easeInOut",
-      },
-    },
-  };
-
-  const filteredUsers = getUsers.filter((user) =>
-    user.first_name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
+  
   const handleClickNewChat = async (id: string) => {
     setMsgLoading(true);
     console.log("clicked id:", id);
