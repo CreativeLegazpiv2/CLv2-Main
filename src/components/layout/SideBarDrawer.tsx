@@ -211,7 +211,7 @@ export function SidebarDrawer({
                   </span>
                 </motion.button>
               ) : (
-                <Link href={linkName} className="block w-full">
+                <Link href={"/signin"} className="block w-full">
                   <motion.button
                     className="flex items-center justify-between w-full p-4 rounded-xl text-white font-medium transition-all"
                     style={{ backgroundColor: COLORS.maroon }}

@@ -817,7 +817,7 @@ export const Interested = ({
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute top-1/2 right-4 transform -translate-y-1/2 text-primary-3/50 hover:text-primary-3 focus:outline-none"
+                    className="absolute top-1/2 right-6 transform -translate-y-1/2 text-primary-3/50 hover:text-primary-3 focus:outline-none"
                   >
                     ✕
                   </button>

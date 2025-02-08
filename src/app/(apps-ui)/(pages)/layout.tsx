@@ -64,7 +64,7 @@ export default function MainLayout({
   return (
     <main className="w-full flex flex-col h-fit">
       <Header
-        linkName="signin"
+        linkName="/signin"
         roundedCustom="lg:rounded-bl-3xl"
         paddingLeftCustom="lg:pl-14"
         buttonName="Log in"

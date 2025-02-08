@@ -24,7 +24,7 @@ function DashboardContent({ children }: LayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
       <Header
-        linkName="signin"
+        linkName="/signin"
         roundedCustom="lg:rounded-bl-3xl"
         paddingLeftCustom="lg:pl-14"
         buttonName="Log in"
