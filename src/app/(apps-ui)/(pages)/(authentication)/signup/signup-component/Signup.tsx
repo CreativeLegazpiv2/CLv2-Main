@@ -63,25 +63,23 @@ export const Signup = () => {
 const AccountCreation = () => {
   return (
     <div className="w-full h-full relative">
-      <div className="w-full h-full flex bg-secondary-1 rounded-2xl z-50 relative">
-        <div className="w-full h-full sm:p-10 p-6 lg:block hidden">
+      <div className="w-full h-full flex bg-secondary-1 rounded-2xl z-50  relative">
+        <div className="w-full h-full sm:p-10 lg:block hidden">
           <img
             className="w-fit h-full rounded-xl"
             src="../images/signup/study.png"
             alt=""
           />
         </div>
-        <div className="w-full min-h-full lg:-ml-8 flex flex-col gap-4 justify-center items-center sm:p-10 p-4">
+        <div className="w-full min-h-full lg:-ml-8 flex flex-col gap-4 justify-center items-center sm:p-10  md:p-4 p-6">
           <div className="w-64 h-fit"> 
             <Logo color="text-secondary-2" width={"auto"} height={"auto"} />
           </div>
-          <div className="w-full h-full flex justify-end items-end">
+          <div className="w-full h-full flex justify-end items-end  md:p-4 p-6">
             <MultiStepForm />
           </div>
         </div>
       </div>
-      <div className="w-full absolute lg:-bottom-10 -bottom-6 z-10 max-w-[90%] left-0 right-0  mx-auto h-32 rounded-2xl bg-shade-6"></div>
-      <div className="w-full absolute lg:-bottom-20 -bottom-12 z-0 max-w-[80%] left-0 right-0  mx-auto h-32 rounded-2xl bg-shade-7"></div>
     </div>
   );
 };

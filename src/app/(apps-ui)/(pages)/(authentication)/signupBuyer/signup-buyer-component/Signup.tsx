@@ -75,7 +75,7 @@ const AccountCreation = () => {
         <div className="w-full h-full justify-center items-center sm:p-10 p-6 lg:flex hidden">
           <Logo color="text-palette-5" width={"auto"} height={"auto"} />
         </div>
-        <div className="w-full h-full flex flex-col bg-palette-5 md:p-0 p-6 text-palette-1 lg:rounded-r-2xl lg:rounded-none rounded-2xl gap-12 justify-center items-center sm:p-10">
+        <div className="w-full h-full flex flex-col bg-palette-5 md:p-4 p-6 text-palette-1 lg:rounded-r-2xl lg:rounded-none rounded-2xl gap-12 justify-center items-center sm:p-10">
           <div className="w-full h-fit flex flex-col gap-4 justify-end items-center">
             <MultiStepForm />
           </div>
