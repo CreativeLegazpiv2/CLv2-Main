@@ -80,7 +80,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
                 <div className="absolute w-full h-full flex z-10 bg-gradient-to-r from-palette-5 from-0% via-palette-5 md:via-15% via-25% to-transparent md:to-60% to-70%">
                     <div className="w-full h-fit pt-[20dvh] max-w-[80%] mx-auto relative flex flex-col gap-12 justify-center items-start">
                         <div className="w-full flex flex-col gap-2">
-                            <div className="w-full flex justify-between items-center">
+                            <div className="w-full flex md:flex-row flex-col-reverse md:justify-between justify-start md:items-center items-start">
                                 <h1 className="md:text-5xl text-4xl font-bold uppercase text-palette-2" key={initialUserDetail.first_name}>{initialUserDetail.first_name}</h1>
                                 <ArrowLeft onClick={() => window.history.back()} size={36} className=" z-10 cursor-pointer text-palette-2 bg-palette-5 rounded-md p-1" />
                             </div>

@@ -7,6 +7,8 @@ import { ArrowLeft, Loader, Search, SendHorizontal, X } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { debounce } from "lodash";
+import Lottie from "lottie-react";
+import animationData from "../../../../../../../../public/lottie/message.json";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
 
@@ -851,7 +853,16 @@ export const Interested = ({
                     </div>
                   ) : messages.length === 0 ? (
                     <div className="w-full h-full flex justify-center items-center">
-                      <p>No Messages yet</p>
+                      <div className="w-full h-full flex justify-center items-center">
+                        <Lottie
+                          animationData={animationData}
+                          loop={true}
+                          className="w-80 h-80 md:w-96 md:h-96" // Adjust size as needed
+                        />
+                        <p className="text-sm text-black/50">
+                          Start a conversation with your favorite artist
+                        </p>
+                      </div>
                     </div>
                   ) : (
                     messages.map((msg) => {
