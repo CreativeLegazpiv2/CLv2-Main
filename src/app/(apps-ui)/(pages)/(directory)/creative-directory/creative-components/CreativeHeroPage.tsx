@@ -105,7 +105,7 @@ const SearchInput = () => {
   return (
     <motion.form
       onSubmit={handleSubmit}
-      className="w-full lg:max-w-2xl max-w-sm h-fit relative text-palette-7 rounded-full"
+      className="w-full lg:max-w-2xl max-w-sm h-fit relative text-palette-7 rounded-full shadow-customShadow"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, delay: 0.2 }}

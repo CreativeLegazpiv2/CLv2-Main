@@ -9,6 +9,8 @@ import { SidebarDrawer } from "@/components/layout/SideBarDrawer";
 import { AuthProvider, useAuth } from "@/context/authcontext";
 import { useRouter } from "next/navigation";
 import AuthGuard from "@/context/AuthGuran";
+import Infinite from "@/components/reusable-component/Infinite";
+import { Transcribed } from "@/components/reusable-component/Transcribed";
 
 interface LayoutProps {
   children: ReactNode;
@@ -42,6 +44,8 @@ function DashboardContent({ children }: LayoutProps) {
         </div>
       )}
 
+     <Transcribed />
+      <Infinite />
       <Footer />
 
       <AnimatePresence>

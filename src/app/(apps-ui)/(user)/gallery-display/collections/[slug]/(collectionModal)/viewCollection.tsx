@@ -463,21 +463,22 @@ export const ViewCollection = ({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 500 }}
-            className="w-full relative max-w-[90%] h-full max-h-[90vh] mx-auto bg-white rounded-lg overflow-y-auto shadow-lg"
+            className="w-full relative max-w-[90%] h-full max-h-[95vh] mx-auto bg-white rounded-lg overflow-y-auto shadow-lg"
         >
             <X className="absolute top-2 right-2 cursor-pointer z-[1000] bg-palette-6 text-white rounded-md" size={24} onClick={onClose} />
             {/* Image Container */}
-            <div className="flex lg:flex-row flex-col h-full w-full">
-                <div className="w-full h-full flex flex-col ">
+            <div className="absolute top-0 left-0 right-0 flex lg:flex-row flex-col h-full w-full">
+                <div className="w-full h-full flex flex-col">
                     <div className="relative w-full md:h-[60vh] h-[90vh] bg-palette-5">
+                        <div className="w-full h-full absolute top-0 left-0 right-0 bg-black/20"></div>
                         <Image
 
                             src={image || "/placeholder.svg"}
                             alt={title}
                             fill
-                            className="object-contain"
+                            className="object-contain p-4"
                         />
-                        <div className="w-full absolute bottom-0 left-0 right-0 p-4 flex md:flex-row flex-col items-center md:justify-between justify-end md:gap-0 gap-4">
+                        <div className="w-full absolute bottom-0 left-0 right-0 p-4 z-20 flex md:flex-row flex-col items-center md:justify-between justify-end md:gap-0 gap-4">
 
                             {/* <div className="w-fit flex flex-col text-white text-base">
                                     <h2 className="text-white text-xl font-bold" key={title}>{title}</h2>

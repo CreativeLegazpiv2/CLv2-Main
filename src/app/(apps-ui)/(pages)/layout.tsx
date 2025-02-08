@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { SidebarDrawer } from "@/components/layout/SideBarDrawer";
 import Infinite from "@/components/reusable-component/Infinite";
+import { Transcribed } from "@/components/reusable-component/Transcribed";
 import { getSession } from "@/services/authservice";
 import { AnimatePresence } from "framer-motion";
 import React, { ReactNode, useEffect, useState } from "react";
@@ -70,10 +71,13 @@ export default function MainLayout({
         backgroundColor="bg-palette-5"
         onOpenSidebar={handleOpenSideBar}
       />
-      
+
       <main className="flex-grow w-full">{children}</main>
 
+      <Transcribed />
+      <Infinite />
       <Footer />
+
       <AnimatePresence>
         {isSidebarOpen && (
           <SidebarDrawer

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useBreakpoint } from "use-breakpoint";
-import { getSession, logoutUser } from "@/services/authservice";
+import { getSession, getUserDetailsFromToken, logoutUser } from "@/services/authservice";
 import {
   Home,
   FolderKanban,
@@ -75,18 +75,28 @@ export function SidebarDrawer({
       setIsLoggedIn(!!session);
 
       if (session) {
-        setMenuItems([
-          { name: "Home", link: "/home", icon: <Home size={20} /> },
-          {
-            name: "Directory",
-            link: "/creative-directory",
-            icon: <FolderKanban size={20} />,
-          },
-          { name: "Gallery", link: "/gallery-display", icon: <ImageIcon size={20} /> },
-          { name: "FAQ", link: "/faqs", icon: <HelpCircle size={20} /> },
-          { name: "Events", link: "/events", icon: <Calendar size={20} /> },
-          { name: "Profile", link: "/profile", icon: <User size={20} /> },
-        ]);
+
+        try {
+          const userDetails = await getUserDetailsFromToken()
+
+          if (userDetails && userDetails.detailsid) {
+            setMenuItems([
+              { name: "Home", link: "/home" },
+              { name: "Directory", link: "/creative-directory" },
+              { name: "Gallery", link: "/gallery-display" },
+              { name: "FAQ", link: "/faqs" },
+              { name: "Events", link: "/events" },
+              {
+                name: "Profile",
+                link: `/gallery-display/collections/${userDetails.detailsid}`,
+              },
+            ])
+          } else {
+            console.error("User details or detailsid not found")
+          }
+        } catch (error) {
+          console.error("Error fetching user details:", error)
+        }
       } else {
         setMenuItems([
           { name: "Home", link: "/home", icon: <Home size={20} /> },

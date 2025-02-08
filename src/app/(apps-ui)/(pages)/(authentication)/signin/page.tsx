@@ -10,8 +10,6 @@ export default function Login() {
     return (
         <>
             <Signin />  
-            <Transcribed />
-            <Infinite />
         </>
     )
 }

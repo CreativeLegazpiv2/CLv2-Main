@@ -1,4 +1,4 @@
-import { Infinite } from "@/components/reusable-component/Infinite";
+
 import { ServiceCreatives } from "../services/ServiceCreatives";
 import { ServiceHeroPage } from "../services/ServiceHeroPage";
 import { Services } from "../services/Services";
@@ -10,8 +10,6 @@ export default function CreativeServices() {
             <ServiceHeroPage />
             <ServiceCreatives />
             <Services />
-            <Infinite />
-          
         </main>
     )
 }

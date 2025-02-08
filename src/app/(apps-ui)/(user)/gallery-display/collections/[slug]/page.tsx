@@ -5,6 +5,7 @@ import ProfileDetailsSkeleton from "@/components/Skeletal/profileSkeleton";
 import { UserProfile } from "./UserProfile";
 import CollectionDisplay from "./CollectionDisplay";
 import { supabase } from "@/services/supabaseClient";
+import ProfileSkeletonUI from "@/components/Skeletal/ProfileSkeletonUI";
 
 export interface UserDetail {
   detailsid: string;
@@ -126,7 +127,7 @@ export default function CollectionPage() {
   }, [loading, collectionData, router]);
 
   if (loading) {
-    return <ProfileDetailsSkeleton />;
+    return <ProfileSkeletonUI />;
   }
 
   if (!data) {

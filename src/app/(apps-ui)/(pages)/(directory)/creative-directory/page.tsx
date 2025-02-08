@@ -19,7 +19,6 @@ export default function CreativeDirectoryPage() {
       </div>
       <ArtistOfTheMonth />
       <CreativeUsers />
-      <Infinite />
     </main>
   );
 }

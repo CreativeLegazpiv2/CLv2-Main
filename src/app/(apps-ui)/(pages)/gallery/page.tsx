@@ -1,5 +1,4 @@
-import { Infinite } from "@/components/reusable-component/Infinite";
-import { Subscribe } from "@/components/reusable-component/Subscribe";
+
 import GalleryTitle from "./g-visitor-components/GalleryTitle";
 import { FeaturedCollections } from "../../(user)/gallery-display/g-user-components/FeaturedGallery";
 import { CreativeDirectory } from "../home/landing-page/CreativeDirectory";
@@ -18,13 +17,12 @@ export default function GalleryVisitorPage() {
                 <BrowseGallery />
                 <StatisticsBanner />
                 <IndividualWorks />
-                <Infinite /> */}
+              */}
 
                 <GalleryTitle />
                 <CreativeDirectory />
-
                 <FeaturedCollections />
-                <Infinite />
+
 
             </div>
         </main>

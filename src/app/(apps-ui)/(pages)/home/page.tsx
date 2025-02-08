@@ -118,9 +118,7 @@ export default function PofconLandingPage() {
         </div>
       </ScrollAnimationSection>
 
-      <Infinite />
-
-      <Transcribed />
+    
 
       {showPofconModal && (
         <PofconModal setShowPofconModal={setShowPofconModal} />

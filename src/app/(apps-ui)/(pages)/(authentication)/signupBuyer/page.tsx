@@ -8,10 +8,7 @@ import SignupBuyer from "./signup-buyer-component/Signup";
 export default function RegistrationBuyer() {
     return (
         <>
-            <SignupBuyer />
-            <Transcribed />
-            <Infinite />
-         
+            <SignupBuyer />      
         </>
     )
 }

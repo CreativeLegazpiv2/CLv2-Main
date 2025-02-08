@@ -54,7 +54,7 @@ const AccountCreation = () => {
         <div className="w-full h-full justify-center items-center sm:p-10 p-6 lg:flex hidden">
           <Logo color="text-palette-5" width={"auto"} height={"auto"} />
         </div>
-        <div className="w-full h-full flex flex-col bg-palette-5 text-palette-1 lg:rounded-r-2xl lg:rounded-none rounded-2xl gap-12 justify-center items-center sm:p-10">
+        <div className="w-full h-full flex flex-col bg-palette-5 p-6 text-palette-1 lg:rounded-r-2xl lg:rounded-none rounded-2xl gap-12 justify-center items-center sm:p-10">
           <div className="w-full h-fit flex flex-col gap-4 justify-end items-center">
             <div className="w-full h-fit">
               <span className="title text-3xl tracking-wider uppercase">{forgotPassword ? "Forgot" : "Login"}</span>
@@ -69,7 +69,7 @@ const AccountCreation = () => {
             )}
 
             {/* Footer Links */}
-            <div className="w-full h-fit flex flex-row gap-4 justify-between items-center text-sm max-w-[95%]">
+            <div className="w-full h-fit flex lg:flex-row flex-col gap-4 justify-between items-center text-sm max-w-[95%]">
               {!forgotPassword && (
                 <>
                   {/* Left: Signup as Buyer */}
@@ -88,7 +88,7 @@ const AccountCreation = () => {
                 <span className="cursor-pointer hover:text-palette-2 duration-300 " onClick={() => setShowSignup(!showSIgnup)}>Register Now</span>
               )}
               {showSIgnup && (
-                <>
+                <div className="flex items-center gap-4">
                   <Link href="/signupBuyer" className="text-palette-1 hover:text-palette-2 duration-300  whitespace-nowrap cursor-pointer">
                     Signup as Buyer
                   </Link>
@@ -96,8 +96,8 @@ const AccountCreation = () => {
                     Apply as Artist
                   </Link>
 
-                  <span><X className="bg-palette-1 text-palette-5 rounded-md cursor-pointer hover:bg-palette-2" onClick={() => setShowSignup(!showSIgnup)}/></span>
-                </>
+                  <span><X size={20} className="bg-palette-1 text-palette-5 rounded-md cursor-pointer hover:bg-palette-2" onClick={() => setShowSignup(!showSIgnup)}/></span>
+                </div>
 
               )}
 

@@ -1,7 +1,7 @@
 "use client"; // This tells Next.js that this component is a client-side component
 
 import React, { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useAnimation } from "framer-motion";
 import { deleteCollectionItem } from "@/services/Collections/deleteCollection";
 import { getSession } from "@/services/authservice";
 import { jwtVerify } from "jose";
@@ -11,6 +11,8 @@ import { toast, ToastContainer } from "react-toastify";
 import { EditCollection } from "./(collectionModal)/EditCollection";
 import { Interested } from "./(collectionModal)/Interested";
 import { ViewCollection } from "./(collectionModal)/viewCollection";
+import Lottie from "lottie-react";
+import clickMe from "../../../../../../../public/lottie/clickme.json";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
 
@@ -183,10 +185,125 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
     }
   };
 
+  const controls = useAnimation();
+
+  // Trigger animations after the component mounts
+  useEffect(() => {
+    controls.start((i) => ({
+      scale: [0.5, 1], // Start small and grow to original size
+      opacity: [0, 1], // Fade in
+      transition: {
+        delay: i * 0.2, // Stagger delay (0.2 seconds between each image)
+        type: "spring", // Spring effect
+        stiffness: 100,
+        damping: 10,
+      },
+    }));
+  }, [controls]);
+
 
 
   return (
-    <div className=" min-h-screen relative w-full max-w-[90%] py-[10dvh] pt-[20dvh] mx-auto">
+    <div className=" min-h-screen relative w-full max-w-[90%] py-[20dvh] mx-auto">
+      <div className="w-full h-full flex flex-col gap-6">
+        <motion.h1
+          className="text-3xl font-bold text-palette-1 uppercase"
+          initial={{ scale: 0.6, opacity: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          whileInView={{
+            scale: 1,
+            opacity: 1,
+            transition: {
+              type: "spring",
+              damping: 15,
+              stiffness: 200,
+              delay: 0.1 // Staggered delay based on index
+            }
+          }} >collection</motion.h1>
+        {/* Image Gallery Collections*/}
+        <AnimatePresence>
+          <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4">
+            {images
+              // Sort the images array in descending order based on a specific property (e.g., created_at or id)
+              .sort((a, b) => {
+                const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+                const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+                return dateB - dateA;
+              })
+              .map((image, index) => (
+                <motion.div
+                  key={`${image.image_path}-${index}`}
+                  className="mb-4 break-inside-avoid"
+                  initial={{ scale: 0.6, opacity: 0 }}
+                  whileInView={{
+                    scale: 1,
+                    opacity: 1,
+                    transition: {
+                      type: "spring",
+                      damping: 15,
+                      stiffness: 200,
+                      delay: index * 0.1 // Staggered delay based on index
+                    }
+                  }}
+                  viewport={{ once: true, margin: "-100px" }}
+                >
+                  <div className="bg-palette-6/20 rounded-3xl p-4 flex flex-col gap-4">
+                    <div
+                      key={image.generatedId}
+                      onClick={() => handleImageClick(image)}
+                      className="w-full relative cursor-pointer rounded-3xl overflow-hidden"
+                    >
+                      <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity duration-300 ease-in-out z-10">
+                        <div className="flex justify-center items-center h-full w-full">
+                          <Lottie className="w-full h-full max-w-[60%] max-h-[60%]" animationData={clickMe} loop={true} />
+                        </div>
+                      </div>
+                      <div className="max-h-[32rem] overflow-hidden">
+                        <img
+                          src={image.image_path}
+                          alt={image.title}
+                          className="w-full h-fit object-fill"
+                          style={{
+                            maxHeight: "32rem",
+                            width: "100%",
+                            objectFit: "fill",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+          </div>
+        </AnimatePresence>
+
+      </div>
+
+      {/* Confirmation Modal for Deletion */}
+      <AnimatePresence>
+        {isDeleteModalOpen && (
+          <motion.div
+            className="fixed top-0 left-0 w-full h-full bg-black/50 z-[1000]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={() => setDeleteModalOpen(false)}
+          >
+            {imageToDelete && (
+              <DeleteCollection
+                isOpen={isDeleteModalOpen}
+                generatedId={imageToDelete.generatedId}
+                imagePath={imageToDelete.image_path}
+                userId={getID!}
+                onCancel={() => setDeleteModalOpen(false)}
+                onDelete={handleDelete}
+              />
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {isInterestModalOpen && selectedImage && (
           <motion.div
@@ -212,71 +329,6 @@ const CollectionDisplay: React.FC<CollectionProps> = ({ collection }) => {
               onCancel={() => setInterestModalOpen(false)}
               chat={chat}
             />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <div className="w-full h-full flex flex-col gap-6">
-        <h1 className="text-3xl font-bold text-palette-1 uppercase">collection</h1>
-
-        {/* Image Gallery */}
-        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4">
-          {images
-            // Sort the images array in descending order based on a specific property (e.g., created_at or id)
-            .sort((a, b) => {
-              const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
-              const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
-              return dateB - dateA;
-            })
-            .map((image, index) => (
-              <div key={`${image.image_path}-${index}`} className="mb-4 break-inside-avoid">
-                <div className="bg-palette-6/20 rounded-3xl p-4 flex flex-col gap-4">
-                  <div
-                    onClick={() => handleImageClick(image)}
-                    className="w-full relative cursor-pointer rounded-3xl overflow-hidden"
-                  >
-                    <div className="absolute inset-0 bg-black opacity-0 hover:opacity-50 transition-opacity duration-300 ease-in-out z-10"></div>
-                    <div className="max-h-[32rem] overflow-hidden">
-                      <img
-                        src={image.image_path}
-                        alt={image.title}
-                        className="w-full h-fit object-fill"
-                        style={{
-                          maxHeight: "32rem",
-                          width: "100%",
-                          objectFit: "fill",
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-        </div>
-
-      </div>
-
-      {/* Confirmation Modal for Deletion */}
-      <AnimatePresence>
-        {isDeleteModalOpen && (
-          <motion.div
-            className="fixed top-0 left-0 w-full h-full bg-black/50 z-[1000]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            onClick={() => setDeleteModalOpen(false)}
-          >
-            {imageToDelete && (
-              <DeleteCollection
-                isOpen={isDeleteModalOpen}
-                generatedId={imageToDelete.generatedId}
-                imagePath={imageToDelete.image_path}
-                userId={getID!}
-                onCancel={() => setDeleteModalOpen(false)}
-                onDelete={handleDelete}
-              />
-            )}
           </motion.div>
         )}
       </AnimatePresence>
