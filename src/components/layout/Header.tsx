@@ -32,15 +32,50 @@ const MenuItem = ({ name, link }: MenuItemProps) => {
   return (
     <motion.a
       href={link}
-      className={`text-base uppercase font-semibold poppins whitespace-nowrap relative duration-300
-        ${isActive ? "text-palette-7 text-lg" : "text-palette-7/80"}
-        group-hover:text-palette-7/50 hover:!text-palette-7`}
+      className={`text-base uppercase tracking-wide font-semibold poppins whitespace-nowrap relative duration-300
+    ${isActive ? "text-palette-7 text-lg" : "text-palette-7/80"}
+    group-hover:text-palette-7/50 hover:!text-palette-7`}
       whileHover={{ scale: 1.1 }}
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      {name}
+      {isActive ? (
+        <div className="flex items-center gap-0.5">
+        {name.split('').map((letter, index) => {
+          // Define custom logic for which letter to italicize
+          let italicIndex
+      
+          switch (name.toLowerCase()) {
+            case 'home':
+            case 'gallery':
+            case 'faq':
+              italicIndex = 1 // Italicize the 2nd letter
+              break
+            case 'directory':
+            case 'profile':
+              italicIndex = name.toLowerCase().indexOf('o') // Italicize the 'O'
+              break
+            case 'events':
+              italicIndex = name.toLowerCase().indexOf('e', 1) // Italicize the second 'E' in "events"
+              break
+            default:
+              italicIndex = -1 // No italicization for other names
+          }
+      
+          return (
+            <span key={index} className={index === italicIndex ? 'italic' : ''}>
+              {letter}
+            </span>
+          )
+        })}
+      </div>
+      
+
+      ) : (
+        name  // Regular rendering if not active
+      )}
     </motion.a>
+
   );
 };
 
