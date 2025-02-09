@@ -189,7 +189,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
                     </motion.h1>
                     <motion.div
                         variants={staggerContainer}
-                        className="flex items-center gap-2 py-4 z-50 relative"
+                        className="flex items-center gap-2 py-4"
                     >
                         {[
                             { href: initialUserDetail.facebook, icon: "arcticons:facebook" },
@@ -219,7 +219,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setShowModal(true)}
-                            className="bg-palette-6 py-3 px-4 w-56 mt-4 text-palette-5 rounded-full tracking-wider uppercase"
+                            className="bg-palette-6 py-3 px-4 w-56 z-50 mt-4 text-palette-5 rounded-full tracking-wider uppercase"
                         >
                             Publish Work
                         </motion.button>

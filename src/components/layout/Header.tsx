@@ -207,7 +207,7 @@ export const Header = ({
                 <motion.button
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className={`uppercase w-44 py-1.5 font-semibold rounded-full bg-palette-1 text-secondary-1
+                  className={`uppercase w-44 py-1.5 font-semibold rounded-full bg-palette-6 text-secondary-1
                     ${isLoggingOut ? "opacity-50 cursor-not-allowed" : ""}`}
                   whileHover={{
                     scale: 1.1,
@@ -224,7 +224,7 @@ export const Header = ({
               ) : (
                 <Link href={linkName}>
                   <motion.button
-                    className="uppercase w-44 py-1.5 font-semibold rounded-full bg-palette-1 text-palette-5"
+                    className="uppercase w-44 py-1.5 font-semibold rounded-full bg-palette-6 text-palette-5"
                     whileHover={{
                       scale: 1.1,
                       backgroundColor: "#CE5230",
