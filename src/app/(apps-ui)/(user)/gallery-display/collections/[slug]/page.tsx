@@ -21,6 +21,7 @@ export interface UserDetail {
   profile_pic?: string;
   role: string;
   email?: string;
+  gender?: string;
 }
 
 interface CollectionItem {

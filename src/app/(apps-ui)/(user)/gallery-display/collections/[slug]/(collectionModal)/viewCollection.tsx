@@ -47,6 +47,7 @@ interface UserDetails {
     detailsid: string;
     first_name: string;
     profile_pic: string;
+    gender?: string;
 }
 interface Subcomment {
     id: string;

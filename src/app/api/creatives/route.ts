@@ -54,7 +54,7 @@ export async function PUT(req: Request) {
 
             const currentProfilePicUrl = currentUserDetails?.profile_pic;
             if (currentProfilePicUrl) {
-                const urlParts = currentProfilePicUrl.split('/');
+                const urlParts = currentProfilePicUrl.split('/'); 
                 const bucketName = urlParts[3];
                 const filePath = urlParts.slice(4).join('/');
 

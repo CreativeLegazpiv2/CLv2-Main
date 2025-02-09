@@ -2,12 +2,13 @@
 
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { motion } from "framer-motion"
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { CreativeArray } from "../../creative-directory/creative-components/CreativeArray";
 
 
 export const ServiceHeroPage = () => {
+    const router = useRouter()
     const params = useParams();
     const field = params?.creative as string;
 
@@ -33,6 +34,14 @@ export const ServiceHeroPage = () => {
         }
     }
 
+    const back = () => {
+        if (window.history.length > 0) {
+            router.push('/creative-directory')
+        } else {
+            router.back()
+        }
+    }
+
     return (
         <motion.div
             className="w-full lg:h-dvh h-fit lg:pb-0 pb-[15dvh]"
@@ -48,8 +57,8 @@ export const ServiceHeroPage = () => {
                 >
                     <h1 className="uppercase font-semibold lg:text-5xl text-xl">discover</h1>
                     <Icon
-                        onClick={() => window.history.back()}
-                        className="absolute top-1/2 lg:-left-16 -left-8 -translate-y-1/2 lg:text-5xl text-xl cursor-pointer"
+                        onClick={back}
+                        className="absolute top-1/2 lg:-left-16 -left-8 -translate-y-1/2 lg:text-5xl text-xl cursor-pointer z-100"
                         icon="ic:round-arrow-back"
                     />
                 </motion.div>

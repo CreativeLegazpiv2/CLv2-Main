@@ -1,7 +1,7 @@
 "use client";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
+
 
 import { AnimatePresence, motion } from "framer-motion";
 import { getSession } from "@/services/authservice";
@@ -10,6 +10,7 @@ import { ProfileModal } from "./(collectionModal)/EditProfileDetails";
 import PublishGallery from "./(collectionModal)/PublishGallery";
 import { ArrowLeft } from "lucide-react";
 import ProfileSkeletonUI from "@/components/Skeletal/ProfileSkeletonUI";
+import Link from "next/link";
 
 export interface UserDetail {
     detailsid: string;
@@ -24,7 +25,8 @@ export interface UserDetail {
     portfolioLink: string;
     profile_pic?: string;
     role: string;
-    email?: string
+    email?: string,
+    gender?: string
 }
 
 
@@ -187,23 +189,23 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
                     </motion.h1>
                     <motion.div
                         variants={staggerContainer}
-                        className="flex items-center gap-2 py-4 z-50"
+                        className="flex items-center gap-2 py-4 z-50 relative"
                     >
                         {[
                             { href: initialUserDetail.facebook, icon: "arcticons:facebook" },
                             { href: initialUserDetail.instagram, icon: "arcticons:instagram" },
                             { href: `mailto:${initialUserDetail.email}`, icon: "arcticons:google-mail" }
                         ].map((social, index) => (
-                            <motion.span
-                                key={index}
-                                whileHover={{ scale: 1.2 }}
-                                whileTap={{ scale: 0.9 }}
-                                className="cursor-pointer"
-                            >
-                                <Link href={social.href} target="_blank" rel="noopener noreferrer">
-                                    <Icon icon={social.icon} className="text-palette-2" width="48" height="48" />
-                                </Link>
-                            </motion.span>
+                            <a href={social.href} key={index} target="_blank" rel="noopener noreferrer">
+                                <motion.span
+                                    whileHover={{ scale: 1.2 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    className="cursor-pointer z-50"
+                                >
+                                    <Icon icon={social.icon} className="text-palette-2 " width="48" height="48" />
+
+                                </motion.span>
+                            </a>
                         ))}
                     </motion.div>
                     <motion.div variants={fadeInUp} className="pb-4">
