@@ -44,7 +44,7 @@ const config: Config = {
         palette:{
           1: "#6E352C", //maroon
           2: "#CE5230", //scarlet
-          3: "#F49A44", //orange
+          3: "#F49A60", //orange
           4: "#E4C597", //cream h
           5: "#FAF3E1", //white
           6: "#6E602F", //olive

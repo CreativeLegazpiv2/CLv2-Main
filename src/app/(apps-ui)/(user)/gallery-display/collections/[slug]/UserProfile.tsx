@@ -105,7 +105,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
     return (
         <div className="min-h-dvh w-full text-primary-2 overflow-x-hidden">
             {/* User Profile Section */}
-            <div className="w-full md:min-h-[80dvh] md:max-h-[80dvh] h-dvh relative ">
+            <div className="w-full md:min-h-[80dvh] md:max-h-[80dvh] h-dvh relative">
                 <div className="absolute inset-0 w-full h-full overflow-hidden">
                     <motion.img
                         initial={{ scale: 1.3 }}
@@ -175,7 +175,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
                 initial="initial"
                 whileInView="animate"
                 viewport={{ once: true }}
-                className="w-full h-full min-h-[70dvh] flex relative justify-center items-center"
+                className="w-full h-full min-h-[70dvh] flex relative z-50 justify-center items-center"
             >
                 <motion.div
                     variants={slideIn}
@@ -196,16 +196,14 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
                             { href: initialUserDetail.instagram, icon: "arcticons:instagram" },
                             { href: `mailto:${initialUserDetail.email}`, icon: "arcticons:google-mail" }
                         ].map((social, index) => (
-                            <a href={social.href} key={index} target="_blank" rel="noopener noreferrer">
-                                <motion.span
-                                    whileHover={{ scale: 1.2 }}
-                                    whileTap={{ scale: 0.9 }}
+                            <Link href={social.href} key={index} target="_blank" rel="noopener noreferrer">
+                                <span
                                     className="cursor-pointer z-50"
                                 >
                                     <Icon icon={social.icon} className="text-palette-2 " width="48" height="48" />
 
-                                </motion.span>
-                            </a>
+                                </span>
+                            </Link>
                         ))}
                     </motion.div>
                     <motion.div variants={fadeInUp} className="pb-4">

@@ -32,9 +32,9 @@ const MenuItem = ({ name, link }: MenuItemProps) => {
   return (
     <motion.a
       href={link}
-      className={`text-base uppercase font-semibold whitespace-nowrap relative duration-300
-        ${isActive ? "text-palette-1 text-lg" : "text-palette-7"}
-        group-hover:text-primary-2 hover:!text-palette-2`}
+      className={`text-base uppercase font-semibold poppins whitespace-nowrap relative duration-300
+        ${isActive ? "text-palette-7 text-lg" : "text-palette-7/80"}
+        group-hover:text-palette-7/50 hover:!text-palette-7`}
       whileHover={{ scale: 1.1 }}
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -168,7 +168,7 @@ export const Header = ({
         animate={{ y: 0 }} // Always keep the header visible
       >
         <motion.div
-          className={`w-full h-full ${roundedCustom} ${textColor} ${backgroundColor}`}
+          className={`w-full h-full ${roundedCustom} ${textColor} bg-palette-5`}
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}
@@ -211,7 +211,7 @@ export const Header = ({
                     ${isLoggingOut ? "opacity-50 cursor-not-allowed" : ""}`}
                   whileHover={{
                     scale: 1.1,
-                    backgroundColor: "#6E352C",
+                    backgroundColor: "#CE5230",
                     color: "#ffff",
                   }}
                   whileTap={{ scale: 0.95 }}
@@ -227,7 +227,7 @@ export const Header = ({
                     className="uppercase w-44 py-1.5 font-semibold rounded-full bg-palette-1 text-palette-5"
                     whileHover={{
                       scale: 1.1,
-                      backgroundColor: "#6E352C",
+                      backgroundColor: "#CE5230",
                       color: "#ffff",
                     }}
                     whileTap={{ scale: 0.95 }}
