@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import { toast } from "react-toastify"
 import { Interested } from "./Interested"
+import { ConfirmationModal } from "@/components/UI/DeleteModal";
 
 interface ViewCollectionProps {
     generatedId: string;
@@ -106,6 +107,10 @@ export const ViewCollection = ({
     );
     const [isLoadingComments, setIsLoadingComments] = useState(true);
     const [menuOpen, setMenuOpen] = useState(false)
+    const [isDeleteModalOpens, setDeleteModalOpens] = useState(false);
+    const [commentToDelete, setCommentToDelete] = useState<string | null>(null);
+    const [isDeleteModalOpenSub, setDeleteModalOpenSub] = useState(false);
+    const [commentToDeleteSub, setCommentToDeleteSub] = useState<string | null>(null);
 
     useAuthRedirect();
     // Redirect to /gallery if images array becomes empty
@@ -325,6 +330,88 @@ export const ViewCollection = ({
             toast.error("Failed to add comment.", { position: "bottom-right" });
         }
     };
+    const handleDeleteClick = (commentId: string) => {
+        setCommentToDelete(commentId);
+        setDeleteModalOpen(true);
+    };
+
+    const handleDeleteComment = async () => {
+        if (!commentToDelete) return;
+
+        try {
+            const user_id = getID as string;
+            const response = await fetch('/api/collections/comment/delete', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x_commentid': commentToDelete,
+                    'x_userid': user_id,
+                },
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setComments(prevComments => prevComments.filter(comment => comment.id !== commentToDelete));
+                toast.success('Comment deleted successfully', { position: "bottom-right" });
+            } else {
+                toast.error(`Failed to delete comment: ${data.message}`, { position: "bottom-right" });
+            }
+        } catch (error) {
+            console.error('Failed to delete comment:', error);
+            toast.error('Failed to delete comment.', { position: "bottom-right" });
+        } finally {
+            setDeleteModalOpen(false);
+            setCommentToDelete(null);
+        }
+    };
+
+    const handleDeleteClickSub = (SubcommentId: string) => {
+        setCommentToDeleteSub(SubcommentId);
+        setDeleteModalOpenSub(true);
+    };
+
+
+    
+    const handleDeleteCommentSub = async () => {
+        if (!commentToDeleteSub) return;
+    
+        try {
+            const user_id = getID as string;
+            const response = await fetch('/api/collections/comment/delete_sub_comment', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x_commentid': commentToDeleteSub,
+                    'x_userid': user_id,
+                },
+            });
+    
+            const data = await response.json();
+    
+            if (response.ok) {
+                // Update the local state to remove the deleted subcomment
+                setComments(prevComments => 
+                    prevComments.map(comment => ({
+                        ...comment,
+                        subcomments: comment.subcomments.filter((subcomment: { id: string; }) => subcomment.id !== commentToDeleteSub)
+                    }))
+                );
+                toast.success('Subcomment deleted successfully', { position: "bottom-right" });
+            } else {
+                toast.error(`Failed to delete subcomment: ${data.message}`, { position: "bottom-right" });
+            }
+        } catch (error) {
+            console.error('Failed to delete subcomment:', error);
+            toast.error('Failed to delete subcomment.', { position: "bottom-right" });
+        } finally {
+            setDeleteModalOpenSub(false);
+            setCommentToDeleteSub(null);
+        }
+    };
+
+
+
 
     useEffect(() => {
         if (collection.images.length > 0) {
@@ -652,6 +739,14 @@ export const ViewCollection = ({
                                                                         >
                                                                             Reply
                                                                         </button>
+                                                                        {comment.userid === getID && (
+                                                                            <button
+                                                                                className="text-sm text-red-400"
+                                                                                onClick={() => handleDeleteClick(comment.id)}
+                                                                            >
+                                                                                Delete
+                                                                            </button>
+                                                                        )}
                                                                     </div>
                                                                     {shouldShowMoreButton && (
                                                                         <button
@@ -685,7 +780,7 @@ export const ViewCollection = ({
                                                                             }
                                                                             className="border-[1.5px] border-gray-300 focus:outline-none focus:ring-[1.5px] px-4 rounded-full h-fit py-2 w-full"
                                                                             placeholder={
-                                                                                "Add a reply as" + " " + comment.first_name
+                                                                                "Add a reply to" + " " + comment.first_name
                                                                             }
                                                                         />
                                                                         <button
@@ -707,7 +802,7 @@ export const ViewCollection = ({
                                                                 >
                                                                     <div className="w-full flex gap-2.5 items-start justify-start">
                                                                         <Link
-                                                                            href={`/gallery/view-profile/${subcomment.userDetails?.detailsid}`}
+                                                                            href={`/gallery-display/collections/${subcomment.userDetails?.detailsid}`}
                                                                             passHref
                                                                         >
                                                                             <div className="w-10 h-10 ">
@@ -738,8 +833,14 @@ export const ViewCollection = ({
                                                                                         timestamp={subcomment.created_at}
                                                                                     />
                                                                                 </p>
+                                                                                {subcomment.userid === getID && (
+                                                                                    <button className="text-sm text-red-400"
+                                                                                        onClick={() => handleDeleteClickSub(subcomment.id)}
+                                                                                    >Delete</button>
+                                                                                )}
                                                                             </div>
                                                                         </div>
+
                                                                     </div>
                                                                 </div>
                                                             )
@@ -790,9 +891,24 @@ export const ViewCollection = ({
                             />
                         </button>
                     </form>
-
                 </div>
+
             </div>
+            <ConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                onConfirm={handleDeleteComment}
+                title="Delete Comment"
+                message="Are you sure you want to delete this comment? This action cannot be undone."
+            />
+
+            <ConfirmationModal
+                isOpen={isDeleteModalOpenSub}
+                onClose={() => setDeleteModalOpenSub(false)}
+                onConfirm={handleDeleteCommentSub}
+                title="Delete Comment"
+                message="Are you sure you want to delete this comment? This action cannot be undone."
+            />
 
             {/* {isInterestModalOpen && selectedImage && (
                 <div className="fixed -bottom-2 -right-1 z-[550] p-4">
