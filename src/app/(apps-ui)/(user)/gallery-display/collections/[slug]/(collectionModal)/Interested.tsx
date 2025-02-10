@@ -124,23 +124,7 @@ export const Interested = ({
     'traditional-and-cultural-expressions',
     'cultural-sites'
   ];
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-
-    if (query.length > 0) {
-      const filtered = suggestionsList.filter((suggestion) =>
-        suggestion.toLowerCase().includes(query.toLowerCase())
-      );
-      setFilteredSuggestions(filtered);
-    } else {
-      setFilteredSuggestions([]);
-    }
-  };
-
-
-
+  
   const containerRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
