@@ -159,7 +159,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 
         <motion.div
           onClick={(e) => e.stopPropagation()}
-          className="bg-palette-6 rounded-2xl shadow-2xl w-full max-w-screen-xl max-h-[90vh] overflow-hidden"
+          className="bg-palette-6 rounded-2xl pb-12 shadow-2xl w-full lg:max-w-screen-xl max-w-[90%] max-h-[90vh] overflow-hidden"
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
@@ -170,7 +170,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
           }}
         >
           {/* Header */}
-          <div className=" px-6 py-4 flex items-center justify-between bg-palette-6">
+          <div className=" px-6 py-2 flex items-center justify-between bg-palette-6">
             <h2 className="text-xl font-semibold text-palette-5">Edit Profile</h2>
             <button
               onClick={handleClose}
@@ -181,7 +181,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                 className="w-6 h-6 text-palette-5"
               />
             </button>
-          </div>
+          </div> 
 
           {/* Content */}
           <form onSubmit={(e) => e.preventDefault()} className="p-4 overflow-y-auto max-h-[calc(90vh-8rem)]">
@@ -407,7 +407,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
           <div className="px-6 py-4 flex justify-end items-center space-x-4">
             <button
               onClick={handleClose}
-              className="px-6 py-2 rounded-lg text-palette-7 font-thin hover:bg-palette-7 hover:text-palette-5 bg-palette-5  transition-colors"
+              className="w-32 py-2 rounded-lg text-palette-7 font-thin hover:bg-palette-7 hover:text-palette-5 bg-palette-5  transition-colors"
             >
               Cancel
             </button>
@@ -416,7 +416,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
               whileTap={{ scale: 0.98 }}
               onClick={handleSave}
               disabled={isEditing}
-              className="px-6 py-2 bg-palette-1 text-white rounded-lg font-thin hover:bg-palette-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-32 py-2 bg-palette-1 text-white rounded-lg font-thin hover:bg-palette-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isEditing ? (
                 <div className="flex items-center space-x-2">
@@ -424,7 +424,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                   <span>Saving...</span>
                 </div>
               ) : (
-                "Save Changes"
+                "Save"
               )}
             </motion.button>
           </div>

@@ -136,7 +136,7 @@ export default function CollectionPage() {
   }
 
   return (
-    <div className="min-h-dvh w-full bg-palette-5">
+    <div className="h-fit w-full bg-palette-5">
       {/* Render UserProfile with user details */}
       <UserProfile
         initialUserDetail={data.userDetails}
