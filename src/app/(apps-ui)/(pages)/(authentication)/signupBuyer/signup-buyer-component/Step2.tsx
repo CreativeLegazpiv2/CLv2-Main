@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input, Select, TextArea } from "./Signup";
-
+import { Gender } from "@/services/authservice"
 export const Step2 = ({ formData, handleChange, nextStep, prevStep }: any) => {
   return (
     <div className="w-full h-full flex flex-col gap-4 text-palette-1">
@@ -15,6 +15,7 @@ export const Step2 = ({ formData, handleChange, nextStep, prevStep }: any) => {
         placeholder="Birthday"
         icon="mdi:date-range"
       />
+
       {/* Address Input */}
       <Input
         name="address"
@@ -34,6 +35,18 @@ export const Step2 = ({ formData, handleChange, nextStep, prevStep }: any) => {
         icon="mdi:cellphone"
       />
 
+      {/* Gender Selection */}
+      <Select
+        name="gender"
+        value={formData.gender}
+        onChange={handleChange}
+        options={[
+          { value: Gender.Male , label: "Male" },
+          { value: Gender.Female, label: "Female" },
+          { value: Gender.Other, label: "Other" },
+        ]}
+        icon="mdi:gender-male-female" placeholder={""}      />
+
       {/* Bio Textarea */}
       <TextArea
         name="bio"
@@ -45,4 +58,3 @@ export const Step2 = ({ formData, handleChange, nextStep, prevStep }: any) => {
     </div>
   );
 };
-

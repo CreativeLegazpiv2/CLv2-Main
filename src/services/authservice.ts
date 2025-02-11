@@ -108,6 +108,12 @@ const generateUniqueId = async (): Promise<number> => {
 };
 
 
+export enum Gender {
+  Male = "male",
+  Female = "female",
+  Other = "other",
+}
+
 export const signupBuyer = async (
   username: string,
   email: string,
@@ -121,10 +127,28 @@ export const signupBuyer = async (
   facebook: string,
   twitter: string,
   portfolioLink: string,
+  gender: Gender,
 ) => {
-  console.log("Attempting signup with:", { username, email });
+  console.log("Attempting signup with:", { username, email, gender });
 
-  // Check if the email already exists in the 'users' table
+  // Check if the username already exists
+  const { data: existingUsername, error: usernameCheckError } = await supabase
+    .from("users")
+    .select("username")
+    .eq("username", username)
+    .single();
+
+  if (existingUsername) {
+    console.log("Signup failed: Username already exists");
+    throw new Error("Signup failed: Username already exists.");
+  }
+
+  if (usernameCheckError && usernameCheckError.code !== "PGRST116") {
+    console.log("Error checking username existence:", usernameCheckError.message);
+    throw new Error("Signup failed, please try again.");
+  }
+
+  // Check if the email already exists
   const { data: existingUser, error: emailCheckError } = await supabase
     .from("users")
     .select("email")
@@ -136,16 +160,16 @@ export const signupBuyer = async (
     throw new Error("Signup failed: Email already exists.");
   }
 
-  if (emailCheckError && emailCheckError.code !== 'PGRST116') { // PGRST116 is the code for no rows found
+  if (emailCheckError && emailCheckError.code !== "PGRST116") {
     console.log("Error checking email existence:", emailCheckError.message);
     throw new Error("Signup failed, please try again.");
   }
 
-  // Hash the password before storing it
+  // Hash password
   const hashedPassword = await bcrypt.hash(password, 10);
   const generatedId = await generateUniqueId();
 
-  // Insert the new user into the 'users' table
+  // Insert into users table
   const { data: userData, error: userError } = await supabase
     .from("users")
     .insert([{ id: generatedId, username, email, password: hashedPassword }])
@@ -157,26 +181,26 @@ export const signupBuyer = async (
     throw new Error("Signup failed, please try again.");
   }
 
-  console.log("User created in 'users' table:", { id: userData.id, username: userData.username });
+  console.log("User created:", { id: userData.id, username: userData.username });
 
-  // Insert additional details into the 'userDetails' table
+  // Insert into userDetails table
   const { error: detailsError } = await supabase
     .from("userDetails")
     .insert([{
       detailsid: userData.id,
       first_name: firstName,
-      bday: bday,
-      address: address,
-      mobileNo: mobileNo,
-      bio: bio,
-      email: email,
-      instagram: instagram,
-      profile_pic: null,
-      facebook: facebook,
-      twitter: twitter,
-      portfolioLink: portfolioLink,
+      bday,
+      address,
+      mobileNo,
+      bio,
+      email,
+      instagram,
+      facebook,
+      twitter,
+      portfolioLink,
+      gender,
       status: false,
-      role: "buyer"
+      role: "buyer",
     }]);
 
   if (detailsError) {
@@ -184,21 +208,15 @@ export const signupBuyer = async (
     throw new Error("Signup failed, could not insert user details.");
   }
 
-  console.log("User details added to 'userDetails' table");
+  console.log("User details added");
 
-  // Create a JWT for the new user
+  // Create JWT
   const token = await createJWT({ id: userData.id, username: userData.username });
-  console.log("JWT created for new user:", token);
-
-  // Decrypt and log the token payload
-  try {
-    const decryptedPayload = await verifyJWT(token);
-  } catch (error) {
-    console.error("Failed to decrypt token:", error);
-  }
 
   return { id: userData.id, username: userData.username, token };
 };
+
+
 
 
 export const signupUser = async (
@@ -215,10 +233,28 @@ export const signupUser = async (
   facebook: string,
   twitter: string,
   portfolioLink: string,
+  gender: string,
 ) => {
   console.log("Attempting signup with:", { username, email });
 
-  // Check if the email already exists in the 'users' table
+  // Check if the username already exists
+  const { data: existingUsername, error: usernameCheckError } = await supabase
+    .from("users")
+    .select("username")
+    .eq("username", username)
+    .single();
+
+  if (existingUsername) {
+    console.log("Signup failed: Username already exists");
+    throw new Error("Signup failed: Username already exists.");
+  }
+
+  if (usernameCheckError && usernameCheckError.code !== "PGRST116") {
+    console.log("Error checking username existence:", usernameCheckError.message);
+    throw new Error("Signup failed, please try again.");
+  }
+
+  // Check if the email already exists
   const { data: existingUser, error: emailCheckError } = await supabase
     .from("users")
     .select("email")
@@ -227,19 +263,19 @@ export const signupUser = async (
 
   if (existingUser) {
     console.log("Signup failed: Email already exists");
-    throw new Error("Failed to signup: Email already exists.");
+    throw new Error("Signup failed:Email already exists.");
   }
 
-  if (emailCheckError && emailCheckError.code !== 'PGRST116') { // PGRST116 is the code for no rows found
+  if (emailCheckError && emailCheckError.code !== "PGRST116") {
     console.log("Error checking email existence:", emailCheckError.message);
     throw new Error("Signup failed, please try again.");
   }
 
-  // Hash the password before storing it
+  // Hash password
   const hashedPassword = await bcrypt.hash(password, 10);
   const generatedId = await generateUniqueId();
 
-  // Insert the new user into the 'users' table
+  // Insert into users table
   const { data: userData, error: userError } = await supabase
     .from("users")
     .insert([{ id: generatedId, username, email, password: hashedPassword }])
@@ -251,26 +287,26 @@ export const signupUser = async (
     throw new Error("Signup failed, please try again.");
   }
 
-  console.log("User created in 'users' table:", { id: userData.id, username: userData.username });
+  console.log("User created:", { id: userData.id, username: userData.username });
 
-  // Insert additional details into the 'userDetails' table
+  // Insert into userDetails table
   const { error: detailsError } = await supabase
     .from("userDetails")
     .insert([{
       detailsid: userData.id,
       first_name: firstName,
       creative_field: creativeField,
-      bday: bday,
-      address: address,
-      mobileNo: mobileNo,
-      bio: bio,
-      email: email,
-      instagram: instagram,
-      profile_pic: null,
-      facebook: facebook,
-      twitter: twitter,
-      portfolioLink: portfolioLink,
-      status: false
+      bday,
+      address,
+      mobileNo,
+      bio,
+      email,
+      instagram,
+      facebook,
+      twitter,
+      portfolioLink,
+      gender,
+      status: false,
     }]);
 
   if (detailsError) {
@@ -278,18 +314,10 @@ export const signupUser = async (
     throw new Error("Signup failed, could not insert user details.");
   }
 
-  console.log("User details added to 'userDetails' table");
+  console.log("User details added");
 
-  // Create a JWT for the new user
+  // Create JWT
   const token = await createJWT({ id: userData.id, username: userData.username });
-  console.log("JWT created for new user:", token);
-
-  // Decrypt and log the token payload
-  try {
-    const decryptedPayload = await verifyJWT(token);
-  } catch (error) {
-    console.error("Failed to decrypt token:", error);
-  }
 
   return { id: userData.id, username: userData.username, token };
 };

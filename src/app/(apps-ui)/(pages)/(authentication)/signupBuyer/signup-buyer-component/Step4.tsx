@@ -19,6 +19,9 @@ export const Step4 = ({ formData, handleSubmit, prevStep, handleCancel }: any) =
           </p>
           {/* Add additional fields for review */}
           <p className="mb-2">
+            <span className="font-semibold">Gender: </span>{formData.gender}
+          </p>
+          <p className="mb-2">
             <span className="font-semibold">Creative Field: </span>{formData.creativeField}
           </p>
           <p className="mb-2">
