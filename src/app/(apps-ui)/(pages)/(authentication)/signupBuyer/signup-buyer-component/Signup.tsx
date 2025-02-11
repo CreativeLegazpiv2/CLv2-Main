@@ -7,12 +7,15 @@ import { Logo } from "@/components/reusable-component/Logo";
 import { signupBuyer } from "@/services/authservice";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
+import { ToastContainer } from "react-toastify";
+import { Gender } from "@/services/authservice"
 import { Step1 } from "./Step1";
 import { Step2 } from "./Step2";
 import { Step3 } from "./Step3";
 import { Step4 } from "./Step4";
-import { ToastContainer } from "react-toastify";
-import { Gender } from "@/services/authservice"
+import { Step5 } from "./Step5";
+
 
 interface UserDetail {
   username: string;
@@ -116,7 +119,7 @@ export const MultiStepForm = () => {
   const nextStep = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (isStepValid()) {
-      setStep((prev) => Math.min(prev + 1, 4));
+      setStep((prev) => Math.min(prev + 1, 5));
       setError("");
     } else {
       setError("Please fill all required fields before proceeding.");
@@ -133,10 +136,12 @@ export const MultiStepForm = () => {
       case 1:
         return formData.username && formData.email && formData.password;
       case 2:
-        return formData.name && formData.bday;
+        return formData.name && formData.bday && formData.gender;
       case 3:
         return formData.address && formData.mobileNo && formData.bio;
       case 4:
+        return true; // Portfolio link is optional
+      case 5:
         return true; // Social media links are optional
       default:
         return false;
@@ -144,7 +149,7 @@ export const MultiStepForm = () => {
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    if (step !== 4) {
+    if (step !== 5) {
       e.preventDefault();
       return;
     }
@@ -210,7 +215,9 @@ export const MultiStepForm = () => {
       case 3:
         return <Step3 formData={formData} handleChange={handleChange} />;
       case 4:
-        return <Step4 formData={formData} handleSubmit={handleSubmit} prevStep={prevStep} handleCancel={handleCancel} />;
+          return <Step4 formData={formData} handleChange={handleChange} />;
+      case 5:
+        return <Step5 formData={formData} handleSubmit={handleSubmit} prevStep={prevStep} handleCancel={handleCancel} />;
       default:
         return null;
     }
@@ -248,7 +255,7 @@ export const MultiStepForm = () => {
             Previous
           </motion.button>
         )}
-        {step < 4 ? (
+        {step < 5 ? (
           <motion.button
             type="button"
             onClick={nextStep}

@@ -105,16 +105,20 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
     return (
         <div className="min-h-dvh h-fit md:py-0 py-[5dvh] w-full flex flex-col text-primary-2 overflow-x-hidden">
             {/* User Profile Section */}
-            <div className="w-full md:min-h-[80dvh] h-fit relative">
+            <div className="w-full md:min-h-[80dvh] h-fit relative overflow-hidden">
                 {/* background */}
-                <div className=" inset-0 w-full overflow-hidden">
-                    <div className="w-full z-10 h-[80dvh] bg-gradient-to-r from-palette-5 from-0% via-palette-5 md:via-15% via-25% to-transparent md:to-60% to-70%  absolute"></div>
+                <div className="h-full inset-0 w-full overflow-hidden">
+                    <motion.div
+                    initial={{ scale: 1.3 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                     className="w-full z-10 h-[80dvh] overflow-hidden bg-gradient-to-r from-palette-5 from-0% via-palette-5 md:via-15% via-25% to-transparent md:to-60% to-70% absolute"></motion.div>
                     <motion.img
                         initial={{ scale: 1.3 }}
                         animate={{ scale: 1 }}
-                        transition={{ duration: 2.5, ease: "easeOut" }}
+                        transition={{ duration: 1, ease: "easeOut" }}
                         src={"/images/creative-profile/cover.png"}
-                        className="w-full h-[80dvh] object-cover absolute top-0 left-0"
+                        className="w-full z-0 h-[80dvh] object-cover absolute top-0 left-0"
                         alt=""
                     />
                 </div>
@@ -162,11 +166,11 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
                                 className="flex flex-col h-full md:justify-start md:items-start justify-center items-center w-full"
                             >
                                 <motion.img
-                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    initial={{ opacity: 0, scale: 0.6 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ duration: 1, ease: "easeOut" }}
                                     src={initialUserDetail.profile_pic || "/images/creative-profile/holder.png"}
-                                    className="w-full h-full rounded-xl md:max-w-[22rem] md:min-w-[22rem] md:max-h-[32rem] min-h-[32rem] max-h-[32rem] object-cover"
+                                    className="w-full h-full z-50 rounded-xl md:max-w-[22rem] md:min-w-[22rem] md:max-h-[32rem] min-h-[32rem] max-h-[32rem] object-cover"
                                     alt=""
                                 />
                             </motion.div>

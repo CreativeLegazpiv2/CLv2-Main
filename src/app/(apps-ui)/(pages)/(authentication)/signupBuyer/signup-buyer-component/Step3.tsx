@@ -1,45 +1,39 @@
-import { Input } from "./Signup";
-
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { Input, Select, TextArea } from "./Signup";
+import { Gender } from "@/services/authservice"
 export const Step3 = ({ formData, handleChange, nextStep, prevStep }: any) => {
-  return (
-    <div className="w-full h-full flex flex-col gap-4 text-palette-1">
-      <h2 className="font-bold text-xl">Step 3: Social Media</h2>
+    return (
+        <div className="w-full h-full flex flex-col gap-4 text-palette-1">
+            <h2 className="font-bold text-xl">Step 2.2 Personal Details</h2>
 
-      {/* Instagram Input */}
-      <Input
-        name="instagram"
-        value={formData.instagram}
-        onChange={handleChange}
-        placeholder="Instagram"
-        icon="mdi:instagram" // Use an appropriate icon for Instagram
-      />
 
-      {/* Facebook Input */}
-      <Input
-        name="facebook"
-        value={formData.facebook}
-        onChange={handleChange}
-        placeholder="Facebook"
-        icon="mdi:facebook" // Use an appropriate icon for Facebook
-      />
+            {/* Address Input */}
+            <Input
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Address"
+                icon="mdi:home-outline"
+            />
+            {/* Mobile Number Input */}
+            <Input
+                name="mobileNo"
+                value={formData.mobileNo}
+                onChange={handleChange}
+                placeholder="Mobile Number"
+                type="tel"
+                icon="mdi:cellphone"
+            />
 
-      {/* Twitter Input */}
-      <Input
-        name="twitter"
-        value={formData.twitter}
-        onChange={handleChange}
-        placeholder="Twitter"
-        icon="mdi:twitter" // Use an appropriate icon for Twitter
-      />
 
-      {/* Portfolio Link Input */}
-      <Input
-        name="portfolioLink"
-        value={formData.portfolioLink}
-        onChange={handleChange}
-        placeholder="Portfolio Link"
-        icon="mdi:web" // Use an appropriate icon for Portfolio Link
-      />
-    </div>
-  );
+            {/* Bio Textarea */}
+            <TextArea
+                name="bio"
+                value={formData.bio}
+                onChange={handleChange}
+                placeholder="Bio"
+                icon="mdi:note-outline"
+            />
+        </div>
+    );
 };
