@@ -177,7 +177,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
                         initial="initial"
                         whileInView="animate"
                         viewport={{ once: true }}
-                        className="w-full h-full min-h-[70dvh] md:py-0 py-[10dvh] flex relative z-[100] justify-center items-center"
+                        className="w-full h-full min-h-[50dvh] md:pb-[20dvh] py-[10dvh] flex relative z-[100] justify-center items-center"
                     >
                         <motion.div
                             variants={slideIn}
