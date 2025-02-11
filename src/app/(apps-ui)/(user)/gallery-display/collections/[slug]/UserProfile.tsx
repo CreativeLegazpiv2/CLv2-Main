@@ -103,129 +103,133 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
     };
 
     return (
-        <div className="min-h-dvh w-full text-primary-2 overflow-x-hidden">
+        <div className="min-h-dvh h-fit md:py-0 py-[5dvh] w-full flex flex-col text-primary-2 overflow-x-hidden">
             {/* User Profile Section */}
-            <div className="w-full md:min-h-[80dvh] md:max-h-[80dvh] h-dvh relative">
-                <div className="absolute inset-0 w-full h-full overflow-hidden">
+            <div className="w-full md:min-h-[80dvh] h-fit relative">
+                {/* background */}
+                <div className=" inset-0 w-full overflow-hidden">
+                    <div className="w-full z-10 h-[80dvh] bg-gradient-to-r from-palette-5 from-0% via-palette-5 md:via-15% via-25% to-transparent md:to-60% to-70%  absolute"></div>
                     <motion.img
                         initial={{ scale: 1.3 }}
                         animate={{ scale: 1 }}
                         transition={{ duration: 2.5, ease: "easeOut" }}
                         src={"/images/creative-profile/cover.png"}
-                        className="w-full h-full object-cover absolute top-0 left-0"
+                        className="w-full h-[80dvh] object-cover absolute top-0 left-0"
                         alt=""
                     />
                 </div>
-                <div className="absolute w-full h-full flex z-10 bg-gradient-to-r from-palette-5 from-0% via-palette-5 md:via-15% via-25% to-transparent md:to-60% to-70%">
-                    <motion.div
-                        variants={staggerContainer}
-                        initial="initial"
-                        animate="animate"
-                        className="w-full h-fit pt-[20dvh] max-w-[80%] mx-auto relative flex flex-col gap-12 justify-center items-start"
-                    >
-                        <motion.div variants={fadeInUp} className="w-full flex flex-col gap-2">
-                            <div className="w-full flex md:flex-row flex-col-reverse md:justify-between justify-start md:items-center items-start">
-                                <motion.h1
-                                    variants={fadeInUp}
-                                    className="md:text-5xl text-4xl font-bold uppercase text-palette-2"
-                                >
-                                    {initialUserDetail.first_name}
-                                </motion.h1>
-                                <motion.div
-                                    whileHover={{ scale: 1.1 }}
-                                    whileTap={{ scale: 0.9 }}
-                                >
-                                    <ArrowLeft onClick={() => window.history.back()} size={36} className="z-10 cursor-pointer text-palette-2 bg-palette-5 rounded-md p-1" />
-                                </motion.div>
-                            </div>
-                            <motion.span variants={fadeInUp} className="italic text-palette-2 md:text-2xl text-xl font-bold">
-                                {initialUserDetail.creative_field}
-                            </motion.span>
-                            {initialUserDetail.detailsid == getID && (
-                                <motion.button
-                                    variants={fadeInUp}
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => setEditModal(true)}
-                                    className="bg-palette-6 py-2 px-4 w-32 text-palette-5 rounded-full tracking-wider uppercase mt-2"
-                                >
-                                    Edit
-                                </motion.button>
-                            )}
-                        </motion.div>
+                <div className="relative  z-20 flex flex-col w-full">
+                    <div className="w-full">
                         <motion.div
-                            variants={fadeInUp}
-                            className="flex flex-col h-full md:justify-start md:items-start justify-center items-center w-full"
+                            variants={staggerContainer}
+                            initial="initial"
+                            animate="animate"
+                            className="w-full h-fit md:pt-[15dvh] pt-[10dvh] max-w-[80%] mx-auto relative flex flex-col gap-12 justify-center items-start"
                         >
-                            <motion.img
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ duration: 1, ease: "easeOut" }}
-                                src={initialUserDetail.profile_pic || "/images/creative-profile/holder.png"}
-                                className="w-full h-full rounded-xl md:max-w-[22rem] md:min-w-[22rem] md:max-h-[32rem] min-h-[32rem] max-h-[32rem] object-cover"
-                                alt=""
-                            />
+                            <motion.div variants={fadeInUp} className="w-full flex flex-col gap-2">
+                                <div className="w-full flex md:flex-row flex-col-reverse md:justify-between justify-start md:items-center items-start">
+                                    <motion.h1
+                                        variants={fadeInUp}
+                                        className="md:text-5xl text-4xl font-bold uppercase text-palette-2"
+                                    >
+                                        {initialUserDetail.first_name}
+                                    </motion.h1>
+                                    <motion.div
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.9 }}
+                                    >
+                                        <ArrowLeft onClick={() => window.history.back()} size={36} className="z-10 cursor-pointer text-palette-2 bg-palette-5 rounded-md p-1" />
+                                    </motion.div>
+                                </div>
+                                <motion.span variants={fadeInUp} className="italic text-palette-2 md:text-2xl text-xl font-bold capitalize">
+                                    {(initialUserDetail.creative_field || initialUserDetail.role)?.replace(/-/g, ' ')}
+                                </motion.span>
+
+                                {initialUserDetail.detailsid == getID && (
+                                    <motion.button
+                                        variants={fadeInUp}
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() => setEditModal(true)}
+                                        className="bg-palette-6 py-2 px-4 w-32 text-palette-5 rounded-full tracking-wider uppercase mt-2"
+                                    >
+                                        Edit
+                                    </motion.button>
+                                )}
+                            </motion.div>
+                            <motion.div
+                                variants={fadeInUp}
+                                className="flex flex-col h-full md:justify-start md:items-start justify-center items-center w-full"
+                            >
+                                <motion.img
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ duration: 1, ease: "easeOut" }}
+                                    src={initialUserDetail.profile_pic || "/images/creative-profile/holder.png"}
+                                    className="w-full h-full rounded-xl md:max-w-[22rem] md:min-w-[22rem] md:max-h-[32rem] min-h-[32rem] max-h-[32rem] object-cover"
+                                    alt=""
+                                />
+                            </motion.div>
+                        </motion.div>
+                    </div>
+                    {/* Second Section */}
+                    <motion.div
+                        initial="initial"
+                        whileInView="animate"
+                        viewport={{ once: true }}
+                        className="w-full h-full min-h-[50dvh] md:pb-[20dvh] py-[10dvh] flex relative z-[100] justify-center items-center"
+                    >
+                        <motion.div
+                            variants={slideIn}
+                            className="md:max-w-[40%] lg:max-w-[50%] max-w-[90%] mx-auto w-full h-full flex flex-col gap-2 justify-center items-start md:absolute right-0"
+                        >
+                            <motion.span variants={fadeInUp} className="flex gap-4 flex-row items-center">
+                                Date Joined: February 15, 2024 <hr className="w-16 border border-palette-4" />
+                            </motion.span>
+                            <motion.h1 variants={fadeInUp} className="text-4xl font-bolder">
+                                Introductory Title
+                            </motion.h1>
+                            <motion.div
+                                variants={staggerContainer}
+                                className="flex items-center gap-2 py-4"
+                            >
+                                {[
+                                    { href: initialUserDetail.facebook, icon: "arcticons:facebook" },
+                                    { href: initialUserDetail.instagram, icon: "arcticons:instagram" },
+                                    { href: `mailto:${initialUserDetail.email}`, icon: "arcticons:google-mail" }
+                                ].map((social, index) => (
+                                    <Link href={social.href} key={index} target="_blank" rel="noopener noreferrer">
+                                        <span
+                                            className="cursor-pointer z-50"
+                                        >
+                                            <Icon icon={social.icon} className="text-palette-2 " width="48" height="48" />
+
+                                        </span>
+                                    </Link>
+                                ))}
+                            </motion.div>
+                            <motion.div variants={fadeInUp} className="pb-4">
+                                <p className="font-thin w-full max-w-2xl">{initialUserDetail.bio}</p>
+                            </motion.div>
+                            <motion.div variants={fadeInUp} className="pt-4">
+                                <h1 className="font-bolder capitalize">Address and Contact Number</h1>
+                                <p className="font-thin">{initialUserDetail.address}, CN# {initialUserDetail.mobileNo}</p>
+                            </motion.div>
+                            {initialUserDetail.detailsid == getID && initialUserDetail.role == null && (
+                                <button
+                                    onClick={() => setShowModal(true)}
+                                    className="bg-palette-6 py-3 px-4 w-56 z-50 mt-4 text-palette-5 rounded-full tracking-wider uppercase"
+                                >
+                                    Publish Work
+                                </button>
+                            )}
                         </motion.div>
                     </motion.div>
                 </div>
+
             </div>
 
-            {/* Second Section */}
-            <motion.div
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true }}
-                className="w-full h-full min-h-[70dvh] flex relative z-50 justify-center items-center"
-            >
-                <motion.div
-                    variants={slideIn}
-                    className="md:max-w-[40%] lg:max-w-[50%] max-w-[90%] mx-auto w-full h-full flex flex-col gap-2 justify-center items-start md:absolute right-0"
-                >
-                    <motion.span variants={fadeInUp} className="flex gap-4 flex-row items-center">
-                        Date Joined: February 15, 2024 <hr className="w-16" />
-                    </motion.span>
-                    <motion.h1 variants={fadeInUp} className="text-4xl font-bolder">
-                        Introductory Title
-                    </motion.h1>
-                    <motion.div
-                        variants={staggerContainer}
-                        className="flex items-center gap-2 py-4"
-                    >
-                        {[
-                            { href: initialUserDetail.facebook, icon: "arcticons:facebook" },
-                            { href: initialUserDetail.instagram, icon: "arcticons:instagram" },
-                            { href: `mailto:${initialUserDetail.email}`, icon: "arcticons:google-mail" }
-                        ].map((social, index) => (
-                            <Link href={social.href} key={index} target="_blank" rel="noopener noreferrer">
-                                <span
-                                    className="cursor-pointer z-50"
-                                >
-                                    <Icon icon={social.icon} className="text-palette-2 " width="48" height="48" />
 
-                                </span>
-                            </Link>
-                        ))}
-                    </motion.div>
-                    <motion.div variants={fadeInUp} className="pb-4">
-                        <p className="font-thin w-full max-w-2xl">{initialUserDetail.bio}</p>
-                    </motion.div>
-                    <motion.div variants={fadeInUp} className="pt-4">
-                        <h1 className="font-bolder capitalize">Address and Contact Number</h1>
-                        <p className="font-thin">{initialUserDetail.address}, CN# {initialUserDetail.mobileNo}</p>
-                    </motion.div>
-                    {initialUserDetail.detailsid == getID && (
-                        <motion.button
-                            variants={fadeInUp}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => setShowModal(true)}
-                            className="bg-palette-6 py-3 px-4 w-56 z-50 mt-4 text-palette-5 rounded-full tracking-wider uppercase"
-                        >
-                            Publish Work
-                        </motion.button>
-                    )}
-                </motion.div>
-            </motion.div>
 
             {/* Featured Latest Collection */}
             {collection.slice(0, 1).map((item) => (
@@ -280,15 +284,17 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
 
                             <div className="w-full h-full absolute top-0 left-0 z-10 backdrop-blur-sm md:block hidden"></div>
                             <div className="p-12 absolute inset-0 z-20 flex items-center justify-center">
-                                <motion.img
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    whileInView={{ opacity: 1, scale: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.8 }}
-                                    src={item.path || "/images/creative-profile/cover.png"}
-                                    className="max-w-full max-h-full object-contain shadow-lg rounded-xl md:block hidden"
-                                    alt=""
-                                />
+                                <div className="w-fit h-full rounded-xl p-6 bg-palette-6/20">
+                                    <motion.img
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        viewport={{ once: true }}
+                                        transition={{ duration: 0.8 }}
+                                        src={item.path || "/images/creative-profile/cover.png"}
+                                        className="max-w-full max-h-full object-contain shadow-lg rounded-xl"
+                                        alt=""
+                                    />
+                                </div>
                             </div>
                         </motion.div>
                     </div>
