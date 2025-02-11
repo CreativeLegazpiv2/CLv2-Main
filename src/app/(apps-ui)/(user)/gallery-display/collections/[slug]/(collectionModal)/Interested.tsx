@@ -988,7 +988,7 @@ export const Interested = ({
                             {msg.image_path && (
                               <div className="w-full">
                                 <Image
-                                  src={msg.image_path}
+                                  src={msg.image_path || "/images/emptyProfile.png"}
                                   alt="Message Image"
                                   width={300}
                                   height={200}

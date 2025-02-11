@@ -372,10 +372,10 @@ export const ViewCollection = ({
     };
 
 
-    
+
     const handleDeleteCommentSub = async () => {
         if (!commentToDeleteSub) return;
-    
+
         try {
             const user_id = getID as string;
             const response = await fetch('/api/collections/comment/delete_sub_comment', {
@@ -386,12 +386,12 @@ export const ViewCollection = ({
                     'x_userid': user_id,
                 },
             });
-    
+
             const data = await response.json();
-    
+
             if (response.ok) {
                 // Update the local state to remove the deleted subcomment
-                setComments(prevComments => 
+                setComments(prevComments =>
                     prevComments.map(comment => ({
                         ...comment,
                         subcomments: comment.subcomments.filter((subcomment: { id: string; }) => subcomment.id !== commentToDeleteSub)
@@ -566,19 +566,8 @@ export const ViewCollection = ({
                             fill
                             className="object-contain p-4"
                         />
+
                         <div className="w-full absolute bottom-0 left-0 right-0 p-4 z-20 flex md:flex-row flex-col items-center md:justify-between justify-end md:gap-0 gap-4">
-
-                            {/* <div className="w-fit flex flex-col text-white text-base">
-                                    <h2 className="text-white text-xl font-bold" key={title}>{title}</h2>
-                                    <div className="flex gap-2">
-                                        <span key={artist}>{artist},</span>
-                                        <span key={year}>{year}</span>
-                                    </div>
-
-                                </div> */}
-
-
-
                         </div>
                     </div>
 
@@ -586,9 +575,21 @@ export const ViewCollection = ({
                     <div className="flex flex-col p-2 px-4 bg-white gap-10 border-t border-palette-7/30">
 
                         <div
-                            className="flex items-center justify-between w-full h-fit relative"
-                            onClick={toggleLike}
+                            className="flex items-center justify-between gap-4 w-full h-fit relative"
+
                         >
+                            <div
+                                className="flex items-center cursor-pointer whitespace-nowrap"
+                                onClick={toggleLike}
+                            >
+                                <Icon
+                                    className="text-red-400"
+                                    icon={liked ? "jam:heart-f" : "jam:heart"}
+                                    width="30"
+                                    height="30"
+                                />
+                                <span className="ml-2 text-sm font-thin">{likeCount} likes</span>
+                            </div>
                             <h1 className="text-gray-400 text-sm w-full">
                                 {new Date(created_at).toLocaleDateString('en-US', {
                                     year: 'numeric',
@@ -654,9 +655,12 @@ export const ViewCollection = ({
                                 </div>
                             ))}
                         </div>
-                        <div className="h-full">
-                            <span className="text-palette-7/20">Description:</span>
-                            <p className="text-palette-7 font-thin text-base h-full overflow-y-auto">{desc}</p>
+                        <div className="h-full flex flex-col">
+
+                            <p className="text-sm">{title} <span className="text-black/50 text-xs">by</span> <span className="text-palette-7/50 text-xs">{artist}</span></p>
+                            <p className="text-palette-7 font-thin text-base h-full max-h-[8rem] overflow-y-auto my-4">
+                                {desc}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -910,21 +914,7 @@ export const ViewCollection = ({
                 message="Are you sure you want to delete this comment? This action cannot be undone."
             />
 
-            {/* {isInterestModalOpen && selectedImage && (
-                <div className="fixed -bottom-2 -right-1 z-[550] p-4">
-                    <Interested
-                        childid={selectedImage.childid}
-                        created_at={selectedImage.created_at}
-                        artist={selectedImage.artist}
-                        image={selectedImage.image_path}
-                        title={selectedImage.title}
-                        desc={selectedImage.desc}
-                        year={selectedImage.year}
-                        onCancel={() => setInterestModalOpen(false)}
-                        chat={chat}
-                    />
-                </div>
-            )} */}
+
         </motion.div>
     )
 }

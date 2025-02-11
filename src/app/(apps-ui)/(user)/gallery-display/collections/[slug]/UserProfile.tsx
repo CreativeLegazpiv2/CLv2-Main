@@ -267,7 +267,17 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
                             transition={{ duration: 0.8 }}
                             className="w-full h-full min-h-[60dvh] relative"
                         >
-                            <img src={item.path || "/images/creative-profile/cover.png"} className="w-full h-full md:object-cover object-contain absolute" alt="" />
+                            {item.path && /\.(png|gif)(\?.*)?$/.test(item.path) ? (
+                                <div className="bg-none"></div>
+                            ) : (
+                                <img
+                                    src={item.path || "/images/creative-profile/cover.png"}
+                                    className="w-full h-full md:object-cover object-contain absolute"
+                                    alt="Image"
+                                />
+                            )}
+
+
                             <div className="w-full h-full absolute top-0 left-0 z-10 backdrop-blur-sm md:block hidden"></div>
                             <div className="p-12 absolute inset-0 z-20 flex items-center justify-center">
                                 <motion.img
