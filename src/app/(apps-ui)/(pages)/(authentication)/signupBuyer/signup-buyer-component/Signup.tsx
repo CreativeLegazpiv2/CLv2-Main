@@ -12,6 +12,7 @@ import { Step2 } from "./Step2";
 import { Step3 } from "./Step3";
 import { Step4 } from "./Step4";
 import { ToastContainer } from "react-toastify";
+import { Gender } from "@/services/authservice"
 
 interface UserDetail {
   username: string;
@@ -26,6 +27,7 @@ interface UserDetail {
   facebook: string;
   twitter: string;
   portfolioLink: string;
+  gender: Gender;
 }
 
 interface InputProps {
@@ -100,6 +102,7 @@ export const MultiStepForm = () => {
     facebook: "",
     twitter: "",
     portfolioLink: "",
+    gender: Gender.Male,
   });
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
@@ -160,7 +163,8 @@ export const MultiStepForm = () => {
         formData.instagram,
         formData.facebook,
         formData.twitter,
-        formData.portfolioLink
+        formData.portfolioLink,
+        formData.gender
       );
       setSuccess("Signup successful!");
       setTimeout(() => {
@@ -170,6 +174,8 @@ export const MultiStepForm = () => {
       // Handle the "email already exists" error
       if ((err as Error).message.includes("Email already exists")) {
         setError("Email already exists. Please use a different email.");
+      } else if ((err as Error).message.includes("Username already exists")){
+        setError("Username already exists. Please use a different username.");
       } else {
         setError("An error occurred during signup. Please try again.");
       }
@@ -190,6 +196,7 @@ export const MultiStepForm = () => {
       facebook: "",
       twitter: "",
       portfolioLink: "",
+      gender: Gender.Male,
     });
     setStep(1);
   };
@@ -317,7 +324,7 @@ export const Select: React.FC<SelectProps> = ({ name, value, onChange, placehold
       name={name}
       value={value}
       onChange={onChange}
-      className="w-full p-4 pl-12 pr-10 border-b border-b-palette-21bg-transparent placeholder-palette-7/20 focus:border-palette-1 transition-colors outline-none ring-0 appearance-none"
+      className="w-full p-4 pl-12 pr-10 border-b border-b-palette-21 bg-transparent placeholder-palette-7/20 focus:border-palette-1 transition-colors outline-none ring-0 appearance-none"
       required
     >
       <option value="" disabled>{placeholder}</option>

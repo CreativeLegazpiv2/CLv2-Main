@@ -32,6 +32,7 @@ interface UserDetail {
     facebook: string;
     twitter: string;
     portfolioLink: string;
+    gender: string; // Added gender field
 }
 
 interface FormAnswers {
@@ -49,6 +50,7 @@ interface FormAnswers {
     facebook: string;
     twitter: string;
     portfolioLink: string;
+    gender: string; // Added gender field
 }
 
 export default function RegisterForm() {
@@ -68,6 +70,7 @@ export default function RegisterForm() {
         facebook: '',
         twitter: '',
         portfolioLink: '',
+        gender: '',
     });
     const [error, setError] = useState<string | null>(null);
     const [transitioning, setTransitioning] = useState(false);
@@ -88,38 +91,38 @@ export default function RegisterForm() {
     ];
 
     const questions = [
-        { 
+        {
             id: 'name',
             question: 'Please tell us your full name',
             type: 'text',
             required: true,
             helpText: 'Enter your complete name (First Name, Middle Name, Last Name, Suffix if any)'
         },
-        { 
-            id: 'username', 
-            question: 'Choose a username', 
-            type: 'text', 
-            required: true 
+        {
+            id: 'username',
+            question: 'Choose a username',
+            type: 'text',
+            required: true
         },
-        { 
-            id: 'email', 
-            question: 'What is your email address?', 
-            type: 'text', 
+        {
+            id: 'email',
+            question: 'What is your email address?',
+            type: 'text',
             required: true,
             helpText: 'Please enter a valid email address (e.g., name@example.com)'
         },
-        { 
-            id: 'password', 
-            question: 'Create a strong password', 
-            type: 'password', 
+        {
+            id: 'password',
+            question: 'Create a strong password',
+            type: 'password',
             required: true,
             helpText: 'Password must contain at least 8 characters, including uppercase, lowercase, numbers, and special characters'
         },
-        { 
-            id: 'confirmPassword', 
-            question: 'Confirm your password', 
-            type: 'password', 
-            required: true 
+        {
+            id: 'confirmPassword',
+            question: 'Confirm your password',
+            type: 'password',
+            required: true
         },
         {
             id: 'creativeField',
@@ -139,55 +142,62 @@ export default function RegisterForm() {
             required: true,
             helpText: 'Please select exactly one option that best describes your primary creative field'
         },
-        { 
-            id: 'bday', 
-            question: 'What is your birthday?', 
-            type: 'date', 
-            required: true 
+        {
+            id: 'bday',
+            question: 'What is your birthday?',
+            type: 'date',
+            required: true
         },
-        { 
-            id: 'address', 
-            question: 'What is your current address?', 
-            type: 'text', 
-            required: true 
+        {
+            id: 'address',
+            question: 'What is your current address?',
+            type: 'text',
+            required: true
         },
-        { 
-            id: 'mobileNo', 
-            question: 'What is your mobile number?', 
-            type: 'text', 
+        {
+            id: 'mobileNo',
+            question: 'What is your mobile number?',
+            type: 'text',
             required: true,
             helpText: 'Enter your mobile number in +63XXXXXXXXXX or 09XXXXXXXXX format'
         },
-        { 
-            id: 'bio', 
-            question: 'Tell us about yourself and your creative work (minimum 30 words)', 
-            type: 'textarea', 
+        {
+            id: 'bio',
+            question: 'Tell us about yourself and your creative work (minimum 30 words)',
+            type: 'textarea',
             required: true,
             helpText: 'Share your story, experience, and what drives your creative passion (minimum 30 words required)'
         },
-        { 
-            id: 'instagram', 
-            question: 'What is your Instagram handle? (optional)', 
-            type: 'text', 
-            required: false 
+        {
+            id: 'gender',
+            question: 'What is your gender?',
+            type: 'buttons',
+            options: ['male', 'female', 'other'],
+            required: true
         },
-        { 
-            id: 'facebook', 
-            question: 'Your Facebook profile URL (optional)', 
-            type: 'text', 
-            required: false 
+        {
+            id: 'instagram',
+            question: 'What is your Instagram handle? (optional)',
+            type: 'text',
+            required: false
         },
-        { 
-            id: 'twitter', 
-            question: 'Your Twitter handle (optional)', 
-            type: 'text', 
-            required: false 
+        {
+            id: 'facebook',
+            question: 'Your Facebook profile URL (optional)',
+            type: 'text',
+            required: false
         },
-        { 
-            id: 'portfolioLink', 
-            question: 'Share your portfolio link (optional)', 
-            type: 'text', 
-            required: false 
+        {
+            id: 'twitter',
+            question: 'Your Twitter handle (optional)',
+            type: 'text',
+            required: false
+        },
+        {
+            id: 'portfolioLink',
+            question: 'Share your portfolio link (optional)',
+            type: 'text',
+            required: false
         }
     ];
 
@@ -232,14 +242,14 @@ export default function RegisterForm() {
     const validateBio = (bio: string): { isValid: boolean; message: string } => {
         const words = bio.trim().split(/\s+/).length;
         const minWords = 30;
-        
+
         if (words < minWords) {
-            return { 
-                isValid: false, 
+            return {
+                isValid: false,
                 message: `Please write at least ${minWords} words. Current word count: ${words}`
             };
         }
-        
+
         return { isValid: true, message: '' };
     };
 
@@ -247,13 +257,21 @@ export default function RegisterForm() {
         const { id, value } = e.target;
         setAnswers(prev => ({ ...prev, [id]: value }));
         setError(null);
-    };  
+    };
 
     const handleOptionToggle = (option: string) => {
-        setAnswers(prev => ({
-            ...prev,
-            creativeField: [option]
-        }));
+        const currentQuestionObj = questions[currentQuestion];
+        if (currentQuestionObj.id === 'creativeField') {
+            setAnswers(prev => ({
+                ...prev,
+                creativeField: [option]
+            }));
+        } else if (currentQuestionObj.id === 'gender') {
+            setAnswers(prev => ({
+                ...prev,
+                gender: option
+            }));
+        }
         setError(null);
     };
 
@@ -318,6 +336,13 @@ export default function RegisterForm() {
                 }
                 break;
 
+            case 'gender':
+                if (!answers.gender) {
+                    setError('Please select your gender');
+                    return false;
+                }
+                break;
+
             default:
                 if (currentQuestionObj.required && (!answers[currentQuestionObj.id as keyof FormAnswers] || (typeof answers[currentQuestionObj.id as keyof FormAnswers] === 'string' && (answers[currentQuestionObj.id as keyof FormAnswers] as string).trim() === ''))) {
                     setError('This field is required');
@@ -330,9 +355,9 @@ export default function RegisterForm() {
 
     const submitForm = async () => {
         if (loading) return; // Prevent multiple submissions
-    
+
         setLoading(true); // Set loading state to true
-    
+
         const userDetails: UserDetail = {
             username: answers.username,
             email: answers.email,
@@ -347,9 +372,10 @@ export default function RegisterForm() {
             instagram: answers.instagram || '',
             facebook: answers.facebook || '',
             twitter: answers.twitter || '',
-            portfolioLink: answers.portfolioLink || ''
+            portfolioLink: answers.portfolioLink || '',
+            gender: answers.gender
         };
-    
+
         try {
             await signupUser(
                 userDetails.username,
@@ -364,16 +390,19 @@ export default function RegisterForm() {
                 userDetails.instagram,
                 userDetails.facebook,
                 userDetails.twitter,
-                userDetails.portfolioLink
+                userDetails.portfolioLink,
+                userDetails.gender // Added gender field
             );
             setCurrentQuestion(questions.length);
             setTimeout(() => {
                 router.push("/signin");
             }, 2000);
-        } catch (err:any) {
+        } catch (err: any) {
             // Handle specific error for email already existing
-            if (err.message === "Failed to signup: Email already exists.") {
+            if (err.message === "Signup failed:Email already exists.") {
                 setError('Signup failed: Email already exists.');
+            } else if (err.message === "Signup failed: Username already exists.") {
+                setError('Failed to signup: Username already exists.');
             } else {
                 setError('Signup failed. Please try again.');
             }
@@ -448,7 +477,7 @@ export default function RegisterForm() {
                     <div className={`transition-opacity duration-300 ${transitioning ? 'opacity-0' : 'opacity-100'}`}>
                         <h2 className="text-xl font-semibold mb-4 leading-tight">
                             {questions[currentQuestion].question}
-                        </h2>         
+                        </h2>
                         {questions[currentQuestion].type === 'text' && (
                             <input
                                 type="text"
@@ -489,17 +518,19 @@ export default function RegisterForm() {
                                     <button
                                         key={option}
                                         onClick={() => handleOptionToggle(option)}
-                                        className={`px-4 py-2 rounded-full transition ${
-                                            answers.creativeField.includes(option)
+                                        className={`px-4 py-2 rounded-full transition ${answers.creativeField.includes(option)
                                                 ? 'bg-[#403737] text-white shadow-lg'
-                                                : 'bg-gray-200 text-black'
-                                        } hover:bg-[#2f2f2f] hover:scale-105 transform focus:outline-none focus:ring-2 focus:ring-[#403737]`}
+                                                : answers.gender == option
+                                                    ? 'bg-[#939292] text-white shadow-lg'
+                                                    : 'bg-gray-200 text-black'
+                                            } hover:bg-[#939292] hover:scale-105 transform focus:outline-none focus:ring-2 focus:ring-[#403737]`}
                                     >
                                         {option}
                                     </button>
                                 ))}
                             </div>
                         )}
+
 
                         {questions[currentQuestion].type === 'date' && (
                             <input
@@ -530,13 +561,12 @@ export default function RegisterForm() {
                             <button
                                 onClick={nextQuestion}
                                 disabled={loading} // Disable button during loading
-                                className={`bg-[#403737] text-white px-6 py-3 rounded-full hover:bg-[#2f2f2f] transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#2f2f2f] shadow-lg ${
-                                    loading ? 'opacity-50 cursor-not-allowed' : ''
-                                }`}
+                                className={`bg-[#403737] text-white px-6 py-3 rounded-full hover:bg-[#2f2f2f] transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#2f2f2f] shadow-lg ${loading ? 'opacity-50 cursor-not-allowed' : ''
+                                    }`}
                             >
-                                {loading ? 'Submitting...' : 
-                                 currentQuestion === questions.length - 1 ? 'Submit' : 
-                                 answers[questions[currentQuestion].id as keyof FormAnswers] === '' && !questions[currentQuestion].required ? 'Skip' : 'Next'}
+                                {loading ? 'Submitting...' :
+                                    currentQuestion === questions.length - 1 ? 'Submit' :
+                                        answers[questions[currentQuestion].id as keyof FormAnswers] === '' && !questions[currentQuestion].required ? 'Skip' : 'Next'}
                             </button>
                         </div>
                     </div>
