@@ -1,5 +1,6 @@
 "use client";
 
+import { EventDetailsModal } from "@/components/reusable-component/EventsDetailsModal";
 import { PofconModal } from "@/components/reusable-component/PofconModal";
 import { RegisterModal } from "@/components/reusable-component/RegisterModal";
 import { SkeletonEventGrid } from "@/components/Skeletal/eventSKeleton";
@@ -98,6 +99,7 @@ export const UpcomingEvents = () => {
   };
 
   const [showPofconModal, setShowPofconModal] = useState(false);
+  const [showEventDetailsModal, setShowEventDetailsModal] = useState(false); // State for EventDetailsModal
   const [selectedEvent, setSelectedEvent] = useState<AdminEvent | null>(null);
 
   useEffect(() => {
@@ -155,6 +157,7 @@ export const UpcomingEvents = () => {
           events={events}
           setShowPofconModal={setShowPofconModal}
           setSelectedEvent={setSelectedEvent}
+          setShowEventDetailsModal={setShowEventDetailsModal} // Pass the modal state setter
         />
       )}
       {showPofconModal && selectedEvent !== null && (
@@ -173,6 +176,26 @@ export const UpcomingEvents = () => {
           }}
         />
       )}
+      {showEventDetailsModal && selectedEvent !== null && (
+        <EventDetailsModal
+          setShowEventDetails={setShowEventDetailsModal} // Pass the modal state setter
+          eventDetails={{
+            id: selectedEvent.id.toString(),
+            eventTitle: selectedEvent.title,
+            start_time: selectedEvent.start_time,
+            end_time: selectedEvent.end_time,
+            location: selectedEvent.location,
+            date: selectedEvent.date,
+            desc: selectedEvent.desc,
+            title: selectedEvent.title,
+            image_path: selectedEvent.image_path,
+          }}
+          onRegisterClick={() => {
+            setShowEventDetailsModal(false); // Close the details modal
+            setShowPofconModal(true); // Open the registration modal
+          }}
+        />
+      )}
       <ToastContainer />
     </div>
   );
@@ -185,6 +208,7 @@ const EventGrid: React.FC<{
   setShowPofconModal: React.Dispatch<React.SetStateAction<boolean>>;
   events: AdminEvent[];
   setSelectedEvent: React.Dispatch<React.SetStateAction<AdminEvent | null>>;
+  setShowEventDetailsModal: React.Dispatch<React.SetStateAction<boolean>>; // Add this prop
 }> = ({
   currentDate,
   list,
@@ -192,6 +216,7 @@ const EventGrid: React.FC<{
   events,
   setShowPofconModal,
   setSelectedEvent,
+  setShowEventDetailsModal, // Destructure the prop
 }) => {
   // Filter events to show only those in the selected month
   const filteredEvents = events.filter((event) => {
@@ -243,6 +268,7 @@ const EventGrid: React.FC<{
                   list={list}
                   setShowPofconModal={setShowPofconModal}
                   setSelectedEvent={setSelectedEvent}
+                  setShowEventDetailsModal={setShowEventDetailsModal} // Pass the prop
                 />
               ))}
             </div>
@@ -268,7 +294,8 @@ const EventCard: React.FC<{
   list: boolean;
   setShowPofconModal: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedEvent: React.Dispatch<React.SetStateAction<AdminEvent | null>>;
-}> = ({ event, groupIndex, list, setShowPofconModal, setSelectedEvent }) => {
+  setShowEventDetailsModal: React.Dispatch<React.SetStateAction<boolean>>; // Add this prop
+}> = ({ event, groupIndex, list, setShowPofconModal, setSelectedEvent, setShowEventDetailsModal }) => {
   const colorClasses = getColorClasses(groupIndex);
 
   const formatTimeTo12Hour = (time: string): string => {
@@ -337,7 +364,10 @@ const EventCard: React.FC<{
         colorClasses={colorClasses}
         list={list}
         setShowPofconModal={setShowPofconModal}
-        setSelectedEvent={() => setSelectedEvent(event)}
+        setSelectedEvent={() => {
+          setSelectedEvent(event);
+          setShowEventDetailsModal(true); // Open the EventDetailsModal
+        }}
       />
     </motion.div>
   );
@@ -365,7 +395,6 @@ const EventRegisterButton = ({
       whileTap={{ scale: 0.95 }}
       onClick={() => {
         setSelectedEvent();
-        setShowPofconModal(true);
       }}
     >
       Register for free
