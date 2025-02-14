@@ -30,7 +30,7 @@ export async function PUT(req: Request) {
         const profilePicFile = formData.get('profile_pic') as File;
 
         if (profilePicFile) {
-            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/tiff', 'image/bmp'];
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
             if (!allowedTypes.includes(profilePicFile.type)) {
                 return NextResponse.json(
                     { message: 'Invalid file type. Only images are allowed.' },
