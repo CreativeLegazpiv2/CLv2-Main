@@ -4,6 +4,9 @@ import { FeaturedCollections } from "./g-user-components/FeaturedGallery";
 import { FieldCollection } from "./g-user-components/FieldCollection";
 import { useState } from "react";
 
+import GalleryTitle from "../../(pages)/gallery/g-visitor-components/GalleryTitle";
+import { CreativeDirectory } from "../../(pages)/home/landing-page/CreativeDirectory";
+
 
 
 export default function GalleryVisitorPage() {
@@ -15,6 +18,9 @@ export default function GalleryVisitorPage() {
                 {/* <CollectionsCarousel /> */}
                 {/* <FieldCollection /> */}
                 {/* <CreativeDirectory /> */}
+                {/* <FeaturedCollections /> */}
+                <GalleryTitle />
+                <CreativeDirectory />
                 <FeaturedCollections />
 
             </div>
