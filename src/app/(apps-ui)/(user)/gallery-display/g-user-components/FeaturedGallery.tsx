@@ -50,7 +50,7 @@ export const FeaturedCollections = () => {
         {/* Loading State */}
         {loading ? (
           <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4">
-            {Array.from({ length: 6 }).map((_, index) => (
+            {Array.from({ length: 8 }).map((_, index) => (
               <div key={index} className="mb-4 break-inside-avoid animate-pulse">
                 <div className="bg-palette-6/20 rounded-3xl p-4 flex flex-col gap-4">
                   {/* Profile Section Skeleton */}
