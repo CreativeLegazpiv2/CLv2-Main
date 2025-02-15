@@ -49,7 +49,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Error checking OTP uniqueness' }, { status: 500 });
       }
 
-      otpExists = existingOtp.length > 0;
+      otpExists = existingOtp?.length > 0;
     }
 
     // Step 3: Update OTP and timestamp in the database
