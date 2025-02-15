@@ -5,6 +5,7 @@ import sgMail from '@sendgrid/mail';
 sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 const sendgridVerifiedEmail = process.env.SENDGRID_SENDER as string;
 
+
 export async function POST(req: Request) {
   try {
     const { email } = await req.json();
@@ -18,10 +19,8 @@ export async function POST(req: Request) {
     const { data: user, error: userError } = await supabase
       .from('users')
       .select('otp_updated_at')
-      .eq('email', email.toLowerCase()) // Ensure case-insensitive match
+      .eq('email', email)
       .single();
-
-    console.log('User query result:', user, 'Error:', userError);
 
     if (userError || !user) {
       return NextResponse.json({ error: 'Email not found' }, { status: 404 });
@@ -46,21 +45,21 @@ export async function POST(req: Request) {
         .eq('otp', otp);
 
       if (otpError) {
-        console.error('Error checking OTP uniqueness:', otpError);
-        return NextResponse.json({ error: 'Database error while checking OTP' }, { status: 500 });
+        console.error('Error checking OTP uniqueness', otpError);
+        return NextResponse.json({ error: 'Error checking OTP uniqueness' }, { status: 500 });
       }
 
-      otpExists = existingOtp?.length > 0;
+      otpExists = existingOtp.length > 0;
     }
 
     // Step 3: Update OTP and timestamp in the database
     const { error: updateError } = await supabase
       .from('users')
       .update({ otp, otp_updated_at: now.toISOString() })
-      .eq('email', email.toLowerCase());
+      .eq('email', email);
 
     if (updateError) {
-      console.error('Failed to update OTP:', updateError);
+      console.error('Failed to update OTP', updateError);
       return NextResponse.json({ error: 'Failed to update OTP' }, { status: 500 });
     }
 
@@ -69,10 +68,39 @@ export async function POST(req: Request) {
     <html>
       <head>
         <style>
-          body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 0; }
-          .container { max-width: 500px; margin: 20px auto; background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); text-align: center; }
-          .otp { font-size: 24px; font-weight: bold; background: #f8f8f8; padding: 10px; display: inline-block; border-radius: 4px; margin: 10px 0; }
-          .footer { margin-top: 20px; font-size: 12px; color: #666; }
+          body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+          }
+          .container {
+            max-width: 500px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+          }
+          .logo {
+            max-width: 150px;
+            margin-bottom: 20px;
+          }
+          .otp {
+            font-size: 24px;
+            font-weight: bold;
+            background: #f8f8f8;
+            padding: 10px;
+            display: inline-block;
+            border-radius: 4px;
+            margin: 10px 0;
+          }
+          .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+          }
         </style>
       </head>
       <body>
@@ -87,21 +115,17 @@ export async function POST(req: Request) {
       </body>
     </html>
   `;
+  
+  const msg = {
+    to: email,
+    from: sendgridVerifiedEmail,
+    subject: 'Your OTP for Password Reset',
+    text: `Your OTP is: ${otp}`,
+    html: htmlContent,
+  };
+  
 
-    const msg = {
-      to: email,
-      from: sendgridVerifiedEmail,
-      subject: 'Your OTP for Password Reset',
-      text: `Your OTP is: ${otp}`,
-      html: htmlContent,
-    };
-
-    try {
-      await sgMail.send(msg);
-    } catch (emailError) {
-      console.error('Error sending OTP email:', emailError);
-      return NextResponse.json({ error: 'Failed to send OTP email' }, { status: 500 });
-    }
+    await sgMail.send(msg);
 
     return NextResponse.json({ message: 'OTP sent to your email' }, { status: 200 });
 
