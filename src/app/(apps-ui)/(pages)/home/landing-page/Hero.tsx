@@ -33,9 +33,9 @@ export const Hero = () => {
     <div className="w-full h-screen bg-palette-5 overflow-hidden">
       <div className="w-full h-full flex justify-end items-center relative">
         <LeftSide currentIndex={currentIndex} imageSet={imageSet} />
-        <RightSide currentIndex={currentIndex} setCurrentIndex={setCurrentIndex} imageSet={imageSet} />
+        <RightSide currentIndex={currentIndex} setCurrentIndex={setCurrentIndex}  />
       </div>
-    </div>
+    </div> 
   );
 };
 
