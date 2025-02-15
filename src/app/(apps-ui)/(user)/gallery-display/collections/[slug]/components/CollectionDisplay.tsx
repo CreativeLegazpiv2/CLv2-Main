@@ -6,13 +6,13 @@ import { deleteCollectionItem } from "@/services/Collections/deleteCollection";
 import { getSession } from "@/services/authservice";
 import { jwtVerify } from "jose";
 import useAuthRedirect from "@/services/hoc/auth";
-import DeleteCollection from "./(collectionModal)/DeleteCollection";
+import DeleteCollection from "../(collectionModal)/DeleteCollection";
 import { toast, ToastContainer } from "react-toastify";
-import { EditCollection } from "./(collectionModal)/EditCollection";
-import { Interested } from "./(collectionModal)/Interested";
-import { ViewCollection } from "./(collectionModal)/viewCollection";
+import { EditCollection } from "../(collectionModal)/EditCollection";
+import { Interested } from "../(collectionModal)/Interested";
+import { ViewCollection } from "../(collectionModal)/viewCollection";
 import Lottie from "lottie-react";
-import clickMe from "../../../../../../../public/lottie/clickme.json";
+import clickMe from "../../../../../../../../public/lottie/clickme.json";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
 

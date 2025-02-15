@@ -9,6 +9,7 @@ import { useState, useEffect, useRef } from "react";
 import { debounce } from "lodash";
 import Lottie from "lottie-react";
 import animationData from "../../../../../../../../public/lottie/message.json";
+import { useRouter } from "next/navigation";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
 
@@ -79,6 +80,7 @@ export const Interested = ({
   onCancel,
   chat,
 }: EditCollectionProps) => {
+  const router = useRouter();
   const [previewImage, setPreviewImage] = useState<string | null>(image);
   const [formData, setFormData] = useState<FormData>({
     childid,
@@ -124,7 +126,7 @@ export const Interested = ({
     'traditional-and-cultural-expressions',
     'cultural-sites'
   ];
-  
+
   const containerRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -730,12 +732,12 @@ export const Interested = ({
               <div>
                 <div className="flex items-center">
                   <img
-                    src={
-                      userDetails[0].profile_pic || "/images/emptyProfile.png"
-                    }
+                    onClick={() => router.push(`/gallery-display/collections/${userDetails[0].detailsid}`)}
+                    src={userDetails[0].profile_pic || "/images/creative-directory/profile.jpg"}
                     alt={userDetails[0].first_name}
-                    className="w-10 h-10 rounded-full mr-2 object-cover"
+                    className="w-10 h-10 rounded-full mr-2 object-cover cursor-pointer"
                   />
+
                   <div className="flex flex-col">
                     <p className="text-gray-200 text-sm font-semibold line-clamp-1">
                       {userDetails[0].first_name}
@@ -764,7 +766,7 @@ export const Interested = ({
 
                 <input
                   type="text"
-                  list="suggestions" 
+                  list="suggestions"
                   className="border border-primary-3/30 pl-10 pr-4 py-2 rounded-full w-full outline-none focus:ring-primary-3 focus:ring-1 peer appearance-none"
                   placeholder="Search creative username or field"
                   value={searchQuery}
@@ -781,7 +783,7 @@ export const Interested = ({
                       setFilteredSuggestions([])
                     }
                   }}
-               
+
                 />
 
                 {/* Datalist provides native suggestions */}
@@ -836,7 +838,7 @@ export const Interested = ({
                             <Image
                               className="w-full h-full object-cover"
                               src={
-                                user.profile_pic || "/images/emptyProfile.png"
+                                user.profile_pic || "/images/creative-directory/profile.jpg"
                               }
                               alt="Profile Picture"
                               width={48}
@@ -892,7 +894,7 @@ export const Interested = ({
                               <div className="w-12 h-12 rounded-full overflow-hidden">
                                 <Image
                                   className="w-full h-full object-cover"
-                                  src={session.userDetails.profile_pic || "/images/emptyProfile.png"}
+                                  src={session.userDetails.profile_pic || "/images/creative-directory/profile.jpg"}
                                   alt={session.userDetails.first_name}
                                   width={48}
                                   height={48}
@@ -988,7 +990,7 @@ export const Interested = ({
                             {msg.image_path && (
                               <div className="w-full">
                                 <Image
-                                  src={msg.image_path || "/images/emptyProfile.png"}
+                                  src={msg.image_path || "/images/creative-directory/profile.jpg"}
                                   alt="Message Image"
                                   width={300}
                                   height={200}

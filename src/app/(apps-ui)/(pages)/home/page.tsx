@@ -112,6 +112,7 @@ export default function PofconLandingPage() {
               iconColor="text-palette-2"
               texthover="group-hover:text-white"
               hoverColor="hover:bg-palette-2"
+              backgroundColor="bg-palette-5"
             />
 
           </div>

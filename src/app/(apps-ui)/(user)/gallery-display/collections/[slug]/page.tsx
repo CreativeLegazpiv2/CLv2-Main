@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import ProfileDetailsSkeleton from "@/components/Skeletal/profileSkeleton";
-import { UserProfile } from "./UserProfile";
-import CollectionDisplay from "./CollectionDisplay";
+import { UserProfile } from "./components/UserProfile";
+import CollectionDisplay from "./components/CollectionDisplay";
 import { supabase } from "@/services/supabaseClient";
 import ProfileSkeletonUI from "@/components/Skeletal/ProfileSkeletonUI";
 

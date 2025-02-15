@@ -6,8 +6,8 @@ import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { getSession } from "@/services/authservice";
 import { jwtVerify } from "jose";
-import { ProfileModal } from "./(collectionModal)/EditProfileDetails";
-import PublishGallery from "./(collectionModal)/PublishGallery";
+import { ProfileModal } from "../(collectionModal)/EditProfileDetails";
+import PublishGallery from "../(collectionModal)/PublishGallery";
 import { ArrowLeft } from "lucide-react";
 import ProfileSkeletonUI from "@/components/Skeletal/ProfileSkeletonUI";
 import Link from "next/link";
@@ -109,10 +109,10 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
                 {/* background */}
                 <div className="h-full inset-0 w-full overflow-hidden">
                     <motion.div
-                    initial={{ scale: 1.3 }}
-                    animate={{ scale: 1 }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                     className="w-full z-10 h-[80dvh] overflow-hidden bg-gradient-to-r from-palette-5 from-0% via-palette-5 md:via-15% via-25% to-transparent md:to-60% to-70% absolute"></motion.div>
+                        initial={{ scale: 1.3 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                        className="w-full z-10 h-[80dvh] overflow-hidden bg-gradient-to-r from-palette-5 from-0% via-palette-5 md:via-15% via-25% to-transparent md:to-60% to-70% absolute"></motion.div>
                     <motion.img
                         initial={{ scale: 1.3 }}
                         animate={{ scale: 1 }}
@@ -174,6 +174,42 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
                                     alt=""
                                 />
                             </motion.div>
+                            <motion.div
+                                variants={fadeInUp}
+                                className="flex flex-col h-full md:justify-start md:items-start justify-center items-center w-full"
+                            >
+
+                                <p>
+                                    {initialUserDetail.bday
+                                        ? (() => {
+                                            const birthDate = new Date(initialUserDetail.bday)
+                                            const today = new Date()
+                                            let age = today.getFullYear() - birthDate.getFullYear()
+
+                                            // Adjust if the birthday hasn't occurred yet this year
+                                            const hasBirthdayPassed =
+                                                today.getMonth() > birthDate.getMonth() ||
+                                                (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate())
+
+                                            if (!hasBirthdayPassed) {
+                                                age--
+                                            }
+
+                                            return (
+                                                <>
+                                                    {birthDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} <span className="text-palette-7 text-sm">({age} years old)</span>
+                                                </>
+                                            )
+                                        })()
+                                        : " "}
+                                </p>
+                                <Link href={initialUserDetail.portfolioLink} target="_blank">
+                                    <p className="text-palette-2 underline text-sm max-w-xs line-clamp-1">{initialUserDetail.portfolioLink || " "}</p>
+                                </Link>
+
+
+
+                            </motion.div>
                         </motion.div>
                     </div>
                     {/* Second Section */}
@@ -181,7 +217,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
                         initial="initial"
                         whileInView="animate"
                         viewport={{ once: true }}
-                        className="w-full h-full min-h-[50dvh] md:pb-[20dvh] py-[10dvh] flex relative z-[100] justify-center items-center"
+                        className="w-full h-full lg:-mt-[5dvh] min-h-[50dvh] md:pb-[20dvh] py-[10dvh] flex relative z-[100] justify-center items-center"
                     >
                         <motion.div
                             variants={slideIn}
@@ -213,12 +249,32 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
                                 ))}
                             </motion.div>
                             <motion.div variants={fadeInUp} className="pb-4">
-                                <p className="font-thin w-full max-w-2xl">{initialUserDetail.bio}</p>
+                                <p className="font-thin w-full max-w-2xl line-clamp-6">{initialUserDetail.bio}</p>
                             </motion.div>
                             <motion.div variants={fadeInUp} className="pt-4">
-                                <h1 className="font-bolder capitalize">Address and Contact Number</h1>
-                                <p className="font-thin">{initialUserDetail.address}, CN# {initialUserDetail.mobileNo}</p>
+                                {(initialUserDetail.address || initialUserDetail.mobileNo) && (
+                                    <>
+                                        <h1 className="font-bolder capitalize">
+                                            {initialUserDetail.address && initialUserDetail.mobileNo
+                                                ? "Creative Address and Mobile No."
+                                                : initialUserDetail.address
+                                                    ? "Creative Address"
+                                                    : "Creative Mobile No."}
+                                        </h1>
+                                        <p className="font-thin">
+                                            {initialUserDetail.address && <>{initialUserDetail.address}</>}
+                                            {initialUserDetail.mobileNo && (
+                                                <>
+                                                    {initialUserDetail.address && ", "}
+                                                    CN# {initialUserDetail.mobileNo}
+                                                </>
+                                            )}
+                                        </p>
+                                    </>
+                                )}
                             </motion.div>
+
+
                             {initialUserDetail.detailsid == getID && initialUserDetail.role == null && (
                                 <button
                                     onClick={() => setShowModal(true)}
@@ -279,7 +335,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
                                 <div className="bg-none"></div>
                             ) : (
                                 <img
-                                    src={item.path || "/images/creative-profile/cover.png"}
+                                    src={item.path || "/images/creative-directory/profile.jpg"}
                                     className="w-full h-full md:object-cover object-contain absolute"
                                     alt="Image"
                                 />
@@ -294,7 +350,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
                                         whileInView={{ opacity: 1, scale: 1 }}
                                         viewport={{ once: true }}
                                         transition={{ duration: 0.8 }}
-                                        src={item.path || "/images/creative-profile/cover.png"}
+                                        src={item.path || "/images/creative-directory/profile.jpg"}
                                         className="max-w-full max-h-full object-contain shadow-lg rounded-xl"
                                         alt=""
                                     />

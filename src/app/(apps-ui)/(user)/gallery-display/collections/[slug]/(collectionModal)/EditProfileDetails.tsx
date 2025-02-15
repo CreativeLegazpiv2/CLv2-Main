@@ -34,7 +34,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
     setFormData((prev) => ({ ...prev, gender }))  // Ensure it updates correctly
     setIsOpen(false)
   }
-  
+
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -181,7 +181,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                 className="w-6 h-6 text-palette-5"
               />
             </button>
-          </div> 
+          </div>
 
           {/* Content */}
           <form onSubmit={(e) => e.preventDefault()} className="p-4 overflow-y-auto max-h-[calc(90vh-8rem)]">
@@ -230,37 +230,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                       placeholder="Enter your name"
                     />
                   </div>
-                  <div className="relative w-full">
-                    {/* Label */}
-                    <label className="block text-sm font-medium text-palette-5/60 ml-1 mb-1">Gender</label>
 
-                    {/* Custom Dropdown Trigger */}
-                    <div
-                      className="flex justify-between items-center w-full px-3 py-1.5 rounded-lg bg-palette-5/90 text-palette-6/90 cursor-pointer outline-none focus:outline focus:outline-palette-4"
-                      onClick={() => setIsOpen(!isOpen)}
-                    >
-                      <span className={formData.gender ? 'text-palette-7' : 'text-palette-6/40'}>
-                        {formData.gender || 'Select Gender'}
-                      </span>
-                      <ChevronDown className="w-5 h-5 text-palette-6" />
-                    </div>
-
-                    {/* Dropdown Options */}
-                    {isOpen && (
-                      <div className="absolute mt-1 w-full bg-palette-5 rounded-lg shadow-lg z-10">
-                        {genders.map((gender, index) => (
-                          <div
-                            key={index}
-                            className={`px-3 py-1.5 cursor-pointer hover:bg-palette-4/80 text-palette-7 ${formData.gender === gender ? 'bg-palette-4 text-white' : ''
-                              }`}
-                            onClick={() => handleSelect(gender)}
-                          >
-                            {gender}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
                   <div>
                     <label className="block text-sm font-medium text-palette-5/60 ml-1">Birth Date</label>
                     <input
@@ -322,6 +292,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                     </div>
                   </div>
                 </div>
+
+               
 
                 {/* Contact Information */}
                 <div className="grid md:grid-cols-2 gap-4">
@@ -386,6 +358,56 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                     </div>
                   </div>
                 )}
+
+<div className="grid md:grid-cols-2 gap-4">
+                  <div className="relative w-full">
+                    {/* Label */}
+                    <label className="block text-sm font-medium text-palette-5/60 ml-1 mb-1">Gender</label>
+
+                    {/* Custom Dropdown Trigger */}
+                    <div
+                      className="flex justify-between items-center w-full px-3 py-1.5 rounded-lg bg-palette-5/90 text-palette-6/90 cursor-pointer outline-none focus:outline focus:outline-palette-4"
+                      onClick={() => setIsOpen(!isOpen)}
+                    >
+                      <span className={formData.gender ? 'text-palette-7' : 'text-palette-6/40'}>
+                        {formData.gender || 'Select Gender'}
+                      </span>
+                      <ChevronDown className="w-5 h-5 text-palette-6" />
+                    </div>
+
+                    {/* Dropdown Options */}
+                    {isOpen && (
+                      <div className="absolute mt-1 w-full bg-palette-5 rounded-lg shadow-lg z-10">
+                        {genders.map((gender, index) => (
+                          <div
+                            key={index}
+                            className={`px-3 py-1.5 cursor-pointer hover:bg-palette-4/80 text-palette-7 ${formData.gender === gender ? 'bg-palette-4 text-white' : ''
+                              }`}
+                            onClick={() => handleSelect(gender)}
+                          >
+                            {gender}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-palette-5/60 ml-1">Portfolio Link</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Icon icon="dashicons:portfolio" className="w-5 h-5 text-palette-6/40" />
+                      </div>
+                      <input
+                        type="text"
+                        name="portfolioLink"
+                        value={formData.portfolioLink}
+                        onChange={handleInputChange}
+                        className="w-full pl-10 px-3 py-1.5 rounded-lg outline-none focus:outline focus:outline-palette-4 bg-palette-5/90 placeholder:text-palette-6/40"
+                        placeholder="Facebook profile URL"
+                      />
+                    </div>
+                  </div>
+                </div>
 
                 {/* Bio */}
                 <div>
