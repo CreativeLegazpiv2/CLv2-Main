@@ -169,8 +169,8 @@ export const UserProfile: React.FC<UserProfileProps> = ({ initialUserDetail, col
                                     initial={{ opacity: 0, scale: 0.6 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ duration: 1, ease: "easeOut" }}
-                                    src={initialUserDetail.profile_pic || "/images/creative-profile/holder.png"}
-                                    className="w-full h-full z-50 rounded-xl md:max-w-[22rem] md:min-w-[22rem] md:max-h-[32rem] min-h-[32rem] max-h-[32rem] object-cover"
+                                    src={initialUserDetail.profile_pic || "/images/creative-profile/holder2.png"}
+                                    className="w-full h-full z-50 rounded-2xl border-2 border-palette-6/30 md:max-w-[22rem] md:min-w-[22rem] md:max-h-[32rem] min-h-[32rem] max-h-[32rem] object-cover"
                                     alt=""
                                 />
                             </motion.div>

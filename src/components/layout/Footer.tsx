@@ -1,7 +1,11 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { Logo } from "../reusable-component/Logo";
+'use client'
+
+import { Icon } from "@iconify/react"
+import { Logo } from "../reusable-component/Logo"
+
 
 export const Footer = () => {
+
   return (
     <div className="w-full md:h-[35dvh] h-fit bg-palette-2 md:py-0 pt-[5dvh] pb-[10dvh] z-50">
       <div className="w-full h-full flex md:flex-row flex-col md:justify-between justify-center items-center md:max-w-[80%] max-w-[90%] mx-auto">
@@ -23,11 +27,12 @@ export const Footer = () => {
           </div>
           <div className="w-full h-fit flex md:flex-row flex-col md:justify-start items-center justify-center md:gap-4 gap-4 text-palette-5">
             <div className="w-fit md:gap-4 gap-4 flex justify-start items-center">
-              {iconNifyColored.map((src, index) => (
+              {iconNifyColored.map(({ icon, path }, index) => (
                 <Icon
+                  onClick={() => window.open(path, "_blank")}
                   className="cursor-pointer"
                   key={index}
-                  icon={src}
+                  icon={icon}
                   width="35"
                   height="35"
                 />
@@ -38,19 +43,37 @@ export const Footer = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-// uncomment nalang if trip yung may color na icons
+// ✅ Corrected iconNifyColored array
 export const iconNifyColored = [
-  "devicon:facebook",
-  "skill-icons:instagram",
-  "skill-icons:gmail-light",
-];
+  {
+    icon: "devicon:facebook",
+    path: "https://www.facebook.com/quanbysolutionsinc"
+  },
+  {
+    icon: "skill-icons:instagram",
+    path: "https://www.instagram.com/"
+  },
+  {
+    icon: "fluent:mail-28-regular",
+    path: "mailto:creativeslegazpi@gmail.com" // Opens email client with predefined email
+  }
+]
 
-// uncomment nalang if trip yung walang color na icons
+// ✅ Corrected iconNifyNonColored array
 export const iconNifyNonColored = [
-  "iconoir:facebook-tag",
-  "ph:instagram-logo-light",
-  "fluent:mail-28-regular",
-];
+  {
+    icon: "iconoir:facebook-tag",
+    path: "https://www.facebook.com/"
+  },
+  {
+    icon: "ph:instagram-logo-light",
+    path: "https://www.instagram.com/"
+  },
+  {
+    icon: "fluent:mail-28-regular",
+    path: "mailto:creativelegazpi2024@gmail.com"
+  }
+]
