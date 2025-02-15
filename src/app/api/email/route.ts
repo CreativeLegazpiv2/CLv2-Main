@@ -110,7 +110,7 @@ export async function POST(req: Request) {
           <p>Use the OTP below to reset your password. You can resend the OTP in 3 minutes.</p>
           <div class="otp">${otp}</div>
           <p>If you did not request a password reset, please ignore this email.</p>
-          <div class="footer">© 2025 Your Company. All rights reserved.</div>
+          <div class="footer">© 2025 Creatives Depot Legazpi. All rights reserved.</div>
         </div>
       </body>
     </html>
