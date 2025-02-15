@@ -37,6 +37,8 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NODE_ENV: ${{ secrets.NODE_ENV }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          SENDGRID_SENDER: ${{ secrets.SENDGRID_SENDER }}
         run: |-
           docker build \
             --build-arg JWT_SECRET=${JWT_SECRET} \
